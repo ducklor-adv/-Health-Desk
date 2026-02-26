@@ -251,14 +251,36 @@
             }
         });
 
+        var diseaseLabels = {
+            'hypertension': 'ความดันสูง', 'diabetes': 'เบาหวาน', 'heart': 'หัวใจ',
+            'obesity': 'อ้วน', 'pre_diabetes': 'เสี่ยงเบาหวาน', 'dyslipidemia': 'ไขมันสูง',
+            'gout': 'เก๊าท์', 'asthma': 'หอบหืด', 'ckd': 'ไตเรื้อรัง', 'copd': 'ถุงลมโป่งพอง',
+            'stroke': 'หลอดเลือดสมอง', 'thyroid': 'ไทรอยด์', 'osteoarthritis': 'ข้อเสื่อม'
+        };
+
         function renderPendingReviews() {
             var container = document.getElementById('reviewList');
             var html = '';
             for (var i = 0; i < mockPendingReviews.length; i++) {
                 var r = mockPendingReviews[i];
+                // Lookup patient for diseases/allergies
+                var patient = typeof mockPatients !== 'undefined' ? mockPatients.find(function(p) { return String(p.id) === String(r.patientId); }) : null;
+                var diseasePills = '';
+                if (patient && patient.diseases && patient.diseases.length > 0) {
+                    diseasePills = '<div class="review-vitals" style="margin-bottom:0.25rem;">' +
+                        patient.diseases.map(function(d) { return '<span class="vital-tag" style="background:#EDE9FE;color:#5B21B6;font-size:0.8rem;">' + (diseaseLabels[d] || d) + '</span>'; }).join('') +
+                        '</div>';
+                }
+                var allergyPills = '';
+                if (patient && patient.allergies && patient.allergies.length > 0) {
+                    allergyPills = '<div class="review-vitals" style="margin-bottom:0.25rem;">' +
+                        patient.allergies.map(function(a) { return '<span class="vital-tag" style="background:#FEE2E2;color:#991B1B;font-size:0.8rem;">⚠️ แพ้ ' + a + '</span>'; }).join('') +
+                        '</div>';
+                }
                 html += '<div class="review-card">' +
                     '<div class="review-header"><div class="review-name">' + r.name + ' (' + r.hn + ')</div><span class="review-badge">ด่วน</span></div>' +
                     '<div class="review-reason">⚠️ ' + r.reason + '</div>' +
+                    diseasePills + allergyPills +
                     '<div class="review-vitals">' +
                     '<span class="vital-tag">BP ' + r.vitals.systolic + '/' + r.vitals.diastolic + '</span>' +
                     '<span class="vital-tag">HR ' + r.vitals.heartRate + '</span>' +

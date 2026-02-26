@@ -193,6 +193,114 @@
         .worker-section .form-card-title { color: #92400E; }
         .worker-section .form-card-title .dot { background: #F59E0B; }
 
+        /* === Doctor Review Summary === */
+        .doctor-review-banner {
+            background: #ECFDF5;
+            border: 1.5px solid #A7F3D0;
+            border-left: 3px solid #10B981;
+            border-radius: 10px;
+            padding: 0.7rem 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        .doctor-review-banner .drb-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #065F46;
+            margin-bottom: 0.4rem;
+        }
+        .doctor-review-banner .drb-risk {
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 0.4rem;
+        }
+        .drb-risk.risk-high { background: #FEE2E2; color: #991B1B; }
+        .drb-risk.risk-medium { background: #FEF3C7; color: #92400E; }
+        .drb-risk.risk-low { background: #D1FAE5; color: #065F46; }
+        .drb-risk.risk-none { background: #F3F4F6; color: #6B7280; }
+        .doctor-review-banner .drb-reason {
+            font-size: 0.78rem;
+            color: #374151;
+            margin-bottom: 0.4rem;
+        }
+        .doctor-vital-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            margin-bottom: 0.4rem;
+        }
+        .doctor-vital-pills .dvp {
+            background: white;
+            border: 1px solid #D1D5DB;
+            padding: 0.2rem 0.55rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        .doctor-vital-pills .dvp.alert {
+            background: #FEF2F2;
+            border-color: #FECACA;
+            color: #991B1B;
+        }
+        .drb-meta {
+            font-size: 0.7rem;
+            color: #6B7280;
+            margin-top: 0.3rem;
+        }
+        .drb-history-btn {
+            background: #EEF2FF;
+            color: #4F46E5;
+            border: none;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            margin-top: 0.3rem;
+        }
+        .drb-history-btn:active { background: #C7D2FE; }
+        .drb-empty {
+            color: #9CA3AF;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.5rem 0;
+        }
+
+        /* Doctor prescription tags */
+        .rx-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            background: #ECFDF5;
+            color: #065F46;
+            padding: 0.25rem 0.55rem;
+            border-radius: 1rem;
+            font-size: 0.78rem;
+            font-weight: 500;
+            border: 1px solid #A7F3D0;
+        }
+        .rx-tag .rm {
+            background: none; border: none;
+            color: inherit; opacity: 0.5;
+            font-size: 0.85rem; cursor: pointer;
+            padding: 0; line-height: 1;
+        }
+        .rx-tag .rm:active { opacity: 1; }
+        .rx-add-row {
+            display: flex;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+        }
+        .rx-add-row .field-input,
+        .rx-add-row .field-select {
+            flex: 1;
+            min-width: 0;
+        }
+
         /* === Buttons === */
         .btn-row {
             display: grid; grid-template-columns: 1fr 2fr;
@@ -769,33 +877,143 @@
 
         <!-- Doctor Only -->
         <div class="doctor-section" id="doctorSection">
+            <!-- 1. สรุปข้อมูลจากเจ้าหน้าที่ -->
             <div class="form-card">
-                <div class="form-card-title"><span class="dot"></span>การวินิจฉัย / Diagnosis</div>
-                <div class="field-group">
-                    <label class="field-label">การวินิจฉัย</label>
-                    <textarea class="field-input" id="diagnosis" placeholder="ระบุการวินิจฉัย..."></textarea>
+                <div class="form-card-title"><span class="dot"></span>สรุปข้อมูลจากเจ้าหน้าที่</div>
+                <div id="doctorReviewSummary">
+                    <div class="drb-empty">เลือกผู้ป่วยเพื่อดูข้อมูลสรุป</div>
                 </div>
             </div>
+
+            <!-- 2. การวินิจฉัย -->
+            <div class="form-card">
+                <div class="form-card-title"><span class="dot"></span>การวินิจฉัย / Diagnosis</div>
+                <div class="field-grid">
+                    <div class="field-group">
+                        <label class="field-label">ประเภทการตรวจ</label>
+                        <select class="field-select" id="visitType">
+                            <option value="">-- เลือก --</option>
+                            <option value="screening">คัดกรอง</option>
+                            <option value="follow_up">ติดตามผล</option>
+                            <option value="acute">ฉุกเฉิน/เฉียบพลัน</option>
+                            <option value="referral">รับส่งต่อ</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">การวินิจฉัยหลัก</label>
+                        <select class="field-select" id="diagnosisCode">
+                            <option value="">-- เลือก --</option>
+                            <option value="I10">ความดันโลหิตสูง (I10)</option>
+                            <option value="E11">เบาหวานชนิด 2 (E11)</option>
+                            <option value="E78">ไขมันในเลือดสูง (E78)</option>
+                            <option value="N18">โรคไตเรื้อรัง (N18)</option>
+                            <option value="E66">โรคอ้วน (E66)</option>
+                            <option value="I25">โรคหัวใจขาดเลือด (I25)</option>
+                            <option value="I63">หลอดเลือดสมอง (I63)</option>
+                            <option value="J45">หอบหืด (J45)</option>
+                            <option value="J44">ถุงลมโป่งพอง (J44)</option>
+                            <option value="M15">ข้อเสื่อม (M15)</option>
+                            <option value="M10">เก๊าท์ (M10)</option>
+                            <option value="E03">ไทรอยด์ต่ำ (E03)</option>
+                            <option value="R73">เสี่ยงเบาหวาน (R73)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">รายละเอียดการวินิจฉัย</label>
+                    <textarea class="field-input" id="diagnosis" placeholder="ระบุรายละเอียดเพิ่มเติม..."></textarea>
+                </div>
+            </div>
+
+            <!-- 3. แผนการรักษา + สั่งยา -->
             <div class="form-card">
                 <div class="form-card-title"><span class="dot"></span>แผนการรักษา / Treatment</div>
                 <div class="field-group">
-                    <label class="field-label">แผนการรักษา</label>
-                    <textarea class="field-input" id="treatmentPlan" placeholder="ระบุแผนการรักษา..."></textarea>
+                    <label class="field-label">ประเภทการรักษา</label>
+                    <select class="field-select" id="treatmentType">
+                        <option value="">-- เลือก --</option>
+                        <option value="adjust_med">ปรับยา</option>
+                        <option value="new_med">สั่งยาใหม่</option>
+                        <option value="no_change">ไม่ปรับเปลี่ยน</option>
+                        <option value="additional_test">สั่งตรวจเพิ่ม</option>
+                        <option value="referral_out">ส่งต่อ</option>
+                    </select>
                 </div>
+
+                <div class="field-divider"></div>
+
                 <div class="field-group">
                     <label class="field-label">สั่งยา</label>
-                    <textarea class="field-input" id="prescription" placeholder="ระบุยาที่สั่ง..."></textarea>
+                    <div class="med-tag-container" id="rxTags"></div>
+                    <div class="rx-add-row">
+                        <input type="text" class="field-input" id="rxDrugName" placeholder="ชื่อยา" style="flex:2;">
+                        <input type="text" class="field-input" id="rxDosage" placeholder="ขนาด" style="flex:1;">
+                        <select class="field-select" id="rxUsage" style="flex:1.5;">
+                            <option value="">วิธีใช้</option>
+                            <option value="1x1 ac">1x1 ac</option>
+                            <option value="1x1 pc">1x1 pc</option>
+                            <option value="1x2 pc">1x2 pc</option>
+                            <option value="1x3 pc">1x3 pc</option>
+                            <option value="1x1 hs">1x1 hs</option>
+                            <option value="prn">prn</option>
+                        </select>
+                        <button type="button" class="mini-add-btn" onclick="addPrescription()">+</button>
+                    </div>
+                </div>
+
+                <div class="field-divider"></div>
+
+                <div class="field-group">
+                    <label class="field-label">แผนการรักษา / คำแนะนำ</label>
+                    <textarea class="field-input" id="treatmentPlan" placeholder="แผนการรักษาและคำแนะนำผู้ป่วย..."></textarea>
                 </div>
             </div>
+
+            <!-- 4. สั่งติดตาม -->
             <div class="form-card">
                 <div class="form-card-title"><span class="dot"></span>สั่งติดตาม / Follow-up</div>
-                <div class="field-group">
-                    <label class="field-label">มอบหมายเจ้าหน้าที่ติดตาม</label>
-                    <textarea class="field-input" id="followUpOrder" placeholder="รายละเอียดการติดตาม..."></textarea>
+                <div class="field-grid">
+                    <div class="field-group">
+                        <label class="field-label">ประเภทการนัด</label>
+                        <select class="field-select" id="followUpType">
+                            <option value="">-- เลือก --</option>
+                            <option value="follow_up">ติดตามผล</option>
+                            <option value="lab">เจาะเลือด</option>
+                            <option value="vaccination">ฉีดวัคซีน</option>
+                            <option value="referral">ส่งต่อ</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">นัดวันที่</label>
+                        <input type="date" class="field-input" id="followUpDate">
+                    </div>
+                </div>
+                <div class="field-grid">
+                    <div class="field-group">
+                        <label class="field-label">ช่วงเวลา</label>
+                        <select class="field-select" id="followUpTime">
+                            <option value="">-- เลือก --</option>
+                            <option value="08:00-09:00">08:00 - 09:00</option>
+                            <option value="09:00-10:00">09:00 - 10:00</option>
+                            <option value="10:00-11:00">10:00 - 11:00</option>
+                            <option value="11:00-12:00">11:00 - 12:00</option>
+                            <option value="13:00-14:00">13:00 - 14:00</option>
+                            <option value="14:00-15:00">14:00 - 15:00</option>
+                            <option value="15:00-16:00">15:00 - 16:00</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">มอบหมาย</label>
+                        <select class="field-select" id="assignedStaff">
+                            <option value="">-- เลือก --</option>
+                            <option value="staff-2">สมหญิง รักษา (พยาบาล)</option>
+                            <option value="staff-1">Admin User</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="field-group">
-                    <label class="field-label">นัดติดตามวันที่</label>
-                    <input type="date" class="field-input" id="followUpDate">
+                    <label class="field-label">คำสั่งเพิ่มเติม</label>
+                    <textarea class="field-input" id="followUpOrder" placeholder="คำสั่งเพิ่มเติมสำหรับเจ้าหน้าที่..."></textarea>
                 </div>
                 <button class="order-btn" onclick="orderFollowUp()">สั่งติดตามผู้ป่วย</button>
             </div>
@@ -847,6 +1065,7 @@
         var patientDiseases = [];
         var patientAllergies = [];
         var patientMedications = [];
+        var prescriptionItems = [];
 
         var diseaseLabels = {
             'hypertension': 'ความดันโลหิตสูง',
@@ -947,6 +1166,128 @@
         function removeMedicationTag(i) {
             patientMedications.splice(i, 1);
             renderMedicationTagsField();
+        }
+
+        // === Prescription tag system (Doctor) ===
+        function renderPrescriptionTags() {
+            var c = document.getElementById('rxTags');
+            if (!c) return;
+            c.innerHTML = prescriptionItems.map(function(rx, i) {
+                return '<span class="rx-tag">' + rx + ' <button type="button" class="rm" onclick="removePrescription(' + i + ')">✕</button></span>';
+            }).join('');
+        }
+        function addPrescription() {
+            var name = document.getElementById('rxDrugName').value.trim();
+            var dosage = document.getElementById('rxDosage').value.trim();
+            var usage = document.getElementById('rxUsage').value;
+            if (!name) return;
+            var rx = name;
+            if (dosage) rx += ' ' + dosage;
+            if (usage) rx += ' ' + usage;
+            prescriptionItems.push(rx);
+            renderPrescriptionTags();
+            document.getElementById('rxDrugName').value = '';
+            document.getElementById('rxDosage').value = '';
+            document.getElementById('rxUsage').value = '';
+        }
+        function removePrescription(i) {
+            prescriptionItems.splice(i, 1);
+            renderPrescriptionTags();
+        }
+
+        // === Doctor Review Summary ===
+        function loadDoctorReviewSummary(patient) {
+            var container = document.getElementById('doctorReviewSummary');
+            if (!container) return;
+
+            var riskLabels = { high: 'ความเสี่ยงสูง', medium: 'เฝ้าระวัง', low: 'ความเสี่ยงต่ำ', none: 'ปกติ' };
+
+            function renderSummary(records) {
+                var r = records && records.length > 0 ? records[0] : null;
+                var html = '<div class="doctor-review-banner">';
+                html += '<div class="drb-title">ข้อมูลล่าสุดจากเจ้าหน้าที่ภาคสนาม</div>';
+
+                // Risk badge
+                var risk = (r && r.riskLevel) || patient.riskLevel || '';
+                if (risk) {
+                    html += '<div class="drb-risk risk-' + risk + '">';
+                    if (risk === 'high') html += '🚨 ';
+                    else if (risk === 'medium') html += '⚠️ ';
+                    else html += '✓ ';
+                    html += (riskLabels[risk] || risk) + '</div>';
+                    var reason = (r && r.riskReason) || '';
+                    if (reason) html += '<div class="drb-reason">' + reason + '</div>';
+                }
+
+                // Diseases & Allergies pills
+                if (patient.diseases && patient.diseases.length > 0) {
+                    html += '<div class="doctor-vital-pills">';
+                    patient.diseases.forEach(function(d) {
+                        html += '<span class="dvp" style="background:#EDE9FE;color:#5B21B6;border-color:#C4B5FD;">' + (diseaseLabels[d] || d) + '</span>';
+                    });
+                    html += '</div>';
+                }
+                if (patient.allergies && patient.allergies.length > 0) {
+                    html += '<div class="doctor-vital-pills">';
+                    patient.allergies.forEach(function(a) {
+                        html += '<span class="dvp alert">⚠️ แพ้ ' + a + '</span>';
+                    });
+                    html += '</div>';
+                }
+
+                // Vital pills from latest record
+                if (r) {
+                    html += '<div class="doctor-vital-pills">';
+                    if (r.systolic && r.diastolic) {
+                        var bpCat = getBPCategory(r.systolic, r.diastolic);
+                        html += '<span class="dvp' + (bpCat.alert ? ' alert' : '') + '">BP ' + r.systolic + '/' + r.diastolic + '</span>';
+                    }
+                    if (r.heartRate) html += '<span class="dvp">HR ' + r.heartRate + '</span>';
+                    if (r.oxygenLevel) {
+                        var spo2Cat = getSpO2Category(r.oxygenLevel);
+                        html += '<span class="dvp' + (spo2Cat.alert ? ' alert' : '') + '">SpO2 ' + r.oxygenLevel + '%</span>';
+                    }
+                    if (r.bloodSugar) {
+                        var sugarCat = getSugarCategory(r.bloodSugar);
+                        html += '<span class="dvp' + (sugarCat.alert ? ' alert' : '') + '">Sugar ' + r.bloodSugar + '</span>';
+                    }
+                    if (r.weight && r.height) {
+                        var bmi = (r.weight / ((r.height / 100) * (r.height / 100))).toFixed(1);
+                        var bmiCat = getBMICategory(parseFloat(bmi));
+                        html += '<span class="dvp' + (bmiCat.category !== 'normal' ? ' alert' : '') + '">BMI ' + bmi + '</span>';
+                    }
+                    if (r.temperature) html += '<span class="dvp">Temp ' + r.temperature + '°C</span>';
+                    html += '</div>';
+
+                    // Meta
+                    var dateStr = '';
+                    if (r.date) {
+                        var d = new Date(r.date);
+                        dateStr = d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
+                    }
+                    html += '<div class="drb-meta">';
+                    if (r.recordedBy) html += 'บันทึกโดย: ' + getStaffName(r.recordedBy);
+                    if (dateStr) html += ' | ' + dateStr;
+                    html += '</div>';
+                } else {
+                    html += '<div class="drb-empty">ยังไม่มีข้อมูลการตรวจ</div>';
+                }
+
+                html += '</div>';
+                html += '<button class="drb-history-btn" onclick="viewHistory(\'' + patient.id + '\')">📋 ดูประวัติย้อนหลัง</button>';
+                container.innerHTML = html;
+            }
+
+            // Try Firestore first, fallback to mock
+            if (typeof FirebaseService !== 'undefined') {
+                FirebaseService.getHealthRecords(patient.id, 1).then(function(records) {
+                    renderSummary(records);
+                }).catch(function() {
+                    renderSummary(patient.healthRecords || []);
+                });
+            } else {
+                renderSummary(patient.healthRecords || []);
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -1278,6 +1619,10 @@
             document.getElementById('patientSearch').value = '';
             // Load medical info
             loadMedicalInfo(patient);
+            // Doctor: load review summary
+            if (currentRole === 'doctor') {
+                loadDoctorReviewSummary(patient);
+            }
         }
 
         function clearPatientSelection() {
@@ -1288,6 +1633,11 @@
             patientDiseases = [];
             patientAllergies = [];
             patientMedications = [];
+            prescriptionItems = [];
+            var rxTags = document.getElementById('rxTags');
+            if (rxTags) rxTags.innerHTML = '';
+            var drs = document.getElementById('doctorReviewSummary');
+            if (drs) drs.innerHTML = '<div class="drb-empty">เลือกผู้ป่วยเพื่อดูข้อมูลสรุป</div>';
         }
 
         function saveRecord() {
@@ -1317,7 +1667,10 @@
             var notes = document.getElementById('notes').value;
             var diag = currentRole === 'doctor' ? document.getElementById('diagnosis').value : '';
             var treatmentPlan = currentRole === 'doctor' ? document.getElementById('treatmentPlan').value : '';
-            var prescription = currentRole === 'doctor' ? document.getElementById('prescription').value : '';
+            var visitType = currentRole === 'doctor' ? document.getElementById('visitType').value : '';
+            var diagnosisCode = currentRole === 'doctor' ? document.getElementById('diagnosisCode').value : '';
+            var treatmentType = currentRole === 'doctor' ? document.getElementById('treatmentType').value : '';
+            var prescription = (currentRole === 'doctor' && prescriptionItems.length > 0) ? prescriptionItems.join(', ') : '';
             var risk = currentRole === 'worker' ? document.getElementById('riskLevel').value : '';
             var riskReason = currentRole === 'worker' ? document.getElementById('riskReason').value : '';
 
@@ -1351,6 +1704,10 @@
             if (diag) record.diagnosis = diag;
             if (treatmentPlan) record.treatmentPlan = treatmentPlan;
             if (prescription) record.prescription = prescription;
+            if (visitType) record.visitType = visitType;
+            if (diagnosisCode) record.diagnosisCode = diagnosisCode;
+            if (treatmentType) record.treatmentType = treatmentType;
+            if (prescriptionItems.length > 0) record.prescriptionItems = prescriptionItems.slice();
             if (risk) record.riskLevel = risk;
             if (riskReason) record.riskReason = riskReason;
 
@@ -1414,6 +1771,9 @@
         function clearForm() {
             document.querySelectorAll('.field-input, .field-select').forEach(function(el) { el.value = ''; });
             document.getElementById('bmiResult').style.display = 'none';
+            prescriptionItems = [];
+            var rxTags = document.getElementById('rxTags');
+            if (rxTags) rxTags.innerHTML = '';
             clearPatientSelection();
         }
 
@@ -1438,18 +1798,30 @@
             var name = document.getElementById('spName').textContent;
             var order = document.getElementById('followUpOrder').value;
             var date = document.getElementById('followUpDate').value;
-            if (!order) { alert('กรุณาระบุรายละเอียดการติดตาม'); return; }
+            var followUpType = document.getElementById('followUpType') ? document.getElementById('followUpType').value : '';
+            var followUpTime = document.getElementById('followUpTime') ? document.getElementById('followUpTime').value : '';
+            var assignedStaff = document.getElementById('assignedStaff') ? document.getElementById('assignedStaff').value : 'staff-2';
+            if (!date && !order) { alert('กรุณาระบุวันที่นัดหรือคำสั่งเพิ่มเติม'); return; }
+            var typeLabels = { follow_up: 'ติดตามผล', lab: 'เจาะเลือด', vaccination: 'ฉีดวัคซีน', referral: 'ส่งต่อ' };
+            var typeLabel = typeLabels[followUpType] || 'ติดตาม';
+            var msg = typeLabel + ' ' + name;
+            if (order) msg += '\n' + order;
+            if (date) msg += '\nนัดวันที่: ' + date;
+            if (followUpTime) msg += ' เวลา ' + followUpTime;
             var notifs = JSON.parse(localStorage.getItem('healthdesk_notifications') || '[]');
             notifs.unshift({
                 id: 'notif-' + Date.now(), type: 'task', icon: '📋',
                 title: 'งานที่ได้รับมอบหมาย',
-                message: 'ติดตาม ' + name + ' - ' + order + (date ? ' (ภายใน ' + date + ')' : ''),
+                message: msg,
                 time: new Date().toISOString(), read: false, forRoles: ['worker']
             });
             localStorage.setItem('healthdesk_notifications', JSON.stringify(notifs));
-            var convId = createNewConversation('staff-2', 'staff');
-            sendMessage(convId, 'สั่งติดตามผู้ป่วย: ' + name + '\n' + order + (date ? '\nนัดวันที่: ' + date : ''));
-            alert('สั่งติดตามเรียบร้อย\n\nผู้ป่วย: ' + name);
+            var convId = createNewConversation(assignedStaff, 'staff');
+            sendMessage(convId, 'สั่ง' + msg);
+            alert('สั่งติดตามเรียบร้อย\n\nผู้ป่วย: ' + name +
+                (followUpType ? '\nประเภท: ' + typeLabel : '') +
+                (date ? '\nวันที่: ' + date : '') +
+                (followUpTime ? '\nเวลา: ' + followUpTime : ''));
         }
     </script>
 </body>

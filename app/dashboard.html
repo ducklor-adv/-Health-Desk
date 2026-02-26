@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Dashboard - Health Desk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: #FFFFFF;
+            font-size: 1.125rem;
+            line-height: 1.6;
+            padding-bottom: 90px;
+        }
+        .top {
+            background: #4F46E5;
+            color: white;
+            padding: 1.5rem 1rem;
+        }
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .title { font-size: 1.75rem; font-weight: 700; }
+        .top-actions { display: flex; gap: 0.75rem; align-items: center; }
+        .user-info { font-size: 0.85rem; opacity: 0.9; margin-bottom: 0.25rem; }
+        .date { font-size: 1rem; opacity: 0.95; }
+        .out-btn {
+            background: white;
+            color: #4F46E5;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+        }
+        .box { padding: 1.5rem 1rem; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background: #F9FAFB;
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 2px solid #E5E7EB;
+        }
+        .stat-icon { font-size: 2.5rem; margin-bottom: 0.75rem; display: block; }
+        .stat-label { font-size: 1rem; color: #6B7280; font-weight: 600; margin-bottom: 0.5rem; }
+        .stat-value { font-size: 2.25rem; font-weight: 700; color: #111827; }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+        .review-section { display: none; margin-bottom: 1.5rem; }
+        .review-card {
+            background: #FEF3C7;
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            border: 2px solid #F59E0B;
+        }
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.5rem;
+        }
+        .review-name { font-size: 1.1rem; font-weight: 700; color: #92400E; }
+        .review-badge {
+            background: #EF4444;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .review-reason { font-size: 0.95rem; color: #78350F; margin-bottom: 0.5rem; }
+        .review-vitals {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.75rem;
+        }
+        .vital-tag {
+            background: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        .review-meta { font-size: 0.8rem; color: #92400E; opacity: 0.8; margin-bottom: 0.75rem; }
+        .review-actions { display: flex; gap: 0.5rem; }
+        .btn-review {
+            flex: 1;
+            padding: 0.75rem;
+            border-radius: 10px;
+            border: none;
+            font-family: 'Prompt', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-review-primary { background: #4F46E5; color: white; }
+        .btn-review-chat { background: white; color: #4F46E5; border: 2px solid #4F46E5 !important; }
+        .activity-item {
+            background: #F9FAFB;
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            border: 2px solid #E5E7EB;
+        }
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .activity-name { font-size: 1.125rem; font-weight: 700; color: #111827; }
+        .activity-time { font-size: 0.875rem; color: #6B7280; font-weight: 600; }
+        .activity-detail { font-size: 1rem; color: #6B7280; }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: white;
+            border-top: 3px solid #E5E7EB;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            padding: 0.75rem 0;
+            z-index: 1000;
+        }
+        .nav-btn {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 0.5rem; text-decoration: none; color: #9CA3AF; padding: 0.5rem;
+        }
+        .nav-btn.on { color: #4F46E5; }
+        .nav-icon { font-size: 2rem; }
+        .nav-text { font-size: 1rem; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <div class="top-row">
+            <div class="title">📊 Dashboard</div>
+            <div class="top-actions">
+                <div style="position:relative; cursor:pointer; padding:0.5rem;" onclick="toggleNotifications()">
+                    🔔
+                    <span id="notifBadge" style="display:none; position:absolute; top:0; right:0; background:#EF4444; color:white; font-size:0.65rem; font-weight:700; min-width:16px; height:16px; border-radius:8px; align-items:center; justify-content:center; padding:0 3px;"></span>
+                </div>
+                <button class="out-btn" onclick="logout()">ออก</button>
+            </div>
+        </div>
+        <div class="user-info" id="userRoleDisplay"></div>
+        <div class="date" id="currentDate">วันนี้</div>
+    </div>
+
+    <div id="notifPanel" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:white; z-index:2000; overflow-y:auto;"></div>
+
+    <div class="box">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-icon">👥</span>
+                <div class="stat-label">ผู้ป่วยทั้งหมด</div>
+                <div class="stat-value">245</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">📅</span>
+                <div class="stat-label">นัดวันนี้</div>
+                <div class="stat-value">12</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">🩺</span>
+                <div class="stat-label">ตรวจวันนี้</div>
+                <div class="stat-value">8</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">⚠️</span>
+                <div class="stat-label">เฝ้าระวัง</div>
+                <div class="stat-value">15</div>
+            </div>
+        </div>
+
+        <div class="review-section" id="reviewSection">
+            <div class="section-title">📋 รอการตรวจสอบ</div>
+            <div id="reviewList"></div>
+        </div>
+
+        <div class="section-title">🕐 กิจกรรมล่าสุด</div>
+        <div class="activity-item">
+            <div class="activity-header">
+                <div class="activity-name">นางสมใจ รักดี</div>
+                <div class="activity-time">10 นาทีที่แล้ว</div>
+            </div>
+            <div class="activity-detail">✅ บันทึกผลตรวจสุขภาพ - ความดัน 130/85</div>
+        </div>
+        <div class="activity-item">
+            <div class="activity-header">
+                <div class="activity-name">นายวิชัย สุขใจ</div>
+                <div class="activity-time">25 นาทีที่แล้ว</div>
+            </div>
+            <div class="activity-detail">📅 นัดหมายใหม่ - 15 มี.ค. 67</div>
+        </div>
+        <div class="activity-item">
+            <div class="activity-header">
+                <div class="activity-name">นางสาวมานี ดีมาก</div>
+                <div class="activity-time">1 ชั่วโมงที่แล้ว</div>
+            </div>
+            <div class="activity-detail">🩺 ตรวจติดตามเสร็จสิ้น</div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav"></nav>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+    <script src="../js/mock-data.js"></script>
+    <script src="../js/mock-data-chat.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/chat.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/nav-helper.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initNavFeatures('dashboard.html');
+            var user = JSON.parse(localStorage.getItem('healthdesk_user'));
+            if (user) {
+                document.getElementById('userRoleDisplay').textContent = user.name + ' (' + user.roleLabel + ')';
+                if (user.role === 'doctor') {
+                    document.getElementById('reviewSection').style.display = 'block';
+                    renderPendingReviews();
+                }
+            }
+            var dateEl = document.getElementById('currentDate');
+            if (dateEl) {
+                dateEl.textContent = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+            }
+        });
+
+        function renderPendingReviews() {
+            var container = document.getElementById('reviewList');
+            var html = '';
+            for (var i = 0; i < mockPendingReviews.length; i++) {
+                var r = mockPendingReviews[i];
+                html += '<div class="review-card">' +
+                    '<div class="review-header"><div class="review-name">' + r.name + ' (' + r.hn + ')</div><span class="review-badge">ด่วน</span></div>' +
+                    '<div class="review-reason">⚠️ ' + r.reason + '</div>' +
+                    '<div class="review-vitals">' +
+                    '<span class="vital-tag">BP ' + r.vitals.systolic + '/' + r.vitals.diastolic + '</span>' +
+                    '<span class="vital-tag">HR ' + r.vitals.heartRate + '</span>' +
+                    '<span class="vital-tag">Sugar ' + r.vitals.bloodSugar + '</span></div>' +
+                    '<div class="review-meta">ส่งโดย: ' + r.flaggedBy + ' | ' + r.flaggedDate + '</div>' +
+                    '<div class="review-actions">' +
+                    '<button class="btn-review btn-review-primary" onclick="window.location.href=\'field-app.html?patient=' + r.patientId + '\'">🩺 ตรวจสอบ</button>' +
+                    '<button class="btn-review btn-review-chat" onclick="window.location.href=\'chat.html\'">💬 แชท</button></div></div>';
+            }
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

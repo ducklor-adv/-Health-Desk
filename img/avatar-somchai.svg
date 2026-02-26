@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Background -->
+  <circle cx="100" cy="100" r="100" fill="#87CEEB"/>
+  <!-- Neck -->
+  <rect x="78" y="138" width="44" height="25" fill="#C9956B" rx="4"/>
+  <!-- Shirt/Body -->
+  <ellipse cx="100" cy="192" rx="62" ry="38" fill="#2563EB"/>
+  <path d="M80 170 L88 158 L100 165 L112 158 L120 170" fill="#2563EB"/>
+  <!-- Shirt collar -->
+  <path d="M88 158 L100 168 L112 158" stroke="white" stroke-width="2" fill="none"/>
+  <!-- Face -->
+  <ellipse cx="100" cy="88" rx="48" ry="53" fill="#D4A574"/>
+  <!-- Ears -->
+  <ellipse cx="52" cy="90" rx="9" ry="14" fill="#D4A574"/>
+  <ellipse cx="52" cy="90" rx="5" ry="8" fill="#C9956B"/>
+  <ellipse cx="148" cy="90" rx="9" ry="14" fill="#D4A574"/>
+  <ellipse cx="148" cy="90" rx="5" ry="8" fill="#C9956B"/>
+  <!-- Hair -->
+  <path d="M52 75 Q55 30 100 25 Q145 30 148 75 Q148 55 135 45 Q115 30 100 32 Q85 30 65 45 Q52 55 52 75Z" fill="#1C1C1C"/>
+  <path d="M52 75 Q50 65 55 58" stroke="#1C1C1C" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M148 75 Q150 65 145 58" stroke="#1C1C1C" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <!-- Eyebrows -->
+  <path d="M68 74 Q78 68 90 74" stroke="#1C1C1C" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M110 74 Q122 68 132 74" stroke="#1C1C1C" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Eyes -->
+  <ellipse cx="80" cy="85" rx="9" ry="7" fill="white"/>
+  <ellipse cx="120" cy="85" rx="9" ry="7" fill="white"/>
+  <circle cx="82" cy="85" r="4.5" fill="#2D1B00"/>
+  <circle cx="122" cy="85" r="4.5" fill="#2D1B00"/>
+  <circle cx="83.5" cy="83.5" r="1.5" fill="white"/>
+  <circle cx="123.5" cy="83.5" r="1.5" fill="white"/>
+  <!-- Nose -->
+  <path d="M96 92 Q100 105 104 92" stroke="#B8956A" stroke-width="2" fill="none"/>
+  <circle cx="94" cy="100" r="2.5" fill="#C9956B"/>
+  <circle cx="106" cy="100" r="2.5" fill="#C9956B"/>
+  <!-- Mouth (friendly smile) -->
+  <path d="M82 112 Q92 124 100 124 Q108 124 118 112" stroke="#B85C4D" stroke-width="2.5" fill="#E88B7A"/>
+  <!-- Teeth hint -->
+  <path d="M88 114 L112 114" stroke="white" stroke-width="2"/>
+  <!-- Smile lines -->
+  <path d="M72 105 Q75 115 80 118" stroke="#C9956B" stroke-width="1" fill="none"/>
+  <path d="M128 105 Q125 115 120 118" stroke="#C9956B" stroke-width="1" fill="none"/>
+</svg>

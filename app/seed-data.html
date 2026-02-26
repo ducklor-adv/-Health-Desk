@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed Data — Health Desk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Prompt', sans-serif; background: #F3F4F6; padding: 2rem; }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { font-size: 1.5rem; margin-bottom: 1rem; color: #111827; }
+        .card { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; border: 1px solid #E5E7EB; }
+        .card h2 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #374151; }
+        .card p { font-size: 0.9rem; color: #6B7280; margin-bottom: 1rem; }
+        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-family: 'Prompt', sans-serif; font-weight: 600; font-size: 1rem; cursor: pointer; margin-right: 0.5rem; margin-bottom: 0.5rem; }
+        .btn-primary { background: #4F46E5; color: white; }
+        .btn-danger { background: #EF4444; color: white; }
+        .btn-success { background: #10B981; color: white; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        #log { background: #1F2937; color: #10B981; padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.85rem; max-height: 300px; overflow-y: auto; white-space: pre-wrap; }
+        .status { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; }
+        .status-ok { background: #D1FAE5; color: #065F46; }
+        .status-err { background: #FEE2E2; color: #991B1B; }
+        .status-wait { background: #FEF3C7; color: #92400E; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Seed Data — Health Desk</h1>
+
+        <div class="card">
+            <h2>Firebase Status</h2>
+            <p>Project: <strong id="projectId">-</strong></p>
+            <p>Auth: <span id="authStatus" class="status status-wait">checking...</span></p>
+            <p>Firestore: <span id="firestoreStatus" class="status status-wait">checking...</span></p>
+            <p>Data: <span id="dataStatus" class="status status-wait">checking...</span></p>
+        </div>
+
+        <div class="card">
+            <h2>Actions</h2>
+            <p>นำเข้าข้อมูลตัวอย่าง 50 ผู้ป่วย + เจ้าหน้าที่ + แชท + แจ้งเตือน</p>
+            <button class="btn btn-primary" id="btnSeed" onclick="doSeed()">Seed Data</button>
+            <button class="btn btn-danger" id="btnClear" onclick="doClear()">Clear All</button>
+            <button class="btn btn-success" id="btnCreateAuth" onclick="doCreateAuth()">Create Auth Users</button>
+        </div>
+
+        <div class="card">
+            <h2>Log</h2>
+            <div id="log">Ready.\n</div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+    <script src="../js/seed-data.js"></script>
+    <script>
+        var logEl = document.getElementById('log');
+
+        function log(msg) {
+            logEl.textContent += msg + '\n';
+            logEl.scrollTop = logEl.scrollHeight;
+            console.log(msg);
+        }
+
+        function setStatus(id, ok, text) {
+            var el = document.getElementById(id);
+            el.textContent = text;
+            el.className = 'status ' + (ok ? 'status-ok' : 'status-err');
+        }
+
+        // Check Firebase status
+        (function() {
+            try {
+                document.getElementById('projectId').textContent = firebaseConfig.projectId;
+
+                // Check Auth
+                auth.signInAnonymously()
+                    .then(function() {
+                        setStatus('authStatus', true, 'connected');
+                        log('Auth: OK (anonymous sign-in)');
+                    })
+                    .catch(function(err) {
+                        setStatus('authStatus', false, err.code);
+                        log('Auth error: ' + err.message);
+                    });
+
+                // Check Firestore
+                db.collection('_health_check').doc('ping').set({ t: Date.now() })
+                    .then(function() {
+                        setStatus('firestoreStatus', true, 'connected');
+                        log('Firestore: OK');
+                        return db.collection('_health_check').doc('ping').delete();
+                    })
+                    .catch(function(err) {
+                        setStatus('firestoreStatus', false, err.code);
+                        log('Firestore error: ' + err.message);
+                    });
+
+                // Check data
+                FirebaseService.isSeeded().then(function(seeded) {
+                    if (seeded) {
+                        setStatus('dataStatus', true, 'has data');
+                        log('Data: Firestore has existing data');
+                    } else {
+                        setStatus('dataStatus', false, 'empty');
+                        log('Data: Firestore is empty — run Seed Data');
+                    }
+                });
+            } catch (e) {
+                log('Firebase init error: ' + e.message);
+            }
+        })();
+
+        function doSeed() {
+            var btn = document.getElementById('btnSeed');
+            btn.disabled = true;
+            btn.textContent = 'Seeding...';
+            log('\n--- Starting Seed ---');
+
+            SeedData.seedAll()
+                .then(function() {
+                    log('--- Seed Complete! ---');
+                    setStatus('dataStatus', true, 'seeded');
+                    btn.textContent = 'Done!';
+                })
+                .catch(function(err) {
+                    log('Seed failed: ' + err.message);
+                    btn.disabled = false;
+                    btn.textContent = 'Seed Data';
+                });
+        }
+
+        function doClear() {
+            if (!confirm('ลบข้อมูลทั้งหมดใน Firestore?')) return;
+            var btn = document.getElementById('btnClear');
+            btn.disabled = true;
+            log('\n--- Clearing All Data ---');
+
+            SeedData.clearAll()
+                .then(function() {
+                    log('--- All Data Cleared ---');
+                    setStatus('dataStatus', false, 'empty');
+                    btn.disabled = false;
+                })
+                .catch(function(err) {
+                    log('Clear failed: ' + err.message);
+                    btn.disabled = false;
+                });
+        }
+
+        function doCreateAuth() {
+            log('\n--- Creating Auth Users ---');
+            log('Note: Firebase Auth users must be created from Firebase Console');
+            log('or using Firebase Admin SDK (server-side).');
+            log('');
+            log('Staff accounts to create:');
+            log('1. admin@health.go.th / admin123 (Admin)');
+            log('2. worker@health.go.th / worker123 (เจ้าหน้าที่สาธารณสุข)');
+            log('3. doctor@health.go.th / doctor123 (แพทย์)');
+            log('');
+            log('Steps:');
+            log('1. Go to Firebase Console > Authentication');
+            log('2. Click "Add user"');
+            log('3. Enter email and password for each user');
+            log('4. In Firestore, set the staff doc ID to match the Auth UID');
+            log('');
+            log('Or use the fallback mock login (works without Firebase Auth)');
+        }
+    </script>
+</body>
+</html>

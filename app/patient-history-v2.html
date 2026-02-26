@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ประวัติการตรวจ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: #FFFFFF;
+            font-size: 1.125rem;
+            line-height: 1.6;
+            padding-bottom: 90px;
+            visibility: hidden;
+        }
+
+        /* Header */
+        .top {
+            background: #10B981;
+            color: white;
+            padding: 1.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back {
+            background: white;
+            color: #10B981;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            font-size: 1.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .title {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        /* Content */
+        .box {
+            padding: 1.5rem 1rem;
+        }
+
+        /* Timeline */
+        .card {
+            background: #F9FAFB;
+            border: 3px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .date {
+            color: #10B981;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .data-row {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border: 2px solid #E5E7EB;
+        }
+
+        .data-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .row-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .label {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .icon {
+            font-size: 1.75rem;
+        }
+
+        .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .status-ok {
+            background: #D1FAE5;
+            color: #065F46;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .status-warn {
+            background: #FEF3C7;
+            color: #92400E;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .note {
+            background: #EFF6FF;
+            border-left: 4px solid #3B82F6;
+            padding: 1.25rem;
+            margin-top: 1rem;
+            border-radius: 8px;
+            font-size: 1.125rem;
+            color: #1E40AF;
+            font-weight: 600;
+        }
+
+        .doctor {
+            margin-top: 1rem;
+            font-size: 1.125rem;
+            color: #6B7280;
+            font-weight: 600;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 3px solid #E5E7EB;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 0.75rem 0;
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #9CA3AF;
+            padding: 0.5rem;
+        }
+
+        .nav-btn.on {
+            color: #10B981;
+        }
+
+        .nav-icon {
+            font-size: 2rem;
+        }
+
+        .nav-text {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <button class="back" onclick="history.back()">←</button>
+        <div class="title">📋 ประวัติการตรวจ</div>
+    </div>
+
+    <div class="box">
+        <!-- ล่าสุด -->
+        <div class="card">
+            <div class="date">📅 25 กุมภาพันธ์ 2567</div>
+
+            <div class="data-row">
+                <div class="row-top">
+                    <div class="label">
+                        <span class="icon">⚖️</span>
+                        <span>น้ำหนัก/ส่วนสูง</span>
+                    </div>
+                    <div class="value">75.5 / 170</div>
+                </div>
+            </div>
+
+            <div class="data-row">
+                <div class="row-top">
+                    <div class="label">
+                        <span class="icon">📊</span>
+                        <span>BMI</span>
+                    </div>
+                    <div class="value">26.1</div>
+                </div>
+                <div class="status-warn">⚠️ น้ำหนักเกิน</div>
+            </div>
+
+            <div class="data-row">
+                <div class="row-top">
+                    <div class="label">
+                        <span class="icon">💉</span>
+                        <span>ความดันโลหิต</span>
+                    </div>
+                    <div class="value">135/85</div>
+                </div>
+                <div class="status-warn">⚠️ สูงเล็กน้อย</div>
+            </div>
+
+            <div class="data-row">
+                <div class="row-top">
+                    <div class="label">
+                        <span class="icon">🩸</span>
+                        <span>น้ำตาลในเลือด</span>
+                    </div>
+                    <div class="value">110 mg/dL</div>
+                </div>
+                <div class="status-ok">✓ ปกติ</div>
+            </div>
+
+            <div class="data-row">
+                <div class="row-top">
+                    <div class="label">
+                        <span class="icon">❤️</span>
+                        <span>อัตราหัวใจ</span>
+                    </div>
+                    <div class="value">78 bpm</div>
+                </div>
+            </div>
+
+            <div class="data-row">
+                <div class="row-top">
+                    <div class="label">
+                        <span class="icon">🌡️</span>
+                        <span>อุณหภูมิ</span>
+                    </div>
+                    <div class="value">36.8 °C</div>
+                </div>
+            </div>
+
+            <div class="data-row">
+                <div class="row-top">
+                    <div class="label">
+                        <span class="icon">🫁</span>
+                        <span>ออกซิเจน (SpO2)</span>
+                    </div>
+                    <div class="value">97%</div>
+                </div>
+                <div class="status-ok">✓ ปกติ</div>
+            </div>
+
+            <div class="note">
+                <strong>💡 คำแนะนำ:</strong><br>
+                ความดันเริ่มสูงกว่าปกติ แนะนำลดเกลือและออกกำลังกาย
+            </div>
+
+            <div class="doctor">
+                👨‍⚕️ ตรวจโดย: พยาบาลสมหญิง รักษา
+            </div>
+        </div>
+
+        <!-- ก่อนหน้า -->
+        <div class="card">
+            <div class="date">📅 20 มกราคม 2567</div>
+
+            <div class="data-row">
+                <div class="row-top">
+                    <div class="label">
+                        <span class="icon">⚖️</span>
+                        <span>น้ำหนัก</span>
+                    </div>
+                    <div class="value">74.0 kg</div>
+                </div>
+            </div>
+
+            <div class="data-row">
+                <div class="row-top">
+                    <div class="label">
+                        <span class="icon">💉</span>
+                        <span>ความดันโลหิต</span>
+                    </div>
+                    <div class="value">120/80</div>
+                </div>
+                <div class="status-ok">✓ ปกติ</div>
+            </div>
+
+            <div class="data-row">
+                <div class="row-top">
+                    <div class="label">
+                        <span class="icon">🩸</span>
+                        <span>น้ำตาล</span>
+                    </div>
+                    <div class="value">105 mg/dL</div>
+                </div>
+                <div class="status-ok">✓ ปกติ</div>
+            </div>
+
+            <div class="data-row">
+                <div class="row-top">
+                    <div class="label">
+                        <span class="icon">🫁</span>
+                        <span>ออกซิเจน (SpO2)</span>
+                    </div>
+                    <div class="value">98%</div>
+                </div>
+                <div class="status-ok">✓ ปกติ</div>
+            </div>
+
+            <div class="note">
+                <strong>💡 คำแนะนำ:</strong><br>
+                สุขภาพดี ควรออกกำลังกายสม่ำเสมอ
+            </div>
+
+            <div class="doctor">
+                👨‍⚕️ ตรวจโดย: นพ.วิชัย พัฒนา
+            </div>
+        </div>
+
+        <!-- เก่า -->
+        <div class="card">
+            <div class="date">📅 15 ธันวาคม 2566</div>
+
+            <div class="data-row">
+                <div class="row-top">
+                    <div class="label">
+                        <span class="icon">⚖️</span>
+                        <span>น้ำหนัก</span>
+                    </div>
+                    <div class="value">72.5 kg</div>
+                </div>
+            </div>
+
+            <div class="data-row">
+                <div class="row-top">
+                    <div class="label">
+                        <span class="icon">💉</span>
+                        <span>ความดันโลหิต</span>
+                    </div>
+                    <div class="value">118/78</div>
+                </div>
+                <div class="status-ok">✓ ปกติ</div>
+            </div>
+
+            <div class="doctor">
+                👨‍⚕️ ตรวจโดย: พยาบาลสมหญิง รักษา
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="patient-portal-v2.html" class="nav-btn">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">หน้าหลัก</span>
+        </a>
+        <a href="patient-history-v2.html" class="nav-btn on">
+            <span class="nav-icon">📋</span>
+            <span class="nav-text">ประวัติ</span>
+        </a>
+        <a href="patient-appointments-v2.html" class="nav-btn">
+            <span class="nav-icon">📅</span>
+            <span class="nav-text">นัดหมาย</span>
+        </a>
+        <a href="patient-profile-v2.html" class="nav-btn">
+            <span class="nav-icon">👤</span>
+            <span class="nav-text">โปรไฟล์</span>
+        </a>
+    </nav>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+    <script src="../js/mock-data.js"></script>
+    <script src="../js/patient-auth.js"></script>
+</body>
+</html>

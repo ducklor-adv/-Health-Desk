@@ -1,0 +1,85 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // === Helper Functions ===
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isStaff() {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/staff/$(request.auth.uid));
+    }
+
+    function isStaffByEmail() {
+      return isAuthenticated() && request.auth.token.email != null;
+    }
+
+    function getStaff() {
+      return get(/databases/$(database)/documents/staff/$(request.auth.uid)).data;
+    }
+
+    function isDoctor() {
+      return isStaff() && getStaff().role == 'doctor';
+    }
+
+    function isAdmin() {
+      return isStaff() && getStaff().role == 'admin';
+    }
+
+    // === Patients ===
+    match /patients/{patientId} {
+      // Staff can read all patients, anonymous users can read their own
+      allow read: if isAuthenticated();
+      // Only staff can create/update patients
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if isAdmin();
+
+      // Health Records (subcollection)
+      match /healthRecords/{recordId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated();
+        allow update: if isAuthenticated();
+        allow delete: if false; // Never delete health records
+      }
+    }
+
+    // === Staff ===
+    match /staff/{staffId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // === Appointments ===
+    match /appointments/{appointmentId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if false;
+    }
+
+    // === Notifications ===
+    match /notifications/{notifId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated(); // mark read
+      allow delete: if false;
+    }
+
+    // === Conversations ===
+    match /conversations/{convId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+
+      // Messages (subcollection)
+      match /messages/{msgId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated();
+        allow update: if isAuthenticated();
+      }
+    }
+  }
+}

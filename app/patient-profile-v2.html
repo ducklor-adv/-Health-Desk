@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>โปรไฟล์</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: #FFFFFF;
+            font-size: 1.125rem;
+            line-height: 1.6;
+            padding-bottom: 90px;
+            visibility: hidden;
+        }
+
+        /* Header */
+        .top {
+            background: #10B981;
+            color: white;
+            padding: 1rem 1rem 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 3px solid white;
+            flex-shrink: 0;
+        }
+
+        .top-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.1rem;
+        }
+
+        .hn {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+
+        /* Content */
+        .box {
+            padding: 1.5rem 1rem;
+        }
+
+        /* Info Card */
+        .card {
+            background: #F9FAFB;
+            border: 3px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 1.125rem;
+            color: #6B7280;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-size: 1.125rem;
+            color: #111827;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        /* Medical Info Tags */
+        .med-section-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .med-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .med-tags:last-child { margin-bottom: 0; }
+        .med-tag {
+            padding: 0.375rem 0.875rem;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .med-tag.disease { background: #EDE9FE; color: #5B21B6; }
+        .med-tag.allergy { background: #FEE2E2; color: #991B1B; }
+        .med-tag.medication { background: #DBEAFE; color: #1E40AF; }
+        .med-none { color: #9CA3AF; font-size: 1rem; font-weight: 600; }
+
+        /* Menu Buttons */
+        .menu-btn {
+            background: #F9FAFB;
+            border: 3px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            text-decoration: none;
+            color: #111827;
+        }
+
+        .menu-left {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .menu-icon {
+            font-size: 2rem;
+        }
+
+        .menu-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .menu-arrow {
+            font-size: 1.75rem;
+            color: #9CA3AF;
+            font-weight: 700;
+        }
+
+        /* Logout Button */
+        .logout-big {
+            width: 100%;
+            background: #EF4444;
+            color: white;
+            border: none;
+            padding: 1.5rem;
+            border-radius: 16px;
+            font-size: 1.375rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            margin-top: 1rem;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 3px solid #E5E7EB;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 0.75rem 0;
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #9CA3AF;
+            padding: 0.5rem;
+        }
+
+        .nav-btn.on {
+            color: #10B981;
+        }
+
+        .nav-icon {
+            font-size: 2rem;
+        }
+
+        .nav-text {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <img id="patientAvatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' rx='100' fill='%2310B981'/%3E%3Ccircle cx='100' cy='75' r='33' fill='white' opacity='0.9'/%3E%3Cellipse cx='100' cy='160' rx='50' ry='38' fill='white' opacity='0.9'/%3E%3C/svg%3E" alt="Avatar" class="avatar">
+        <div class="top-info">
+            <div class="name" id="patientName">ชื่อผู้ใช้</div>
+            <div class="hn" id="patientHN">HN: -----</div>
+        </div>
+    </div>
+
+    <div class="box">
+        <!-- ข้อมูลส่วนตัว -->
+        <div class="card">
+            <div class="card-title">ข้อมูลส่วนตัว</div>
+
+            <div class="info-row">
+                <div class="info-label">ชื่อ-นามสกุล</div>
+                <div class="info-value" id="fullName">-</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">เพศ</div>
+                <div class="info-value" id="gender">-</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">อายุ</div>
+                <div class="info-value" id="age">-</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">หมู่เลือด</div>
+                <div class="info-value" id="bloodGroup">-</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">เบอร์โทร</div>
+                <div class="info-value" id="phone">-</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">HN</div>
+                <div class="info-value" id="hn">-</div>
+            </div>
+        </div>
+
+        <!-- ข้อมูลสุขภาพ -->
+        <div class="card" id="medicalCard" style="display:none;">
+            <div class="card-title">🏥 ข้อมูลสุขภาพ</div>
+
+            <div class="med-section-title">🩺 โรคประจำตัว</div>
+            <div class="med-tags" id="diseaseTags"></div>
+
+            <div class="med-section-title">⚠️ แพ้ยา/อาหาร</div>
+            <div class="med-tags" id="allergyTags"></div>
+
+            <div class="med-section-title">💊 ยาที่ใช้ประจำ</div>
+            <div class="med-tags" id="medTags"></div>
+        </div>
+
+        <!-- เมนู -->
+        <a href="#" onclick="alert('🔔 การแจ้งเตือน'); return false;" class="menu-btn">
+            <div class="menu-left">
+                <span class="menu-icon">🔔</span>
+                <span class="menu-text">การแจ้งเตือน</span>
+            </div>
+            <span class="menu-arrow">›</span>
+        </a>
+
+        <a href="#" onclick="alert('🔒 ความเป็นส่วนตัว'); return false;" class="menu-btn">
+            <div class="menu-left">
+                <span class="menu-icon">🔒</span>
+                <span class="menu-text">ความเป็นส่วนตัว</span>
+            </div>
+            <span class="menu-arrow">›</span>
+        </a>
+
+        <a href="#" onclick="alert('❓ ช่วยเหลือ'); return false;" class="menu-btn">
+            <div class="menu-left">
+                <span class="menu-icon">❓</span>
+                <span class="menu-text">ช่วยเหลือ</span>
+            </div>
+            <span class="menu-arrow">›</span>
+        </a>
+
+        <a href="#" onclick="alert('ℹ️ เกี่ยวกับ'); return false;" class="menu-btn">
+            <div class="menu-left">
+                <span class="menu-icon">ℹ️</span>
+                <span class="menu-text">เกี่ยวกับ</span>
+            </div>
+            <span class="menu-arrow">›</span>
+        </a>
+
+        <!-- ออกจากระบบ -->
+        <button class="logout-big" onclick="patientLogout()">🚪 ออกจากระบบ</button>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="patient-portal-v2.html" class="nav-btn">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">หน้าหลัก</span>
+        </a>
+        <a href="patient-history-v2.html" class="nav-btn">
+            <span class="nav-icon">📋</span>
+            <span class="nav-text">ประวัติ</span>
+        </a>
+        <a href="patient-appointments-v2.html" class="nav-btn">
+            <span class="nav-icon">📅</span>
+            <span class="nav-text">นัดหมาย</span>
+        </a>
+        <a href="patient-profile-v2.html" class="nav-btn on">
+            <span class="nav-icon">👤</span>
+            <span class="nav-text">โปรไฟล์</span>
+        </a>
+    </nav>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+    <script src="../js/mock-data.js"></script>
+    <script src="../js/patient-auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const patient = updatePatientInfo();
+            if (patient) {
+                document.getElementById('patientName').textContent = patient.firstName;
+                document.getElementById('fullName').textContent = `${patient.firstName} ${patient.lastName}`;
+                document.getElementById('gender').textContent = patient.gender === 'M' ? 'ชาย' : 'หญิง';
+                document.getElementById('age').textContent = `${patient.age} ปี`;
+                document.getElementById('bloodGroup').textContent = patient.bloodGroup || '-';
+                document.getElementById('phone').textContent = patient.phone || '-';
+                document.getElementById('hn').textContent = patient.hn;
+
+                // Medical info
+                var diseaseTags = document.getElementById('diseaseTags');
+                var allergyTags = document.getElementById('allergyTags');
+                var medTags = document.getElementById('medTags');
+
+                if (patient.diseases && patient.diseases.length > 0) {
+                    diseaseTags.innerHTML = patient.diseases.map(function(d) {
+                        return '<span class="med-tag disease">' + (diseaseLabels[d] || d) + '</span>';
+                    }).join('');
+                } else {
+                    diseaseTags.innerHTML = '<span class="med-none">ไม่มี</span>';
+                }
+
+                if (patient.allergies && patient.allergies.length > 0) {
+                    allergyTags.innerHTML = patient.allergies.map(function(a) {
+                        return '<span class="med-tag allergy">' + a + '</span>';
+                    }).join('');
+                } else {
+                    allergyTags.innerHTML = '<span class="med-none">ไม่มี</span>';
+                }
+
+                if (patient.currentMedications && patient.currentMedications.length > 0) {
+                    medTags.innerHTML = patient.currentMedications.map(function(m) {
+                        return '<span class="med-tag medication">' + m + '</span>';
+                    }).join('');
+                } else {
+                    medTags.innerHTML = '<span class="med-none">ไม่มี</span>';
+                }
+
+                document.getElementById('medicalCard').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

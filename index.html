@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Desk - ระบบติดตามสุขภาพชุมชน</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" fill="#4F46E5"/>
+                    <path d="M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-2.76 0-5 2.24-5 5h2c0-1.66 1.34-3 3-3s3 1.34 3 3h2c0-2.76-2.24-5-5-5z" fill="white"/>
+                </svg>
+                <span class="brand-name">Health Desk</span>
+            </div>
+            <div class="nav-menu">
+                <!-- Admin: admin-dev-login.html -->
+                <a href="app/patient-login.html" class="nav-link">👤 ประชาชน</a>
+                <a href="app/login.html" class="nav-link">📱 เจ้าหน้าที่</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">Health Desk</h1>
+                    <p class="hero-subtitle">ระบบติดตามและวิเคราะห์สุขภาพชุมชน</p>
+                    <p class="hero-description">
+                        แพลตฟอร์มที่ออกแบบมาเพื่อเจ้าหน้าที่สาธารณสุข ในการบันทึก วิเคราะห์
+                        และติดตามสุขภาพของประชาชนในชุมชนอย่างมีประสิทธิภาพ
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="app/login.html" class="btn btn-primary">📊 ทดลองระบบ</a>
+                        <a href="admin-dev-login.html" class="btn btn-secondary">👨‍💻 เอกสาร Dev</a>
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.875rem; opacity: 0.8;">
+                        💡 ทดสอบ - Admin: admin@health.go.th / admin123 | เจ้าหน้าที่: worker@health.go.th / worker123 | ประชาชน: HN12345
+                    </p>
+                </div>
+                <div class="hero-image">
+                    <div class="mockup-device">
+                        <div class="device-screen">
+                            <div class="screen-content">
+                                <div class="mock-header">
+                                    <div class="mock-avatar"></div>
+                                    <div class="mock-title">Dashboard</div>
+                                </div>
+                                <div class="mock-stats">
+                                    <div class="stat-card stat-green">
+                                        <div class="stat-number">1,247</div>
+                                        <div class="stat-label">คนในชุมชน</div>
+                                    </div>
+                                    <div class="stat-card stat-blue">
+                                        <div class="stat-number">156</div>
+                                        <div class="stat-label">ตรวจวันนี้</div>
+                                    </div>
+                                </div>
+                                <div class="mock-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">ฟีเจอร์หลัก</h2>
+            <p class="section-subtitle">ระบบที่ครบครันสำหรับการดูแลสุขภาพชุมชน</p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon health-icon">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">บันทึกดัชนีสุขภาพ</h3>
+                    <p class="feature-description">
+                        บันทึกข้อมูลสุขภาพครบถ้วน: น้ำหนัก ส่วนสูง BMI ความดันโลหิต
+                        ระดับน้ำตาล และดัชนีสุขภาพอื่นๆ
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon tracking-icon">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Dashboard & Analytics</h3>
+                    <p class="feature-description">
+                        แสดงผลข้อมูลแบบ Real-time พร้อมกราฟและแผนภูมิ
+                        เพื่อการตัดสินใจที่รวดเร็วและแม่นยำ
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon mobile-icon">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Mobile Friendly</h3>
+                    <p class="feature-description">
+                        ใช้งานได้ทุกที่ ทุกเวลา รองรับการทำงานภาคสนาม
+                        พร้อม Offline Mode สำหรับพื้นที่สัญญาณไม่ดี
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon ai-icon">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">วิเคราะห์อัตโนมัติ</h3>
+                    <p class="feature-description">
+                        AI ช่วยวิเคราะห์ข้อมูล เตือนภัยสุขภาพ แนะนำการดูแล
+                        และทำนายแนวโน้มสุขภาพของชุมชน
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon report-icon">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">รายงานอัตโนมัติ</h3>
+                    <p class="feature-description">
+                        สร้างรายงานสุขภาพชุมชนอัตโนมัติ พร้อมส่งออกเป็น PDF
+                        และ Excel สำหรับส่งหน่วยงานที่เกี่ยวข้อง
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon integration-icon">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">เชื่อมต่อระบบกระทรวง</h3>
+                    <p class="feature-description">
+                        พร้อม API สำหรับเชื่อมต่อกับ NHSO, HDC และระบบ
+                        สาธารณสุขอื่นๆ ตามมาตรฐาน HL7 FHIR
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Overview -->
+    <section id="system" class="system-overview printable">
+        <div class="container">
+            <h2 class="section-title">ภาพรวมระบบ</h2>
+
+            <!-- Infographic -->
+            <div class="infographic">
+                <div class="workflow-diagram">
+                    <div class="workflow-step">
+                        <div class="step-number">1</div>
+                        <div class="step-icon user-icon">👥</div>
+                        <h4>ประชาชนในชุมชน</h4>
+                        <p>1,200+ คน</p>
+                    </div>
+
+                    <div class="workflow-arrow">→</div>
+
+                    <div class="workflow-step">
+                        <div class="step-number">2</div>
+                        <div class="step-icon health-worker-icon">⚕️</div>
+                        <h4>เจ้าหน้าที่สาธารณสุข</h4>
+                        <p>ออกตรวจ-บันทึกข้อมูล</p>
+                    </div>
+
+                    <div class="workflow-arrow">→</div>
+
+                    <div class="workflow-step">
+                        <div class="step-number">3</div>
+                        <div class="step-icon system-icon">💻</div>
+                        <h4>Health Desk System</h4>
+                        <p>ประมวลผล-วิเคราะห์</p>
+                    </div>
+
+                    <div class="workflow-arrow">→</div>
+
+                    <div class="workflow-step">
+                        <div class="step-number">4</div>
+                        <div class="step-icon report-icon">📊</div>
+                        <h4>รายงาน & การดูแล</h4>
+                        <p>Tracking-แผนการดูแล</p>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="stats-showcase">
+                    <div class="stat-box">
+                        <div class="stat-icon">🏥</div>
+                        <div class="stat-value">15</div>
+                        <div class="stat-label">ศูนย์สุขภาพชุมชน</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">👨‍⚕️</div>
+                        <div class="stat-value">45</div>
+                        <div class="stat-label">เจ้าหน้าที่</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">📱</div>
+                        <div class="stat-value">1,247</div>
+                        <div class="stat-label">ผู้ใช้งาน</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-value">95%</div>
+                        <div class="stat-label">ความแม่นยำ</div>
+                    </div>
+                </div>
+
+                <!-- Health Metrics -->
+                <div class="health-metrics">
+                    <h3 class="metrics-title">ดัชนีสุขภาพที่ติดตาม</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <span class="metric-icon">⚖️</span>
+                            <span class="metric-name">BMI</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-icon">💉</span>
+                            <span class="metric-name">ความดันโลหิต</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-icon">🩸</span>
+                            <span class="metric-name">ระดับน้ำตาล</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-icon">❤️</span>
+                            <span class="metric-name">อัตราการเต้นหัวใจ</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-icon">🌡️</span>
+                            <span class="metric-name">อุณหภูมิร่างกาย</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-icon">🫁</span>
+                            <span class="metric-name">ออกซิเจนในเลือด</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Patient Access Section -->
+    <section style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); padding: 3rem 0; color: white;">
+        <div class="container">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+                <h2 style="font-size: 2rem; margin-bottom: 1rem;">👤 สำหรับประชาชน/ผู้ป่วย</h2>
+                <p style="font-size: 1.125rem; margin-bottom: 2rem; opacity: 0.95;">
+                    ตรวจสอบข้อมูลสุขภาพส่วนตัวของคุณ ดูประวัติการตรวจ และนัดหมายแพทย์ได้ตลอดเวลา
+                </p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="app/patient-login.html" class="btn btn-primary" style="background: white; color: #059669;">
+                        <span>🔐</span> เข้าสู่ระบบผู้ป่วย
+                    </a>
+                    <a href="#system" class="btn btn-secondary" style="border-color: white;">
+                        <span>ℹ️</span> เรียนรู้เพิ่มเติม
+                    </a>
+                </div>
+                <p style="margin-top: 1.5rem; font-size: 0.875rem; opacity: 0.9;">
+                    💡 ทดลองใช้: HN12345 หรือ เลขบัตร 1234567890125
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Health Desk</h3>
+                    <p>ระบบติดตามสุขภาพชุมชนอัจฉริยะ</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#home">หน้าหลัก</a>
+                    <a href="#features">ฟีเจอร์</a>
+                    <a href="dev-report.html">Dev Report</a>
+                    <a href="#contact">ติดต่อเรา</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Health Desk. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

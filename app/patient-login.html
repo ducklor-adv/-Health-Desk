@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>เข้าสู่ระบบ - ตรวจสุขภาพ</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/app-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Mobile-First Patient Login */
+        * {
+            box-sizing: border-box;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            width: 100%;
+        }
+        body.patient-login-mobile {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            min-height: 100vh;
+        }
+        .patient-login-wrapper {
+            padding: 1.5rem;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .patient-login-header {
+            text-align: center;
+            color: white;
+            padding: 2rem 0;
+        }
+        .patient-login-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+        }
+        .patient-login-header p {
+            font-size: 1.125rem;
+            opacity: 0.95;
+            margin: 0;
+        }
+        .patient-login-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .demo-login-btn {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            border: none;
+            padding: 1.25rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            transition: transform 0.2s;
+            font-family: 'Prompt', sans-serif;
+        }
+        .demo-login-btn:active {
+            transform: scale(0.98);
+        }
+        .divider-text {
+            text-align: center;
+            color: #6B7280;
+            font-size: 1rem;
+            margin: 1.5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .divider-text::before,
+        .divider-text::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 35%;
+            height: 1px;
+            background: #E5E7EB;
+        }
+        .divider-text::before { left: 0; }
+        .divider-text::after { right: 0; }
+        .patient-input-group {
+            margin-bottom: 1.5rem;
+        }
+        .patient-input-group label {
+            display: block;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.75rem;
+        }
+        .patient-input-group input {
+            width: 100%;
+            max-width: 100%;
+            padding: 1rem;
+            font-size: 1.125rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 0.75rem;
+            font-family: 'Prompt', sans-serif;
+        }
+        .patient-input-group input:focus {
+            outline: none;
+            border-color: #10B981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        .patient-input-group small {
+            display: block;
+            color: #6B7280;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            color: white;
+            border: none;
+            padding: 1.25rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 100%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            transition: transform 0.2s;
+            font-family: 'Prompt', sans-serif;
+        }
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            color: white;
+            font-size: 1.125rem;
+            margin-top: 2rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .info-box {
+            background: #F0FDF4;
+            border-left: 4px solid #10B981;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .info-box-text {
+            color: #065F46;
+            font-size: 1rem;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="patient-login-mobile">
+    <div class="patient-login-wrapper">
+        <!-- Header -->
+        <div class="patient-login-header">
+            <h1>🏥 ตรวจสุขภาพ</h1>
+            <p>ระบบสำหรับประชาชน</p>
+        </div>
+
+        <!-- Login Card -->
+        <div class="patient-login-card">
+            <form id="patientLoginForm">
+                <!-- Info Box -->
+                <div class="info-box">
+                    <p class="info-box-text">
+                        <strong>🔑 ทดลองใช้งาน</strong><br>
+                        กดปุ่มด้านล่างเพื่อดูตัวอย่าง
+                    </p>
+                </div>
+
+                <!-- Quick Demo Login Button -->
+                <button type="button" class="demo-login-btn" onclick="quickPatientLogin()">
+                    🚀 ทดลองเข้าใช้งาน
+                </button>
+
+                <!-- Divider -->
+                <div class="divider-text">หรือ</div>
+
+                <!-- HN Input -->
+                <div class="patient-input-group">
+                    <label for="patientId">📋 HN / เลขบัตรประชาชน</label>
+                    <input
+                        type="text"
+                        id="patientId"
+                        name="patientId"
+                        placeholder="HN12345"
+                        required
+                        autocomplete="off">
+                </div>
+
+                <!-- Date of Birth Input -->
+                <div class="patient-input-group">
+                    <label for="dateOfBirth">🎂 วันเกิด</label>
+                    <input
+                        type="date"
+                        id="dateOfBirth"
+                        name="dateOfBirth"
+                        required>
+                    <small>สำหรับยืนยันตัวตน</small>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn">
+                    เข้าสู่ระบบ
+                </button>
+
+                <div style="text-align:center; margin-top:1.5rem;">
+                    <span style="color:#6B7280;">ยังไม่มีบัญชี?</span>
+                    <a href="patient-register.html" style="color:#10B981; font-weight:700; text-decoration:none; margin-left:0.5rem;">
+                        ลงทะเบียนใหม่
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Back Link -->
+        <a href="../index.html" class="back-link">
+            ← กลับหน้าแรก
+        </a>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+    <script src="../js/mock-data.js"></script>
+    <script src="../js/patient-auth.js"></script>
+    <script>
+        // Quick login function for demo
+        function quickPatientLogin() {
+            document.getElementById('patientId').value = 'HN12345';
+            document.getElementById('dateOfBirth').value = '1978-05-15';
+            document.getElementById('patientLoginForm').dispatchEvent(new Event('submit'));
+        }
+    </script>
+</body>
+</html>

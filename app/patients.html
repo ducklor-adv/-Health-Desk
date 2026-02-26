@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ผู้ป่วย - Health Desk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: #FFFFFF;
+            font-size: 1.125rem;
+            line-height: 1.6;
+            padding-bottom: 90px;
+        }
+        .top {
+            background: #4F46E5;
+            color: white;
+            padding: 1.5rem 1rem;
+        }
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .title { font-size: 1.75rem; font-weight: 700; }
+        .top-actions { display: flex; gap: 0.75rem; align-items: center; }
+        .out-btn {
+            background: white; color: #4F46E5; border: none;
+            padding: 0.5rem 1rem; border-radius: 12px;
+            font-size: 0.9rem; font-weight: 700; cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+        }
+        .user-info { font-size: 0.85rem; opacity: 0.9; }
+        .box { padding: 1.5rem 1rem; }
+        .search-box {
+            background: #F9FAFB; padding: 1rem; border-radius: 12px;
+            margin-bottom: 1.5rem; border: 2px solid #E5E7EB;
+        }
+        .search-input {
+            width: 100%; padding: 1rem; border: 2px solid #E5E7EB;
+            border-radius: 12px; font-size: 1.125rem;
+            font-family: 'Prompt', sans-serif; font-weight: 600;
+        }
+        .search-input:focus { outline: none; border-color: #4F46E5; }
+        .patient-card {
+            background: #F9FAFB; padding: 1.25rem; border-radius: 12px;
+            margin-bottom: 1rem; border: 2px solid #E5E7EB;
+        }
+        .patient-top { display: flex; gap: 1rem; margin-bottom: 0.75rem; }
+        .patient-avatar {
+            width: 60px; height: 60px; border-radius: 50%;
+            background: #4F46E5; color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 700; flex-shrink: 0;
+        }
+        .patient-info { flex: 1; }
+        .patient-name { font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 0.25rem; }
+        .patient-meta { font-size: 1rem; color: #6B7280; font-weight: 600; }
+        .patient-status {
+            background: #D1FAE5; color: #065F46;
+            padding: 0.375rem 0.75rem; border-radius: 12px;
+            font-size: 0.875rem; font-weight: 700;
+            display: inline-block; margin-top: 0.5rem;
+        }
+        .status-warn { background: #FEF3C7; color: #92400E; }
+        .status-high { background: #FEE2E2; color: #991B1B; }
+        .patient-actions { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+        .btn-action {
+            flex: 1; padding: 0.65rem; border-radius: 10px; border: none;
+            font-family: 'Prompt', sans-serif; font-size: 0.9rem;
+            font-weight: 600; cursor: pointer; text-decoration: none;
+            text-align: center; display: block;
+        }
+        .btn-record { background: #4F46E5; color: white; }
+        .btn-diagnose { background: #10B981; color: white; }
+        .btn-chat-p { background: #F3F4F6; color: #374151; border: 2px solid #E5E7EB !important; }
+        .btn-view { background: #F3F4F6; color: #374151; border: 2px solid #E5E7EB !important; }
+        .add-btn {
+            position: fixed; bottom: 100px; right: 1rem;
+            width: 60px; height: 60px; background: #4F46E5;
+            color: white; border: none; border-radius: 50%;
+            font-size: 2rem; cursor: pointer;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4); z-index: 50;
+        }
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: white; border-top: 3px solid #E5E7EB;
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            padding: 0.75rem 0; z-index: 1000;
+        }
+        .nav-btn {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 0.5rem; text-decoration: none; color: #9CA3AF; padding: 0.5rem;
+        }
+        .nav-btn.on { color: #4F46E5; }
+        .nav-icon { font-size: 2rem; }
+        .nav-text { font-size: 1rem; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <div class="top-row">
+            <div class="title">👥 ผู้ป่วย</div>
+            <div class="top-actions">
+                <div style="position:relative; cursor:pointer; padding:0.5rem;" onclick="toggleNotifications()">
+                    🔔
+                    <span id="notifBadge" style="display:none; position:absolute; top:0; right:0; background:#EF4444; color:white; font-size:0.65rem; font-weight:700; min-width:16px; height:16px; border-radius:8px; align-items:center; justify-content:center; padding:0 3px;"></span>
+                </div>
+                <button class="out-btn" onclick="logout()">ออก</button>
+            </div>
+        </div>
+        <div class="user-info" id="userRoleDisplay"></div>
+    </div>
+
+    <div id="notifPanel" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:white; z-index:2000; overflow-y:auto;"></div>
+
+    <div class="box">
+        <div class="search-box">
+            <input type="text" class="search-input" id="searchInput" placeholder="🔍 ค้นหาชื่อ, HN, เลขบัตร..." oninput="filterPatients()">
+        </div>
+        <div id="patientList"></div>
+    </div>
+
+    <button class="add-btn" onclick="window.location.href='patient-register.html'">+</button>
+
+    <!-- Reschedule Modal -->
+    <div id="rescheduleModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:3000; align-items:center; justify-content:center;">
+        <div style="background:white; border-radius:16px; padding:2rem; width:90%; max-width:400px; margin:auto; margin-top:15vh;">
+            <h3 style="font-size:1.5rem; font-weight:700; margin-bottom:0.5rem;">📅 เลื่อนนัดหมาย</h3>
+            <div id="reschedPatientName" style="font-weight:600; color:#4F46E5; margin-bottom:0.75rem;"></div>
+            <div id="reschedCurrentDate" style="margin-bottom:1rem; color:#6B7280; font-size:1rem;"></div>
+            <div style="margin-bottom:1rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem; font-size:1.125rem;">วันที่ใหม่</label>
+                <input type="date" id="reschedNewDate" style="width:100%; padding:0.875rem; border:2px solid #E5E7EB; border-radius:12px; font-size:1.125rem; font-family:'Prompt',sans-serif;">
+            </div>
+            <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem; font-size:1.125rem;">เหตุผล</label>
+                <textarea id="reschedReason" rows="3" style="width:100%; padding:0.875rem; border:2px solid #E5E7EB; border-radius:12px; font-size:1rem; font-family:'Prompt',sans-serif; resize:vertical;" placeholder="เหตุผลในการเลื่อนนัด..."></textarea>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+                <button onclick="closeReschedule()" style="padding:1rem; border:2px solid #E5E7EB; background:#F9FAFB; border-radius:12px; font-weight:700; cursor:pointer; font-family:'Prompt',sans-serif; font-size:1.125rem;">ยกเลิก</button>
+                <button onclick="confirmReschedule()" style="padding:1rem; border:none; background:#4F46E5; color:white; border-radius:12px; font-weight:700; cursor:pointer; font-family:'Prompt',sans-serif; font-size:1.125rem;">ยืนยัน</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav"></nav>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+    <script src="../js/mock-data.js"></script>
+    <script src="../js/mock-data-chat.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/chat.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/nav-helper.js"></script>
+    <script>
+        var userRole = '';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initNavFeatures('patients.html');
+            var user = JSON.parse(localStorage.getItem('healthdesk_user'));
+            if (user) {
+                userRole = user.role;
+                document.getElementById('userRoleDisplay').textContent = user.name + ' (' + user.roleLabel + ')';
+            }
+            renderPatients(mockPatients);
+        });
+
+        function filterPatients() {
+            var search = document.getElementById('searchInput').value.toLowerCase();
+            if (!search) { renderPatients(mockPatients); return; }
+            var filtered = mockPatients.filter(function(p) {
+                return p.firstName.toLowerCase().indexOf(search) !== -1 ||
+                    p.lastName.toLowerCase().indexOf(search) !== -1 ||
+                    p.hn.toLowerCase().indexOf(search) !== -1 ||
+                    (p.citizenId && p.citizenId.indexOf(search) !== -1);
+            });
+            renderPatients(filtered);
+        }
+
+        function renderPatients(patients) {
+            var container = document.getElementById('patientList');
+            var html = '';
+            for (var i = 0; i < patients.length; i++) {
+                var p = patients[i];
+                var initial = p.firstName.substring(0, 2);
+                var statusClass = p.riskLevel === 'high' ? 'status-high' : (p.riskLevel === 'medium' ? 'status-warn' : '');
+                var statusText = p.riskLevel === 'high' ? '🚨 ความเสี่ยงสูง' : (p.riskLevel === 'medium' ? '⚠️ เฝ้าระวัง' : '✓ ปกติ');
+                var diseases = '';
+                if (p.diseases && p.diseases.length > 0) {
+                    diseases = ' | ' + p.diseases.map(function(d) { return diseaseLabels[d] || d; }).join(', ');
+                }
+                var allergyText = '';
+                if (p.allergies && p.allergies.length > 0) {
+                    allergyText = '<div style="margin-top:0.25rem; font-size:0.875rem; color:#991B1B; font-weight:600;">⚠️ แพ้: ' + p.allergies.join(', ') + '</div>';
+                }
+                var actionsHtml = '';
+                if (userRole === 'doctor') {
+                    actionsHtml = '<div class="patient-actions">' +
+                        '<a href="field-app.html?patient=' + p.id + '" class="btn-action btn-diagnose">🩺 ตรวจสอบ</a>' +
+                        '<button class="btn-action btn-chat-p" onclick="openReschedule(\'' + p.id + '\')">📅 เลื่อนนัด</button>' +
+                        '<button class="btn-action btn-chat-p" onclick="chatPatient(\'' + p.id + '\')">💬 แชท</button></div>';
+                } else if (userRole === 'worker') {
+                    actionsHtml = '<div class="patient-actions">' +
+                        '<a href="field-app.html?patient=' + p.id + '" class="btn-action btn-record">📱 บันทึก</a>' +
+                        '<button class="btn-action btn-chat-p" onclick="openReschedule(\'' + p.id + '\')">📅 เลื่อนนัด</button>' +
+                        '<button class="btn-action btn-chat-p" onclick="chatPatient(\'' + p.id + '\')">💬 แชท</button></div>';
+                } else {
+                    actionsHtml = '<div class="patient-actions">' +
+                        '<a href="field-app.html?patient=' + p.id + '" class="btn-action btn-view">👁️ ดูข้อมูล</a></div>';
+                }
+                html += '<div class="patient-card"><div class="patient-top">' +
+                    '<div class="patient-avatar">' + initial + '</div>' +
+                    '<div class="patient-info"><div class="patient-name">' + p.firstName + ' ' + p.lastName + '</div>' +
+                    '<div class="patient-meta">HN: ' + p.hn + ' | อายุ ' + p.age + ' ปี' + diseases + '</div>' +
+                    allergyText +
+                    '<span class="patient-status ' + statusClass + '">' + statusText + '</span></div></div>' +
+                    actionsHtml + '</div>';
+            }
+            container.innerHTML = html || '<div style="text-align:center; color:#9CA3AF; padding:2rem;">ไม่พบผู้ป่วย</div>';
+        }
+
+        function chatPatient(patientId) {
+            var convId = createNewConversation('patient-' + patientId, 'patient');
+            window.location.href = 'chat-room.html?conv=' + convId;
+        }
+
+        // === Reschedule Appointment ===
+        var reschedulePatientId = null;
+
+        function openReschedule(patientId) {
+            reschedulePatientId = patientId;
+            var patient = mockPatients.find(function(p) { return String(p.id) === String(patientId); });
+            if (!patient) return;
+
+            document.getElementById('reschedPatientName').textContent = patient.firstName + ' ' + patient.lastName + ' (' + patient.hn + ')';
+            document.getElementById('reschedCurrentDate').textContent =
+                'นัดหมายปัจจุบัน: ' + (patient.nextAppointment ? formatThaiDate(patient.nextAppointment) : 'ยังไม่มีนัด');
+            document.getElementById('reschedNewDate').value = '';
+            document.getElementById('reschedReason').value = '';
+            document.getElementById('rescheduleModal').style.display = 'block';
+        }
+
+        function closeReschedule() {
+            document.getElementById('rescheduleModal').style.display = 'none';
+            reschedulePatientId = null;
+        }
+
+        function confirmReschedule() {
+            var newDate = document.getElementById('reschedNewDate').value;
+            var reason = document.getElementById('reschedReason').value;
+
+            if (!newDate) { alert('กรุณาเลือกวันที่ใหม่'); return; }
+
+            var result = rescheduleAppointment(reschedulePatientId, newDate, reason);
+            if (result) {
+                alert('เลื่อนนัดหมายสำเร็จ!\n\nจาก: ' + formatThaiDate(result.oldDate) + '\nเป็น: ' + formatThaiDate(result.newDate) + '\n\n📱 ส่งการแจ้งเตือนถึงผู้ป่วยแล้ว');
+                closeReschedule();
+                renderPatients(mockPatients);
+            }
+        }
+    </script>
+</body>
+</html>

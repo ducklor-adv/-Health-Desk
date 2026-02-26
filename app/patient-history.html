@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ประวัติการตรวจ - Health Desk</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/app-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="app-page patient-portal-page">
+    <!-- Navigation -->
+    <nav class="app-navbar" style="background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);">
+        <div class="nav-container">
+            <div class="nav-left">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" fill="white"/>
+                    <path d="M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-2.76 0-5 2.24-5 5h2c0-1.66 1.34-3 3-3s3 1.34 3 3h2c0-2.76-2.24-5-5-5z" fill="#4F46E5"/>
+                </svg>
+                <span class="brand-name" style="color: white;">My Health</span>
+            </div>
+            <div class="nav-center">
+                <a href="patient-portal.html" class="nav-item" style="color: white;">
+                    <span class="icon">🏠</span>
+                    <span>หน้าหลัก</span>
+                </a>
+                <a href="patient-history.html" class="nav-item active" style="background: rgba(255,255,255,0.2); color: white;">
+                    <span class="icon">📋</span>
+                    <span>ประวัติการตรวจ</span>
+                </a>
+                <a href="patient-appointments.html" class="nav-item" style="color: white;">
+                    <span class="icon">📅</span>
+                    <span>นัดหมาย</span>
+                </a>
+            </div>
+            <div class="nav-right">
+                <div class="user-menu">
+                    <img id="patientAvatar" src="https://ui-avatars.com/api/?name=Patient&background=10B981&color=fff" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <span class="user-name" id="patientName" style="color: white;">ผู้ใช้งาน</span>
+                        <span class="user-role" style="color: rgba(255,255,255,0.8); font-size: 0.75rem;" id="patientHN">HN: -----</span>
+                    </div>
+                    <button class="btn-logout" onclick="patientLogout()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);">ออก</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="app-content" style="background: #F3F4F6;">
+        <div class="content-container">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">ประวัติการตรวจสุขภาพ</h1>
+                    <p class="page-subtitle">บันทึกการตรวจสุขภาพทั้งหมดของคุณ</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-secondary" onclick="exportHistory()">
+                        <span>📊</span> Export ข้อมูล
+                    </button>
+                    <button class="btn btn-primary" onclick="printHistory()">
+                        <span>🖨️</span> พิมพ์รายงาน
+                    </button>
+                </div>
+            </div>
+
+            <!-- History Timeline -->
+            <div class="history-timeline" id="historyTimeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <div class="date-circle">25</div>
+                        <div class="date-month">ก.พ. 2567</div>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-card">
+                            <div class="card-header">
+                                <h4>ตรวจสุขภาพประจำปี</h4>
+                                <span class="status-badge success">ปกติ</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="vital-signs-grid">
+                                    <div class="vital-item">
+                                        <span class="vital-icon">⚖️</span>
+                                        <div class="vital-info">
+                                            <div class="vital-label">น้ำหนัก/ส่วนสูง</div>
+                                            <div class="vital-value">75.5 kg / 170 cm</div>
+                                        </div>
+                                    </div>
+                                    <div class="vital-item">
+                                        <span class="vital-icon">📊</span>
+                                        <div class="vital-info">
+                                            <div class="vital-label">BMI</div>
+                                            <div class="vital-value">26.1 (น้ำหนักเกิน)</div>
+                                        </div>
+                                    </div>
+                                    <div class="vital-item">
+                                        <span class="vital-icon">💉</span>
+                                        <div class="vital-info">
+                                            <div class="vital-label">ความดันโลหิต</div>
+                                            <div class="vital-value">135/85 mmHg</div>
+                                        </div>
+                                    </div>
+                                    <div class="vital-item">
+                                        <span class="vital-icon">🩸</span>
+                                        <div class="vital-info">
+                                            <div class="vital-label">น้ำตาลในเลือด</div>
+                                            <div class="vital-value">110 mg/dL</div>
+                                        </div>
+                                    </div>
+                                    <div class="vital-item">
+                                        <span class="vital-icon">❤️</span>
+                                        <div class="vital-info">
+                                            <div class="vital-label">อัตราหัวใจ</div>
+                                            <div class="vital-value">78 bpm</div>
+                                        </div>
+                                    </div>
+                                    <div class="vital-item">
+                                        <span class="vital-icon">🌡️</span>
+                                        <div class="vital-info">
+                                            <div class="vital-label">อุณหภูมิ</div>
+                                            <div class="vital-value">36.8 °C</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-notes">
+                                    <strong>หมายเหตุ:</strong> ความดันเริ่มสูงกว่าปกติ แนะนำลดเกลือและออกกำลังกาย
+                                </div>
+                                <div class="card-footer">
+                                    <span class="checkup-by">ตรวจโดย: พยาบาลสมหญิง รักษา</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- More timeline items will be generated by JavaScript -->
+            </div>
+
+            <!-- Coming Soon Message -->
+            <div style="text-align: center; padding: 3rem 2rem; background: white; border-radius: 1rem; margin-top: 2rem;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+                <h3 style="color: #111827; margin-bottom: 0.5rem;">กำลังโหลดประวัติเพิ่มเติม...</h3>
+                <p style="color: #6B7280;">
+                    ระบบจะแสดงประวัติการตรวจทั้งหมดของคุณที่นี่
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="patient-portal.html" class="nav-item">
+            <span class="icon">🏠</span>
+            <span class="label">หน้าหลัก</span>
+        </a>
+        <a href="patient-history.html" class="nav-item active">
+            <span class="icon">📋</span>
+            <span class="label">ประวัติ</span>
+        </a>
+        <a href="patient-appointments.html" class="nav-item">
+            <span class="icon">📅</span>
+            <span class="label">นัดหมาย</span>
+        </a>
+        <a href="#" onclick="alert('Profile - Coming soon!'); return false;" class="nav-item">
+            <span class="icon">👤</span>
+            <span class="label">โปรไฟล์</span>
+        </a>
+    </nav>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+    <script src="../js/mock-data.js"></script>
+    <script src="../js/patient-auth.js"></script>
+    <script>
+        function exportHistory() {
+            alert('กำลัง Export ข้อมูลเป็น PDF...\n\nในระบบจริงจะสร้างไฟล์ PDF ให้ดาวน์โหลด');
+        }
+
+        function printHistory() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

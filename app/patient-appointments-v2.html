@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>นัดหมาย</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: #FFFFFF;
+            font-size: 1.125rem;
+            line-height: 1.6;
+            padding-bottom: 90px;
+            visibility: hidden;
+        }
+
+        /* Header */
+        .top {
+            background: #10B981;
+            color: white;
+            padding: 1.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back {
+            background: white;
+            color: #10B981;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            font-size: 1.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .title {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        /* Content */
+        .box {
+            padding: 1.5rem 1rem;
+        }
+
+        /* Big Next Appointment */
+        .big-next {
+            background: #4F46E5;
+            color: white;
+            padding: 2rem 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .next-label {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .next-date {
+            font-size: 2.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .next-info {
+            background: rgba(255,255,255,0.2);
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .countdown {
+            background: rgba(255,255,255,0.3);
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 1rem;
+        }
+
+        .action-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            background: white;
+            color: #4F46E5;
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        /* History Section */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+
+        .appt-card {
+            background: #F9FAFB;
+            border: 3px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1.25rem;
+        }
+
+        .appt-date-box {
+            background: #10B981;
+            color: white;
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .date-day {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .date-month {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+
+        .appt-info {
+            flex: 1;
+        }
+
+        .appt-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.75rem;
+        }
+
+        .appt-meta {
+            font-size: 1.125rem;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-done {
+            background: #D1FAE5;
+            color: #065F46;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .status-cancel {
+            background: #FEE2E2;
+            color: #991B1B;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .cancelled-box {
+            background: #EF4444;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 3px solid #E5E7EB;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 0.75rem 0;
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #9CA3AF;
+            padding: 0.5rem;
+        }
+
+        .nav-btn.on {
+            color: #10B981;
+        }
+
+        .nav-icon {
+            font-size: 2rem;
+        }
+
+        .nav-text {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <button class="back" onclick="history.back()">←</button>
+        <div class="title">📅 นัดหมาย</div>
+    </div>
+
+    <div class="box">
+        <!-- นัดหมายครั้งถัดไป -->
+        <div class="big-next">
+            <div class="next-label">📅 นัดหมายครั้งถัดไป</div>
+            <div class="next-date">25 มีนาคม 2567</div>
+
+            <div class="next-info">
+                ⏰ เวลา 09:00 - 10:00 น.
+            </div>
+
+            <div class="next-info">
+                👨‍⚕️ นพ.สมชาย ใจดี
+            </div>
+
+            <div class="next-info">
+                🏥 ศูนย์สุขภาพชุมชนบ้านสุขใจ
+            </div>
+
+            <div class="next-info">
+                📝 ตรวจสุขภาพประจำเดือน
+            </div>
+
+            <div class="countdown">
+                ⏳ อีก 28 วัน
+            </div>
+
+            <div class="action-btns">
+                <button class="action-btn" onclick="alert('📍 เปิดแผนที่...')">
+                    📍 ดูแผนที่
+                </button>
+                <button class="action-btn" onclick="alert('📅 เพิ่มในปฏิทิน...')">
+                    📅 บันทึก
+                </button>
+            </div>
+        </div>
+
+        <!-- ประวัติ -->
+        <div class="section-title">ประวัติการนัดหมาย</div>
+
+        <div class="appt-card">
+            <div class="appt-date-box">
+                <div class="date-day">20</div>
+                <div class="date-month">ก.พ.</div>
+            </div>
+            <div class="appt-info">
+                <div class="appt-title">ตรวจสุขภาพประจำปี</div>
+                <div class="appt-meta">⏰ 10:00 น.</div>
+                <div class="appt-meta">👨‍⚕️ พยาบาลสมหญิง</div>
+                <div class="status-done">✓ ตรวจเสร็จแล้ว</div>
+            </div>
+        </div>
+
+        <div class="appt-card">
+            <div class="appt-date-box">
+                <div class="date-day">15</div>
+                <div class="date-month">ม.ค.</div>
+            </div>
+            <div class="appt-info">
+                <div class="appt-title">ตรวจติดตามความดัน</div>
+                <div class="appt-meta">⏰ 14:00 น.</div>
+                <div class="appt-meta">👨‍⚕️ นพ.วิชัย พัฒนา</div>
+                <div class="status-done">✓ ตรวจเสร็จแล้ว</div>
+            </div>
+        </div>
+
+        <div class="appt-card">
+            <div class="appt-date-box cancelled-box">
+                <div class="date-day">05</div>
+                <div class="date-month">ม.ค.</div>
+            </div>
+            <div class="appt-info">
+                <div class="appt-title">ตรวจเลือด</div>
+                <div class="appt-meta">⏰ 08:30 น.</div>
+                <div class="appt-meta">👨‍⚕️ แลป</div>
+                <div class="status-cancel">✗ ยกเลิก</div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="patient-portal-v2.html" class="nav-btn">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">หน้าหลัก</span>
+        </a>
+        <a href="patient-history-v2.html" class="nav-btn">
+            <span class="nav-icon">📋</span>
+            <span class="nav-text">ประวัติ</span>
+        </a>
+        <a href="patient-appointments-v2.html" class="nav-btn on">
+            <span class="nav-icon">📅</span>
+            <span class="nav-text">นัดหมาย</span>
+        </a>
+        <a href="patient-profile-v2.html" class="nav-btn">
+            <span class="nav-icon">👤</span>
+            <span class="nav-text">โปรไฟล์</span>
+        </a>
+    </nav>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+    <script src="../js/mock-data.js"></script>
+    <script src="../js/mock-data-chat.js"></script>
+    <script src="../js/patient-auth.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var patient = JSON.parse(localStorage.getItem('healthdesk_patient') || 'null');
+            if (patient && patient.nextAppointment) {
+                var d = new Date(patient.nextAppointment);
+                document.querySelector('.next-date').textContent = d.toLocaleDateString('th-TH', {
+                    day: 'numeric', month: 'long', year: 'numeric'
+                });
+                var today = new Date();
+                var daysLeft = Math.ceil((d - today) / (1000*60*60*24));
+                document.querySelector('.countdown').textContent = (daysLeft > 0 ? '⏳ อีก ' + daysLeft + ' วัน' : '⏳ วันนี้!');
+            }
+
+            // Check reschedule notifications
+            if (typeof initNotifications === 'function') initNotifications();
+            var notifs = typeof getNotifications === 'function' ? getNotifications() : [];
+            var reschedNotifs = notifs.filter(function(n) { return n.type === 'reschedule' && !n.read; });
+            if (reschedNotifs.length > 0) {
+                var latest = reschedNotifs[0];
+                var banner = document.createElement('div');
+                banner.style.cssText = 'background:#FEF3C7; border:3px solid #F59E0B; border-radius:16px; padding:1.25rem; margin-bottom:1.5rem;';
+                banner.innerHTML = '<div style="font-weight:700; font-size:1.25rem; color:#92400E; margin-bottom:0.5rem;">📅 นัดหมายเปลี่ยนแปลง</div>' +
+                    '<div style="color:#78350F; font-size:1.125rem;">' + latest.message + '</div>' +
+                    '<button onclick="this.parentElement.remove(); markNotificationRead(\'' + latest.id + '\');" style="margin-top:0.75rem; background:#F59E0B; color:white; border:none; padding:0.75rem 1.25rem; border-radius:12px; font-weight:700; cursor:pointer; font-family:Prompt,sans-serif; font-size:1.125rem;">รับทราบ</button>';
+                var box = document.querySelector('.box');
+                var bigNext = document.querySelector('.big-next');
+                box.insertBefore(banner, bigNext);
+            }
+        });
+    </script>
+</body>
+</html>

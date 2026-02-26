@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แชท - Health Desk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: #F9FAFB;
+            color: #111827;
+            font-size: 1.125rem;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: #4F46E5;
+            color: white;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .btn-back {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+        .chat-header-info { flex: 1; }
+        .chat-header-name { font-weight: 700; font-size: 1.15rem; }
+        .chat-header-role { font-size: 0.8rem; opacity: 0.85; }
+        .chat-header-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 1rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .msg-date {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #9CA3AF;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .msg-bubble {
+            max-width: 80%;
+            padding: 0.85rem 1.1rem;
+            border-radius: 16px;
+            font-size: 1.05rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+        .msg-sent {
+            background: #4F46E5;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+        .msg-received {
+            background: white;
+            color: #111827;
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #E5E7EB;
+        }
+        .msg-time {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin-top: 0.3rem;
+        }
+        .msg-sent .msg-time { text-align: right; }
+        .msg-received .msg-time { text-align: left; }
+
+        .chat-input-area {
+            background: white;
+            border-top: 2px solid #E5E7EB;
+            padding: 0.75rem 1rem;
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+        .chat-input-area input {
+            flex: 1;
+            padding: 0.85rem 1.25rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-family: 'Prompt', sans-serif;
+            outline: none;
+        }
+        .chat-input-area input:focus { border-color: #4F46E5; }
+        .btn-send {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #4F46E5;
+            color: white;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-send:disabled { background: #D1D5DB; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class="chat-header">
+        <button class="btn-back" onclick="goBack()">←</button>
+        <div class="chat-header-avatar" id="headerAvatar"></div>
+        <div class="chat-header-info">
+            <div class="chat-header-name" id="headerName">...</div>
+            <div class="chat-header-role" id="headerRole"></div>
+        </div>
+    </div>
+
+    <div class="messages" id="messagesArea"></div>
+
+    <div class="chat-input-area">
+        <input type="text" id="msgInput" placeholder="พิมพ์ข้อความ..." onkeypress="handleKeyPress(event)">
+        <button class="btn-send" id="btnSend" onclick="handleSend()">📤</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+    <script src="../js/mock-data.js"></script>
+    <script src="../js/mock-data-chat.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/chat.js"></script>
+    <script>
+        var convId = null;
+        var otherInfo = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var params = new URLSearchParams(window.location.search);
+            convId = params.get('conv');
+
+            if (!convId) { goBack(); return; }
+
+            initChatData();
+
+            // Get conversation info
+            var convos = getConversations();
+            var conv = null;
+            for (var i = 0; i < convos.length; i++) {
+                if (convos[i].id === convId) { conv = convos[i]; break; }
+            }
+            if (!conv) { goBack(); return; }
+
+            var otherId = getOtherParticipant(conv);
+            otherInfo = getParticipantInfo(otherId);
+
+            // Set header
+            document.getElementById('headerName').textContent = otherInfo.name;
+            document.getElementById('headerRole').textContent = otherInfo.role;
+            document.getElementById('headerAvatar').textContent = getAvatarInitial(otherInfo.name);
+            if (otherInfo.type === 'patient') {
+                document.getElementById('headerAvatar').style.background = '#10B981';
+            }
+
+            // Mark as read
+            markConversationRead(convId);
+
+            // Render messages
+            renderMessages();
+
+            // Focus input
+            document.getElementById('msgInput').focus();
+        });
+
+        function renderMessages() {
+            var messages = getMessages(convId);
+            var userId = getCurrentUserId();
+            var container = document.getElementById('messagesArea');
+
+            if (messages.length === 0) {
+                container.innerHTML = '<div style="text-align:center; color:#9CA3AF; margin-top:3rem;">เริ่มสนทนากับ ' + otherInfo.name + '</div>';
+                return;
+            }
+
+            var html = '';
+            var lastDate = '';
+
+            for (var i = 0; i < messages.length; i++) {
+                var msg = messages[i];
+                var isSent = msg.sender === userId;
+                var msgDate = new Date(msg.time).toLocaleDateString('th-TH', { day: 'numeric', month: 'long' });
+                var msgTime = new Date(msg.time).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+
+                if (msgDate !== lastDate) {
+                    html += '<div class="msg-date">' + msgDate + '</div>';
+                    lastDate = msgDate;
+                }
+
+                html += '<div class="msg-bubble ' + (isSent ? 'msg-sent' : 'msg-received') + '">' +
+                    '<div>' + escapeHtml(msg.text) + '</div>' +
+                    '<div class="msg-time">' + msgTime + '</div>' +
+                    '</div>';
+            }
+
+            container.innerHTML = html;
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function handleSend() {
+            var input = document.getElementById('msgInput');
+            var text = input.value.trim();
+            if (!text) return;
+
+            sendMessage(convId, text);
+            input.value = '';
+            renderMessages();
+            input.focus();
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') handleSend();
+        }
+
+        function goBack() {
+            window.location.href = 'chat.html';
+        }
+
+        function escapeHtml(text) {
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

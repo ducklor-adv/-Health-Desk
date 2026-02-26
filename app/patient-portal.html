@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Health - Health Desk</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/app-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="app-page patient-portal-page">
+    <!-- Navigation -->
+    <nav class="app-navbar" style="background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);">
+        <div class="nav-container">
+            <div class="nav-left">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" fill="white"/>
+                    <path d="M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-2.76 0-5 2.24-5 5h2c0-1.66 1.34-3 3-3s3 1.34 3 3h2c0-2.76-2.24-5-5-5z" fill="#4F46E5"/>
+                </svg>
+                <span class="brand-name" style="color: white;">My Health</span>
+            </div>
+            <div class="nav-center">
+                <a href="patient-portal.html" class="nav-item active" style="background: rgba(255,255,255,0.2); color: white;">
+                    <span class="icon">🏠</span>
+                    <span>หน้าหลัก</span>
+                </a>
+                <a href="patient-history.html" class="nav-item" style="color: white;">
+                    <span class="icon">📋</span>
+                    <span>ประวัติการตรวจ</span>
+                </a>
+                <a href="patient-appointments.html" class="nav-item" style="color: white;">
+                    <span class="icon">📅</span>
+                    <span>นัดหมาย</span>
+                </a>
+            </div>
+            <div class="nav-right">
+                <div class="user-menu">
+                    <img id="patientAvatar" src="https://ui-avatars.com/api/?name=Patient&background=10B981&color=fff" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <span class="user-name" id="patientName" style="color: white;">ผู้ใช้งาน</span>
+                        <span class="user-role" style="color: rgba(255,255,255,0.8); font-size: 0.75rem;" id="patientHN">HN: -----</span>
+                    </div>
+                    <button class="btn-logout" onclick="patientLogout()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);">ออก</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="app-content" style="background: #F3F4F6;">
+        <div class="content-container">
+            <!-- Welcome Header -->
+            <div class="welcome-card">
+                <div class="welcome-content">
+                    <h1 style="font-size: 2rem; margin-bottom: 0.5rem; color: #111827;">
+                        สวัสดี, <span id="patientFirstName">คุณ</span> 👋
+                    </h1>
+                    <p style="color: #6B7280; font-size: 1.125rem;">
+                        ยินดีต้อนรับสู่ระบบติดตามสุขภาพส่วนตัว
+                    </p>
+                </div>
+                <div class="welcome-date">
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.875rem; color: #6B7280;">วันนี้</div>
+                        <div style="font-size: 1.125rem; font-weight: 600; color: #111827;" id="currentDate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Health Summary Cards -->
+            <div class="patient-stats-grid">
+                <div class="patient-stat-card">
+                    <div class="stat-icon-large" style="background: linear-gradient(135deg, #10B981, #059669);">
+                        <span style="font-size: 2rem;">⚖️</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">น้ำหนักล่าสุด</div>
+                        <div class="stat-value-large" id="latestWeight">--</div>
+                        <div class="stat-sublabel">BMI: <span id="latestBMI">--</span> (<span id="bmiCategory">--</span>)</div>
+                    </div>
+                </div>
+
+                <div class="patient-stat-card">
+                    <div class="stat-icon-large" style="background: linear-gradient(135deg, #EF4444, #DC2626);">
+                        <span style="font-size: 2rem;">💉</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">ความดันโลหิต</div>
+                        <div class="stat-value-large" id="latestBP">--/--</div>
+                        <div class="stat-sublabel" id="bpStatus">--</div>
+                    </div>
+                </div>
+
+                <div class="patient-stat-card">
+                    <div class="stat-icon-large" style="background: linear-gradient(135deg, #F59E0B, #D97706);">
+                        <span style="font-size: 2rem;">🩸</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">ระดับน้ำตาล</div>
+                        <div class="stat-value-large" id="latestSugar">--</div>
+                        <div class="stat-sublabel" id="sugarStatus">--</div>
+                    </div>
+                </div>
+
+                <div class="patient-stat-card">
+                    <div class="stat-icon-large" style="background: linear-gradient(135deg, #3B82F6, #2563EB);">
+                        <span style="font-size: 2rem;">📅</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">นัดหมายครั้งถัดไป</div>
+                        <div class="stat-value-large" style="font-size: 1.25rem;" id="nextAppointment">--</div>
+                        <div class="stat-sublabel" id="daysUntil">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Health Trends -->
+            <div class="charts-row">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>📈 แนวโน้มสุขภาพของคุณ</h3>
+                        <select class="select-period" id="trendPeriod">
+                            <option value="3m">3 เดือนล่าสุด</option>
+                            <option value="6m">6 เดือนล่าสุด</option>
+                            <option value="1y">1 ปีล่าสุด</option>
+                        </select>
+                    </div>
+                    <canvas id="patientHealthTrendChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Alerts & Recommendations -->
+            <div class="alerts-recommendations">
+                <div class="alert-card-container" id="healthAlerts">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+
+                <div class="recommendations-card">
+                    <h3 style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                        <span>💡</span>
+                        <span>คำแนะนำสุขภาพ</span>
+                    </h3>
+                    <div class="recommendation-list" id="recommendations">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Checkups -->
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>📋 การตรวจล่าสุด</h3>
+                    <a href="patient-history.html" class="link-view-all">ดูทั้งหมด →</a>
+                </div>
+                <div class="checkup-timeline" id="recentCheckups">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions-grid">
+                <a href="patient-history.html" class="quick-action-card">
+                    <span class="action-icon">📋</span>
+                    <span class="action-label">ประวัติการตรวจ</span>
+                    <span class="action-arrow">→</span>
+                </a>
+                <a href="patient-appointments.html" class="quick-action-card">
+                    <span class="action-icon">📅</span>
+                    <span class="action-label">นัดหมาย</span>
+                    <span class="action-arrow">→</span>
+                </a>
+                <a href="#" onclick="printHealthReport(); return false;" class="quick-action-card">
+                    <span class="action-icon">🖨️</span>
+                    <span class="action-label">พิมพ์รายงาน</span>
+                    <span class="action-arrow">→</span>
+                </a>
+                <a href="#" onclick="shareHealthData(); return false;" class="quick-action-card">
+                    <span class="action-icon">📤</span>
+                    <span class="action-label">แชร์ข้อมูล</span>
+                    <span class="action-arrow">→</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="patient-portal.html" class="nav-item active">
+            <span class="icon">🏠</span>
+            <span class="label">หน้าหลัก</span>
+        </a>
+        <a href="patient-history.html" class="nav-item">
+            <span class="icon">📋</span>
+            <span class="label">ประวัติ</span>
+        </a>
+        <a href="patient-appointments.html" class="nav-item">
+            <span class="icon">📅</span>
+            <span class="label">นัดหมาย</span>
+        </a>
+        <a href="#" onclick="alert('Profile - Coming soon!'); return false;" class="nav-item">
+            <span class="icon">👤</span>
+            <span class="label">โปรไฟล์</span>
+        </a>
+    </nav>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+    <script src="../js/mock-data.js"></script>
+    <script src="../js/patient-auth.js"></script>
+    <script src="../js/patient-portal.js"></script>
+</body>
+</html>

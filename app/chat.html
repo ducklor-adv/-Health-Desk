@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แชท - Health Desk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: #F9FAFB;
+            color: #111827;
+            font-size: 1.125rem;
+            padding-bottom: 90px;
+        }
+
+        .top {
+            background: #4F46E5;
+            color: white;
+            padding: 1.25rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .top h1 { font-size: 1.5rem; font-weight: 700; }
+        .top-actions { display: flex; gap: 0.75rem; align-items: center; }
+        .btn-logout {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 0;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Prompt', sans-serif;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            outline: none;
+        }
+        .search-box input::placeholder { color: rgba(255,255,255,0.7); }
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            background: white;
+            border-bottom: 2px solid #E5E7EB;
+        }
+        .tab {
+            padding: 0.5rem 1.25rem;
+            border-radius: 20px;
+            border: 2px solid #E5E7EB;
+            background: white;
+            color: #6B7280;
+            font-family: 'Prompt', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .tab.active {
+            background: #4F46E5;
+            color: white;
+            border-color: #4F46E5;
+        }
+
+        .conv-list { background: white; }
+        .conv-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #F3F4F6;
+            cursor: pointer;
+            align-items: center;
+            transition: background 0.15s;
+        }
+        .conv-item:active { background: #F9FAFB; }
+
+        .conv-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #4F46E5;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .conv-avatar.patient { background: #10B981; }
+
+        .conv-info { flex: 1; min-width: 0; }
+        .conv-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #111827;
+            margin-bottom: 0.15rem;
+        }
+        .conv-role {
+            font-size: 0.8rem;
+            color: #9CA3AF;
+            margin-bottom: 0.25rem;
+        }
+        .conv-last-msg {
+            font-size: 0.9rem;
+            color: #6B7280;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .conv-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        .conv-time {
+            font-size: 0.75rem;
+            color: #9CA3AF;
+        }
+        .conv-unread {
+            background: #EF4444;
+            color: white;
+            min-width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            color: #9CA3AF;
+        }
+        .empty-state .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+        .fab {
+            position: fixed;
+            bottom: 100px;
+            right: 1.5rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #4F46E5;
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* New chat modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 3000;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+        .modal h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6B7280;
+        }
+        .contact-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            align-items: center;
+        }
+        .contact-item:active { background: #F3F4F6; }
+        .contact-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .contact-name { font-weight: 600; }
+        .contact-role { font-size: 0.85rem; color: #6B7280; }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 3px solid #E5E7EB;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            padding: 0.75rem 0;
+            z-index: 1000;
+        }
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            text-decoration: none;
+            color: #6B7280;
+            font-size: 0.8rem;
+            padding: 0.25rem;
+        }
+        .nav-btn.on { color: #4F46E5; font-weight: 700; }
+        .nav-icon { font-size: 1.5rem; }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <div class="top-row">
+            <h1>💬 แชท</h1>
+            <div class="top-actions">
+                <div style="position:relative; cursor:pointer; padding:0.5rem;" onclick="toggleNotifications()">
+                    🔔
+                    <span id="notifBadge" style="display:none; position:absolute; top:0; right:0; background:#EF4444; color:white; font-size:0.65rem; font-weight:700; min-width:16px; height:16px; border-radius:8px; align-items:center; justify-content:center; padding:0 3px;"></span>
+                </div>
+                <button class="btn-logout" onclick="logout()">ออก</button>
+            </div>
+        </div>
+        <div class="search-box">
+            <input type="text" id="searchChat" placeholder="ค้นหาแชท..." oninput="filterConversations()">
+        </div>
+    </div>
+
+    <div id="notifPanel" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:white; z-index:2000; overflow-y:auto;"></div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="setFilter('all')">ทั้งหมด</button>
+        <button class="tab" onclick="setFilter('staff')">เจ้าหน้าที่</button>
+        <button class="tab" onclick="setFilter('patient')">ผู้ป่วย</button>
+    </div>
+
+    <div class="conv-list" id="convList"></div>
+
+    <button class="fab" onclick="showNewChatModal()">✏️</button>
+
+    <div class="modal-overlay" id="newChatModal">
+        <div class="modal">
+            <h3>
+                สร้างแชทใหม่
+                <button class="modal-close" onclick="hideNewChatModal()">✕</button>
+            </h3>
+            <div id="contactList"></div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav"></nav>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+    <script src="../js/mock-data.js"></script>
+    <script src="../js/mock-data-chat.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/chat.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/nav-helper.js"></script>
+    <script>
+        var currentFilter = 'all';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initNavFeatures('chat.html');
+            renderConversations();
+        });
+
+        function renderConversations() {
+            var convos = getMyConversations();
+            var search = (document.getElementById('searchChat').value || '').toLowerCase();
+            var container = document.getElementById('convList');
+
+            var filtered = convos.filter(function(c) {
+                if (currentFilter !== 'all' && c.type !== currentFilter) return false;
+                if (search) {
+                    var other = getOtherParticipant(c);
+                    var info = getParticipantInfo(other);
+                    return info.name.toLowerCase().indexOf(search) !== -1 || c.lastMessage.toLowerCase().indexOf(search) !== -1;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><p>ไม่มีแชท</p></div>';
+                return;
+            }
+
+            var userId = getCurrentUserId();
+            var html = '';
+            for (var i = 0; i < filtered.length; i++) {
+                var c = filtered[i];
+                var otherId = getOtherParticipant(c);
+                var info = getParticipantInfo(otherId);
+                var unread = c.unreadCount[userId] || 0;
+                var avatarClass = info.type === 'patient' ? 'conv-avatar patient' : 'conv-avatar';
+                var initial = getAvatarInitial(info.name);
+
+                html += '<div class="conv-item" onclick="openChat(\'' + c.id + '\')">' +
+                    '<div class="' + avatarClass + '">' + initial + '</div>' +
+                    '<div class="conv-info">' +
+                    '<div class="conv-name">' + info.name + '</div>' +
+                    '<div class="conv-role">' + info.role + '</div>' +
+                    '<div class="conv-last-msg">' + (c.lastMessage || 'เริ่มสนทนา...') + '</div>' +
+                    '</div>' +
+                    '<div class="conv-meta">' +
+                    '<span class="conv-time">' + formatChatTime(c.lastMessageTime) + '</span>' +
+                    (unread > 0 ? '<span class="conv-unread">' + unread + '</span>' : '') +
+                    '</div></div>';
+            }
+            container.innerHTML = html;
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            var tabs = document.querySelectorAll('.tab');
+            tabs.forEach(function(t) { t.classList.remove('active'); });
+            event.target.classList.add('active');
+            renderConversations();
+        }
+
+        function filterConversations() { renderConversations(); }
+
+        function openChat(convId) {
+            window.location.href = 'chat-room.html?conv=' + convId;
+        }
+
+        function showNewChatModal() {
+            var modal = document.getElementById('newChatModal');
+            var contactList = document.getElementById('contactList');
+            var userId = getCurrentUserId();
+
+            var html = '<p style="font-size:0.9rem; color:#6B7280; margin-bottom:1rem;">เจ้าหน้าที่</p>';
+
+            for (var i = 0; i < mockStaff.length; i++) {
+                var s = mockStaff[i];
+                if (s.id === userId) continue;
+                html += '<div class="contact-item" onclick="startChat(\'' + s.id + '\', \'staff\')">' +
+                    '<div class="contact-avatar" style="background:#4F46E5;">' + getAvatarInitial(s.name) + '</div>' +
+                    '<div><div class="contact-name">' + s.name + '</div><div class="contact-role">' + s.roleLabel + '</div></div></div>';
+            }
+
+            html += '<p style="font-size:0.9rem; color:#6B7280; margin: 1rem 0;">ผู้ป่วย</p>';
+
+            for (var j = 0; j < mockPatients.length; j++) {
+                var p = mockPatients[j];
+                var pid = 'patient-' + p.id;
+                html += '<div class="contact-item" onclick="startChat(\'' + pid + '\', \'patient\')">' +
+                    '<div class="contact-avatar" style="background:#10B981;">' + getAvatarInitial(p.firstName) + '</div>' +
+                    '<div><div class="contact-name">' + p.firstName + ' ' + p.lastName + '</div><div class="contact-role">HN: ' + p.hn + '</div></div></div>';
+            }
+
+            contactList.innerHTML = html;
+            modal.classList.add('show');
+        }
+
+        function hideNewChatModal() {
+            document.getElementById('newChatModal').classList.remove('show');
+        }
+
+        function startChat(participantId, type) {
+            var convId = createNewConversation(participantId, type);
+            hideNewChatModal();
+            openChat(convId);
+        }
+    </script>
+</body>
+</html>

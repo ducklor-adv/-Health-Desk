@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>นัดหมาย - Health Desk</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/app-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="app-page patient-portal-page mobile-app">
+    <!-- Mobile Navigation -->
+    <nav class="mobile-navbar" style="background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%); color: white;">
+        <button class="btn-back" style="color: white;" onclick="history.back()">
+            <span>←</span>
+        </button>
+        <h1 class="mobile-title" style="color: white;">นัดหมาย</h1>
+        <button class="btn-menu" style="color: white;" onclick="alert('Menu')">
+            <span>⋮</span>
+        </button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="mobile-content" style="background: #F3F4F6;">
+        <!-- Next Appointment -->
+        <div class="appointment-highlight-card">
+            <div class="highlight-header">
+                <h3>📅 นัดหมายครั้งถัดไป</h3>
+            </div>
+            <div class="highlight-content">
+                <div class="appointment-date-large">
+                    <div class="date-day">25</div>
+                    <div class="date-month-year">มีนาคม 2567</div>
+                </div>
+                <div class="appointment-details">
+                    <div class="detail-row">
+                        <span class="detail-icon">🕐</span>
+                        <span class="detail-text">เวลา: 09:00 - 10:00 น.</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-icon">👨‍⚕️</span>
+                        <span class="detail-text">แพทย์: นพ.สมชาย ใจดี</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-icon">🏥</span>
+                        <span class="detail-text">สถานที่: ศูนย์สุขภาพชุมชนบ้านสุขใจ</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-icon">📝</span>
+                        <span class="detail-text">วัตถุประสงค์: ตรวจสุขภาพประจำเดือน</span>
+                    </div>
+                </div>
+                <div class="days-countdown">
+                    <span class="countdown-icon">⏰</span>
+                    <span class="countdown-text">อีก <strong>28 วัน</strong></span>
+                </div>
+                <div class="appointment-actions">
+                    <button class="btn btn-outline btn-block" onclick="alert('เปิดแผนที่...')">
+                        📍 ดูแผนที่
+                    </button>
+                    <button class="btn btn-primary btn-block" onclick="alert('เพิ่มในปฏิทิน...')">
+                        📅 เพิ่มในปฏิทิน
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointment History -->
+        <div class="section-card">
+            <h3 style="margin-bottom: 1rem;">ประวัติการนัดหมาย</h3>
+
+            <div class="appointment-list">
+                <div class="appointment-item completed">
+                    <div class="appointment-date-circle">
+                        <div class="circle-day">20</div>
+                        <div class="circle-month">ก.พ.</div>
+                    </div>
+                    <div class="appointment-info">
+                        <div class="appointment-title">ตรวจสุขภาพประจำปี</div>
+                        <div class="appointment-meta">
+                            <span>⏰ 10:00 น.</span>
+                            <span>👨‍⚕️ พยาบาลสมหญิง</span>
+                        </div>
+                        <div class="appointment-status">
+                            <span class="status-badge success">✓ ตรวจเสร็จแล้ว</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="appointment-item completed">
+                    <div class="appointment-date-circle">
+                        <div class="circle-day">15</div>
+                        <div class="circle-month">ม.ค.</div>
+                    </div>
+                    <div class="appointment-info">
+                        <div class="appointment-title">ตรวจติดตามความดัน</div>
+                        <div class="appointment-meta">
+                            <span>⏰ 14:00 น.</span>
+                            <span>👨‍⚕️ นพ.วิชัย พัฒนา</span>
+                        </div>
+                        <div class="appointment-status">
+                            <span class="status-badge success">✓ ตรวจเสร็จแล้ว</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="appointment-item cancelled">
+                    <div class="appointment-date-circle">
+                        <div class="circle-day">05</div>
+                        <div class="circle-month">ม.ค.</div>
+                    </div>
+                    <div class="appointment-info">
+                        <div class="appointment-title">ตรวจเลือด</div>
+                        <div class="appointment-meta">
+                            <span>⏰ 08:30 น.</span>
+                            <span>👨‍⚕️ แลป</span>
+                        </div>
+                        <div class="appointment-status">
+                            <span class="status-badge danger">✗ ยกเลิก</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Request Appointment Button -->
+        <div class="floating-action">
+            <button class="btn btn-primary btn-lg btn-block" onclick="requestAppointment()">
+                <span style="font-size: 1.25rem;">📅</span>
+                <span>ขอนัดหมาย</span>
+            </button>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="patient-portal.html" class="nav-item">
+            <span class="icon">🏠</span>
+            <span class="label">หน้าหลัก</span>
+        </a>
+        <a href="patient-history.html" class="nav-item">
+            <span class="icon">📋</span>
+            <span class="label">ประวัติ</span>
+        </a>
+        <a href="patient-appointments.html" class="nav-item active">
+            <span class="icon">📅</span>
+            <span class="label">นัดหมาย</span>
+        </a>
+        <a href="#" onclick="alert('Profile - Coming soon!'); return false;" class="nav-item">
+            <span class="icon">👤</span>
+            <span class="label">โปรไฟล์</span>
+        </a>
+    </nav>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+    <script src="../js/mock-data.js"></script>
+    <script src="../js/patient-auth.js"></script>
+    <script>
+        function requestAppointment() {
+            alert('📅 ขอนัดหมาย\n\nในระบบจริงจะมีฟอร์มขอนัดหมาย\nสามารถเลือกวันเวลาและหมอที่ต้องการ');
+        }
+    </script>
+</body>
+</html>

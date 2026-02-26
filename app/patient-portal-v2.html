@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>สุขภาพของฉัน</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: #FFFFFF;
+            font-size: 1.125rem;
+            line-height: 1.6;
+            padding-bottom: 90px;
+            visibility: hidden;
+        }
+
+        /* Header */
+        .top {
+            background: #10B981;
+            color: white;
+            padding: 1rem 1rem 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 3px solid white;
+            display: block;
+            flex-shrink: 0;
+        }
+
+        .top-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.1rem;
+        }
+
+        .hn {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .out-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.5);
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            flex-shrink: 0;
+        }
+
+        /* Content */
+        .box {
+            padding: 1.5rem 1rem;
+        }
+
+        /* Big Appointment */
+        .big-appt {
+            background: #4F46E5;
+            color: white;
+            padding: 2rem 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .big-appt-label {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .big-appt-date {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .big-appt-time {
+            font-size: 1.375rem;
+            font-weight: 600;
+        }
+
+        /* Health Data */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+
+        .data-box {
+            background: #F9FAFB;
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            border: 2px solid #E5E7EB;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .data-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .data-label {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .data-icon {
+            font-size: 2rem;
+        }
+
+        .data-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .status-ok {
+            background: #D1FAE5;
+            color: #065F46;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .status-warn {
+            background: #FEF3C7;
+            color: #92400E;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        /* Medical Info Tags */
+        .med-section {
+            background: #F9FAFB;
+            padding: 1.25rem;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            border: 2px solid #E5E7EB;
+        }
+        .med-section-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .med-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .med-tag {
+            padding: 0.375rem 0.875rem;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .med-tag.disease {
+            background: #EDE9FE;
+            color: #5B21B6;
+        }
+        .med-tag.allergy {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        .med-tag.medication {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+        .med-none {
+            color: #9CA3AF;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        /* Big Buttons */
+        .btn-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .big-btn {
+            background: #F9FAFB;
+            border: 3px solid #E5E7EB;
+            padding: 2rem 1rem;
+            border-radius: 16px;
+            text-align: center;
+            text-decoration: none;
+            color: #111827;
+            display: block;
+        }
+
+        .big-btn:active {
+            background: #F3F4F6;
+        }
+
+        .btn-icon {
+            font-size: 3.5rem;
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+
+        .btn-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 3px solid #E5E7EB;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 0.75rem 0;
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #9CA3AF;
+            padding: 0.5rem;
+        }
+
+        .nav-btn.on {
+            color: #10B981;
+        }
+
+        .nav-icon {
+            font-size: 2rem;
+        }
+
+        .nav-text {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <img id="patientAvatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' rx='100' fill='%2310B981'/%3E%3Ccircle cx='100' cy='75' r='33' fill='white' opacity='0.9'/%3E%3Cellipse cx='100' cy='160' rx='50' ry='38' fill='white' opacity='0.9'/%3E%3C/svg%3E" alt="รูปโปรไฟล์" class="avatar">
+        <div class="top-info">
+            <div class="name" id="userName">สวัสดี</div>
+            <div class="hn" id="userHN">HN: -----</div>
+        </div>
+        <button class="out-btn" onclick="patientLogout()">ออก</button>
+    </div>
+
+    <div class="box">
+        <!-- นัดหมาย -->
+        <div class="big-appt">
+            <div class="big-appt-label">📅 นัดครั้งถัดไป</div>
+            <div class="big-appt-date">25 มีนาคม 2567</div>
+            <div class="big-appt-time">⏰ 09:00 น.</div>
+            <div class="big-appt-time">🏥 ศูนย์สุขภาพ</div>
+        </div>
+
+        <!-- ผลตรวจ -->
+        <div class="section-title">📊 ผลตรวจล่าสุด</div>
+        <div id="checkupDate" style="color:#6B7280; font-size:1rem; font-weight:600; margin-top:-0.5rem; margin-bottom:1rem;">📅 วันที่ตรวจ: --</div>
+
+        <div class="data-box">
+            <div class="data-row">
+                <div class="data-label">
+                    <span class="data-icon">⚖️</span>
+                    <span>น้ำหนัก</span>
+                </div>
+                <div class="data-value">75.5 kg</div>
+            </div>
+        </div>
+
+        <div class="data-box">
+            <div class="data-row">
+                <div class="data-label">
+                    <span class="data-icon">💉</span>
+                    <span>ความดัน</span>
+                </div>
+                <div class="data-value">135/85</div>
+            </div>
+            <div class="status-warn">⚠️ สูงเล็กน้อย</div>
+        </div>
+
+        <div class="data-box">
+            <div class="data-row">
+                <div class="data-label">
+                    <span class="data-icon">🩸</span>
+                    <span>น้ำตาล</span>
+                </div>
+                <div class="data-value" id="latestSugar">110 mg/dL</div>
+            </div>
+            <div id="sugarStatus" class="status-ok">✓ ปกติ</div>
+        </div>
+
+        <div class="data-box">
+            <div class="data-row">
+                <div class="data-label">
+                    <span class="data-icon">🫁</span>
+                    <span>ออกซิเจน (SpO2)</span>
+                </div>
+                <div class="data-value" id="latestSpO2">-- %</div>
+            </div>
+            <div id="spo2Status" class="status-ok">--</div>
+        </div>
+
+        <!-- ข้อมูลสุขภาพ -->
+        <div id="medicalInfoSection" style="display:none;">
+            <div class="section-title">🏥 ข้อมูลสุขภาพ</div>
+            <div class="med-section" id="diseaseSection">
+                <div class="med-section-title">🩺 โรคประจำตัว</div>
+                <div class="med-tags" id="diseaseTags"></div>
+            </div>
+            <div class="med-section" id="allergySection">
+                <div class="med-section-title">⚠️ แพ้ยา/อาหาร</div>
+                <div class="med-tags" id="allergyTags"></div>
+            </div>
+            <div class="med-section" id="medSection">
+                <div class="med-section-title">💊 ยาที่ใช้ประจำ</div>
+                <div class="med-tags" id="medTags"></div>
+            </div>
+        </div>
+
+        <!-- เมนู -->
+        <div class="btn-grid">
+            <a href="patient-history-v2.html" class="big-btn">
+                <span class="btn-icon">📋</span>
+                <span class="btn-text">ประวัติ</span>
+            </a>
+            <a href="patient-appointments-v2.html" class="big-btn">
+                <span class="btn-icon">📅</span>
+                <span class="btn-text">นัดหมาย</span>
+            </a>
+            <a href="patient-chat.html" class="big-btn">
+                <span class="btn-icon">💬</span>
+                <span class="btn-text">แชท</span>
+            </a>
+            <a href="#" onclick="alert('🚨 โทร 1669'); return false;" class="big-btn">
+                <span class="btn-icon">🚨</span>
+                <span class="btn-text">ฉุกเฉิน</span>
+            </a>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="patient-portal-v2.html" class="nav-btn on">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">หน้าหลัก</span>
+        </a>
+        <a href="patient-history-v2.html" class="nav-btn">
+            <span class="nav-icon">📋</span>
+            <span class="nav-text">ประวัติ</span>
+        </a>
+        <a href="patient-chat.html" class="nav-btn">
+            <span class="nav-icon">💬</span>
+            <span class="nav-text">แชท</span>
+        </a>
+        <a href="patient-profile-v2.html" class="nav-btn">
+            <span class="nav-icon">👤</span>
+            <span class="nav-text">โปรไฟล์</span>
+        </a>
+    </nav>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+    <script src="../js/mock-data.js"></script>
+    <script src="../js/mock-data-chat.js"></script>
+    <script src="../js/patient-auth.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const patient = updatePatientInfo();
+            if (patient) {
+                document.getElementById('userName').textContent = 'สวัสดี ' + patient.firstName;
+                // Set avatar - prefer profilePhoto from ID card
+                var avatarEl = document.getElementById('patientAvatar');
+                if (avatarEl) {
+                    if (patient.profilePhoto) {
+                        avatarEl.src = patient.profilePhoto;
+                    } else {
+                        avatarEl.src = DEFAULT_AVATAR;
+                    }
+                }
+
+                // Update health data from patient records
+                if (patient.healthRecords && patient.healthRecords.length > 0) {
+                    var rec = patient.healthRecords[0];
+
+                    // Checkup date
+                    if (rec.date) {
+                        var checkupD = new Date(rec.date);
+                        document.getElementById('checkupDate').textContent = '📅 วันที่ตรวจ: ' + checkupD.toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
+                    }
+
+                    // SpO2
+                    if (rec.oxygenLevel) {
+                        var spo2Cat = getSpO2Category(rec.oxygenLevel);
+                        document.getElementById('latestSpO2').textContent = rec.oxygenLevel + ' %';
+                        var spo2StatusEl = document.getElementById('spo2Status');
+                        if (spo2Cat.alert) {
+                            spo2StatusEl.textContent = '⚠️ ' + spo2Cat.label;
+                            spo2StatusEl.className = 'status-warn';
+                        } else {
+                            spo2StatusEl.textContent = '✓ ' + spo2Cat.label;
+                            spo2StatusEl.className = 'status-ok';
+                        }
+                    }
+
+                    // Sugar
+                    if (rec.bloodSugar) {
+                        document.getElementById('latestSugar').textContent = rec.bloodSugar + ' mg/dL';
+                        var sugarCat = getSugarCategory(rec.bloodSugar);
+                        var sugarStatusEl = document.getElementById('sugarStatus');
+                        if (sugarCat.alert) {
+                            sugarStatusEl.textContent = '⚠️ ' + sugarCat.label;
+                            sugarStatusEl.className = 'status-warn';
+                        } else {
+                            sugarStatusEl.textContent = '✓ ' + sugarCat.label;
+                            sugarStatusEl.className = 'status-ok';
+                        }
+                    }
+
+                    // Appointment
+                    if (patient.nextAppointment) {
+                        var d = new Date(patient.nextAppointment);
+                        document.querySelector('.big-appt-date').textContent = d.toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
+                        var today = new Date();
+                        var daysLeft = Math.ceil((d - today) / (1000*60*60*24));
+                        document.querySelector('.big-appt-time').textContent = (daysLeft > 0 ? '⏰ อีก ' + daysLeft + ' วัน' : '⏰ วันนี้!');
+                    }
+                }
+
+                // Medical info (diseases, allergies, medications)
+                var hasMedInfo = false;
+                var diseaseTags = document.getElementById('diseaseTags');
+                var allergyTags = document.getElementById('allergyTags');
+                var medTags = document.getElementById('medTags');
+
+                if (patient.diseases && patient.diseases.length > 0) {
+                    hasMedInfo = true;
+                    diseaseTags.innerHTML = patient.diseases.map(function(d) {
+                        return '<span class="med-tag disease">' + (diseaseLabels[d] || d) + '</span>';
+                    }).join('');
+                } else {
+                    diseaseTags.innerHTML = '<span class="med-none">ไม่มี</span>';
+                }
+
+                if (patient.allergies && patient.allergies.length > 0) {
+                    hasMedInfo = true;
+                    allergyTags.innerHTML = patient.allergies.map(function(a) {
+                        return '<span class="med-tag allergy">' + a + '</span>';
+                    }).join('');
+                } else {
+                    allergyTags.innerHTML = '<span class="med-none">ไม่มี</span>';
+                }
+
+                if (patient.currentMedications && patient.currentMedications.length > 0) {
+                    hasMedInfo = true;
+                    medTags.innerHTML = patient.currentMedications.map(function(m) {
+                        return '<span class="med-tag medication">' + m + '</span>';
+                    }).join('');
+                } else {
+                    medTags.innerHTML = '<span class="med-none">ไม่มี</span>';
+                }
+
+                document.getElementById('medicalInfoSection').style.display = 'block';
+
+                // Check for reschedule notifications
+                if (typeof initNotifications === 'function') initNotifications();
+                var notifs = typeof getNotifications === 'function' ? getNotifications() : [];
+                var reschedNotifs = notifs.filter(function(n) { return n.type === 'reschedule' && !n.read; });
+                if (reschedNotifs.length > 0) {
+                    var latest = reschedNotifs[0];
+                    var banner = document.createElement('div');
+                    banner.style.cssText = 'background:#FEF3C7; border:3px solid #F59E0B; border-radius:16px; padding:1.25rem; margin-bottom:1.5rem;';
+                    banner.innerHTML = '<div style="font-weight:700; font-size:1.25rem; color:#92400E; margin-bottom:0.5rem;">📅 นัดหมายเปลี่ยนแปลง</div>' +
+                        '<div style="color:#78350F;">' + latest.message + '</div>' +
+                        '<button onclick="this.parentElement.remove(); markNotificationRead(\'' + latest.id + '\');" style="margin-top:0.75rem; background:#F59E0B; color:white; border:none; padding:0.5rem 1rem; border-radius:8px; font-weight:700; cursor:pointer; font-family:Prompt,sans-serif;">รับทราบ</button>';
+                    var box = document.querySelector('.box');
+                    var appt = document.querySelector('.big-appt');
+                    box.insertBefore(banner, appt);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

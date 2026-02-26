@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>รายงาน - Health Desk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: #FFFFFF;
+            font-size: 1.125rem;
+            line-height: 1.6;
+            padding-bottom: 90px;
+        }
+
+        /* Header */
+        .top {
+            background: #4F46E5;
+            color: white;
+            padding: 1.5rem 1rem;
+        }
+
+        .title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .out-btn {
+            background: white;
+            color: #4F46E5;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        /* Content */
+        .box {
+            padding: 1.5rem 1rem;
+            text-align: center;
+        }
+
+        .coming-soon {
+            padding: 3rem 1rem;
+        }
+
+        .icon-big {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .coming-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .coming-text {
+            font-size: 1.125rem;
+            color: #6B7280;
+            line-height: 1.8;
+        }
+
+        .back-btn {
+            background: #4F46E5;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 2rem;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 3px solid #E5E7EB;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 0.75rem 0;
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #9CA3AF;
+            padding: 0.5rem;
+        }
+
+        .nav-btn.on {
+            color: #4F46E5;
+        }
+
+        .nav-icon {
+            font-size: 2rem;
+        }
+
+        .nav-text {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <div class="title">📈 รายงาน</div>
+        <button class="out-btn" onclick="logout()">ออกจากระบบ</button>
+    </div>
+
+    <div class="box">
+        <div class="coming-soon">
+            <div class="icon-big">📊</div>
+            <div class="coming-title">หน้ารายงานกำลังพัฒนา</div>
+            <div class="coming-text">
+                ฟีเจอร์นี้จะมีรายงานและ<br>
+                การวิเคราะห์ข้อมูลสุขภาพชุมชน<br>
+                อย่างละเอียด<br><br>
+                ติดตามได้ในเวอร์ชันถัดไป
+            </div>
+            <button class="back-btn" onclick="location.href='dashboard.html'">
+                กลับไป Dashboard
+            </button>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="dashboard.html" class="nav-btn">
+            <span class="nav-icon">📊</span>
+            <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="patients.html" class="nav-btn">
+            <span class="nav-icon">👥</span>
+            <span class="nav-text">ผู้ป่วย</span>
+        </a>
+        <a href="field-app.html" class="nav-btn">
+            <span class="nav-icon">📱</span>
+            <span class="nav-text">บันทึก</span>
+        </a>
+        <a href="reports.html" class="nav-btn on">
+            <span class="nav-icon">📈</span>
+            <span class="nav-text">รายงาน</span>
+        </a>
+    </nav>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+    <script src="../js/mock-data.js"></script>
+    <script src="../js/auth.js"></script>
+</body>
+</html>

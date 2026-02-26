@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>บันทึกข้อมูล - Health Desk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: #F3F4F6;
+            font-size: 1rem;
+            line-height: 1.5;
+            padding-bottom: 75px;
+            color: #1F2937;
+        }
+
+        /* === Header === */
+        .top {
+            background: #4F46E5; color: white;
+            padding: 0.75rem 1rem;
+        }
+        .top-row {
+            display: flex; justify-content: space-between;
+            align-items: center;
+        }
+        .top-left { display: flex; align-items: center; gap: 0.6rem; }
+        .title { font-size: 1.15rem; font-weight: 700; }
+        .role-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 0.15rem 0.55rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .top-actions { display: flex; gap: 0.5rem; align-items: center; }
+        .notif-btn {
+            background: none; border: none; color: white;
+            font-size: 1.15rem; cursor: pointer; padding: 0.3rem;
+            position: relative;
+        }
+        .notif-badge {
+            display: none; position: absolute; top: -2px; right: -4px;
+            background: #EF4444; color: white; font-size: 0.55rem;
+            font-weight: 700; min-width: 14px; height: 14px;
+            border-radius: 7px; align-items: center; justify-content: center;
+            padding: 0 2px;
+        }
+        .out-btn {
+            background: rgba(255,255,255,0.15); color: white;
+            border: 1.5px solid rgba(255,255,255,0.35);
+            padding: 0.25rem 0.6rem; border-radius: 6px;
+            font-size: 0.75rem; font-weight: 600; cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        /* === Content === */
+        .box { padding: 0.75rem; }
+
+        /* === Search === */
+        .search-section {
+            background: white;
+            padding: 0.6rem;
+            border-radius: 10px;
+            margin-bottom: 0.6rem;
+            border: 1px solid #E5E7EB;
+        }
+        .search-input {
+            width: 100%; padding: 0.55rem 0.7rem;
+            border: 1.5px solid #D1D5DB;
+            border-radius: 8px; font-size: 0.9rem;
+            font-family: 'Prompt', sans-serif; font-weight: 500;
+            background: #F9FAFB;
+        }
+        .search-input:focus { outline: none; border-color: #4F46E5; background: white; }
+        .search-input::placeholder { color: #9CA3AF; font-weight: 400; }
+        .search-results { margin-top: 0.4rem; }
+        .search-result-item {
+            padding: 0.6rem 0.7rem; background: #F9FAFB;
+            border: 1px solid #E5E7EB; border-radius: 8px;
+            margin-bottom: 0.4rem; font-size: 0.85rem; font-weight: 500;
+        }
+        .sr-info { margin-bottom: 0.35rem; }
+        .sr-name { font-weight: 700; color: #1F2937; }
+        .sr-meta { font-size: 0.75rem; color: #6B7280; margin-top: 0.1rem; }
+        .sr-actions { display: flex; gap: 0.35rem; }
+        .sr-btn {
+            flex: 1; padding: 0.3rem; border-radius: 6px;
+            font-size: 0.75rem; font-weight: 600; cursor: pointer;
+            font-family: 'Prompt', sans-serif; border: none; text-align: center;
+        }
+        .sr-btn-history { background: #EEF2FF; color: #4F46E5; }
+        .sr-btn-history:active { background: #C7D2FE; }
+        .sr-btn-record { background: #D1FAE5; color: #065F46; }
+        .sr-btn-record:active { background: #A7F3D0; }
+        .sr-not-found {
+            padding: 0.7rem; background: #FFFBEB;
+            border: 1.5px dashed #F59E0B; border-radius: 8px;
+            text-align: center; margin-top: 0.3rem;
+        }
+        .sr-not-found-text { font-size: 0.85rem; color: #92400E; margin-bottom: 0.35rem; font-weight: 500; }
+        .sr-btn-add {
+            display: inline-block; padding: 0.35rem 1rem; border-radius: 8px;
+            background: #F59E0B; color: white; font-size: 0.8rem;
+            font-weight: 700; cursor: pointer; border: none;
+            font-family: 'Prompt', sans-serif;
+        }
+        .sr-btn-add:active { background: #D97706; }
+
+        /* === Selected Patient === */
+        .selected-patient {
+            display: none; background: #EEF2FF;
+            padding: 0.6rem 0.75rem; border-radius: 8px;
+            margin-bottom: 0.6rem;
+            border-left: 3px solid #4F46E5;
+        }
+        .selected-patient.show { display: flex; align-items: center; justify-content: space-between; }
+        .sp-name { font-size: 0.95rem; font-weight: 700; color: #1E3A5F; }
+        .sp-meta { font-size: 0.75rem; color: #4F46E5; font-weight: 500; margin-top: 0.1rem; }
+        .sp-clear {
+            background: none; border: none; color: #9CA3AF;
+            font-size: 1rem; cursor: pointer; padding: 0.2rem 0.4rem;
+        }
+        .sp-clear:active { color: #EF4444; }
+
+        /* === Form Card === */
+        .form-card {
+            background: white;
+            padding: 0.85rem;
+            border-radius: 10px;
+            margin-bottom: 0.6rem;
+            border: 1px solid #E5E7EB;
+        }
+        .form-card-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 0.6rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        .form-card-title .dot {
+            display: inline-block;
+            width: 6px; height: 6px;
+            background: #4F46E5;
+            border-radius: 50%;
+            margin-right: 0.4rem;
+            vertical-align: middle;
+        }
+
+        /* === Form Fields === */
+        .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+        .field-group { margin-bottom: 0.5rem; }
+        .field-group:last-child { margin-bottom: 0; }
+        .field-label {
+            display: block; font-size: 0.78rem;
+            font-weight: 600; color: #374151;
+            margin-bottom: 0.2rem;
+        }
+        .field-label .unit { color: #9CA3AF; font-weight: 400; }
+        .field-input {
+            width: 100%; padding: 0.5rem 0.6rem;
+            border: 1.5px solid #D1D5DB;
+            border-radius: 8px; font-size: 0.9rem;
+            font-family: 'Prompt', sans-serif; font-weight: 500;
+            background: white;
+        }
+        .field-input:focus { outline: none; border-color: #4F46E5; }
+        .field-input::placeholder { color: #D1D5DB; }
+        .field-select {
+            width: 100%; padding: 0.5rem 0.6rem;
+            border: 1.5px solid #D1D5DB;
+            border-radius: 8px; font-size: 0.9rem;
+            font-family: 'Prompt', sans-serif; font-weight: 500;
+            background: white;
+        }
+        .field-select:focus { outline: none; border-color: #4F46E5; }
+        textarea.field-input { resize: vertical; min-height: 60px; }
+        .field-divider { border-top: 1px solid #F3F4F6; margin: 0.5rem 0; }
+
+        /* === Role Sections === */
+        .doctor-section { display: none; }
+        .doctor-section .form-card { border-left: 3px solid #10B981; }
+        .doctor-section .form-card-title { color: #065F46; }
+        .doctor-section .form-card-title .dot { background: #10B981; }
+
+        .worker-section { display: none; }
+        .worker-section .form-card { border-left: 3px solid #F59E0B; }
+        .worker-section .form-card-title { color: #92400E; }
+        .worker-section .form-card-title .dot { background: #F59E0B; }
+
+        /* === Buttons === */
+        .btn-row {
+            display: grid; grid-template-columns: 1fr 2fr;
+            gap: 0.5rem; margin-top: 0.6rem;
+        }
+        .save-btn {
+            background: #10B981; color: white; border: none;
+            padding: 0.75rem; border-radius: 10px; font-size: 0.95rem;
+            font-weight: 700; cursor: pointer; font-family: 'Prompt', sans-serif;
+        }
+        .save-btn:active { background: #059669; }
+        .clear-btn {
+            background: white; color: #6B7280;
+            border: 1.5px solid #D1D5DB; padding: 0.75rem;
+            border-radius: 10px; font-size: 0.85rem; font-weight: 600;
+            cursor: pointer; font-family: 'Prompt', sans-serif;
+        }
+        .clear-btn:active { background: #F3F4F6; }
+        .refer-btn {
+            width: 100%; background: #F59E0B; color: white; border: none;
+            padding: 0.65rem; border-radius: 10px; font-size: 0.9rem;
+            font-weight: 700; cursor: pointer; font-family: 'Prompt', sans-serif;
+            margin-top: 0.5rem;
+        }
+        .order-btn {
+            width: 100%; background: #4F46E5; color: white; border: none;
+            padding: 0.65rem; border-radius: 10px; font-size: 0.9rem;
+            font-weight: 700; cursor: pointer; font-family: 'Prompt', sans-serif;
+            margin-top: 0.5rem;
+        }
+
+        /* === Bottom Nav === */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: white; border-top: 2px solid #E5E7EB;
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            padding: 0.4rem 0; z-index: 1000;
+        }
+        .nav-btn {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 0.2rem; text-decoration: none; color: #9CA3AF; padding: 0.3rem;
+        }
+        .nav-btn.on { color: #4F46E5; }
+        .nav-icon { font-size: 1.4rem; }
+        .nav-text { font-size: 0.75rem; font-weight: 600; }
+
+        /* Medical Info Tags */
+        .med-tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            min-height: 0;
+        }
+        .med-tag-container:not(:empty) { margin-bottom: 0.4rem; }
+        .med-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            background: #EEF2FF;
+            color: #4338CA;
+            padding: 0.25rem 0.55rem;
+            border-radius: 1rem;
+            font-size: 0.78rem;
+            font-weight: 500;
+        }
+        .med-tag.allergy { background: #FEF2F2; color: #DC2626; }
+        .med-tag.med { background: #F0FDF4; color: #16A34A; }
+        .med-tag .rm {
+            background: none; border: none;
+            color: inherit; opacity: 0.5;
+            font-size: 0.85rem; cursor: pointer;
+            padding: 0; line-height: 1;
+        }
+        .med-tag .rm:active { opacity: 1; }
+        .mini-add-row {
+            display: flex;
+            gap: 0.3rem;
+        }
+        .mini-add-btn {
+            background: #4F46E5; color: white;
+            border: none; width: 34px; height: 34px;
+            border-radius: 8px; font-size: 1.1rem;
+            font-weight: 700; cursor: pointer;
+            display: flex; align-items: center;
+            justify-content: center; flex-shrink: 0;
+        }
+        .mini-add-btn:active { background: #3730A3; }
+        .allergy-warning {
+            background: #FEF2F2;
+            border: 1.5px solid #FECACA;
+            border-radius: 8px;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.8rem;
+            color: #991B1B;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+
+        /* === History Modal === */
+        .modal-overlay {
+            display: none;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 3000;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .modal-sheet {
+            background: white;
+            border-radius: 16px 16px 0 0;
+            margin-top: 4vh;
+            min-height: 96vh;
+            padding: 1rem 1rem 2rem;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #F3F4F6;
+        }
+        .modal-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #111827;
+        }
+        .modal-close {
+            background: #F3F4F6;
+            border: none;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: 700;
+            color: #6B7280;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-close:active { background: #E5E7EB; }
+        .modal-patient-info {
+            background: #EEF2FF;
+            padding: 0.65rem 0.85rem;
+            border-radius: 10px;
+            margin-bottom: 0.85rem;
+            border-left: 3px solid #4F46E5;
+        }
+        .modal-patient-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1E3A5F;
+        }
+        .modal-patient-meta {
+            font-size: 0.8rem;
+            color: #4F46E5;
+            font-weight: 500;
+            margin-top: 0.1rem;
+        }
+
+        /* History Record Card */
+        .hist-card {
+            background: white;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+        }
+        .hist-date {
+            background: #F0FDF4;
+            color: #065F46;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.5rem 0.85rem;
+            border-bottom: 1.5px solid #E5E7EB;
+        }
+        .hist-body { padding: 0.5rem 0; }
+        .hist-row {
+            display: flex;
+            align-items: center;
+            padding: 0.4rem 0.85rem;
+            border-bottom: 1px solid #F9FAFB;
+        }
+        .hist-row:last-child { border-bottom: none; }
+        .hist-icon {
+            width: 28px;
+            font-size: 1.05rem;
+            flex-shrink: 0;
+            text-align: center;
+        }
+        .hist-label {
+            flex: 1;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        .hist-value {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #111827;
+            text-align: right;
+            white-space: nowrap;
+        }
+        .hist-badge {
+            display: inline-block;
+            padding: 0.1rem 0.45rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.4rem;
+            white-space: nowrap;
+        }
+        .hist-badge.ok { background: #D1FAE5; color: #065F46; }
+        .hist-badge.warn { background: #FEF3C7; color: #92400E; }
+        .hist-badge.danger { background: #FEE2E2; color: #991B1B; }
+        .hist-note {
+            margin: 0.35rem 0.85rem;
+            padding: 0.45rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            border-left: 3px solid;
+        }
+        .hist-note.info { background: #EFF6FF; border-color: #3B82F6; color: #1E40AF; }
+        .hist-note.diag { background: #FEF3C7; border-color: #F59E0B; color: #92400E; }
+        .hist-note.rx { background: #F0FDF4; border-color: #10B981; color: #065F46; }
+        .hist-note.plan { background: #EDE9FE; border-color: #8B5CF6; color: #5B21B6; }
+        .hist-recorder {
+            padding: 0.35rem 0.85rem;
+            font-size: 0.75rem;
+            color: #9CA3AF;
+            font-weight: 600;
+            border-top: 1px solid #F3F4F6;
+        }
+        .hist-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #9CA3AF;
+        }
+        .hist-empty-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .hist-empty-text { font-size: 1rem; font-weight: 600; }
+
+        /* BMI display */
+        .bmi-display {
+            background: #F3F4F6;
+            padding: 0.35rem 0.65rem;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #6B7280;
+            margin-top: 0.3rem;
+            text-align: center;
+        }
+        .bmi-display .bmi-val { font-weight: 700; color: #111827; }
+
+        /* Medical info tags in history modal */
+        .hist-med-section { padding: 0.5rem 0; }
+        .hist-med-label { font-size: 0.72rem; color: #6B7280; font-weight: 600; margin-bottom: 0.25rem; }
+        .hist-med-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.4rem; }
+        .hist-med-tag {
+            padding: 0.15rem 0.55rem;
+            border-radius: 12px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+        .hist-med-tag.disease { background: #EDE9FE; color: #5B21B6; }
+        .hist-med-tag.allergy { background: #FEE2E2; color: #991B1B; }
+        .hist-med-tag.medication { background: #DBEAFE; color: #1E40AF; }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <div class="top-row">
+            <div class="top-left">
+                <div class="title" id="pageTitle">บันทึกข้อมูลสุขภาพ</div>
+                <div class="role-badge" id="userRoleDisplay"></div>
+            </div>
+            <div class="top-actions">
+                <button class="notif-btn" onclick="toggleNotifications()">
+                    🔔
+                    <span class="notif-badge" id="notifBadge"></span>
+                </button>
+                <button class="out-btn" onclick="logout()">ออก</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notifPanel" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:white; z-index:2000; overflow-y:auto;"></div>
+
+    <div class="box">
+        <!-- Search -->
+        <div class="search-section" id="searchCard">
+            <input type="text" class="search-input" id="patientSearch" placeholder="ค้นหาผู้ป่วย — ชื่อ, HN, เลขบัตร..." oninput="searchPatients()">
+            <div class="search-results" id="searchResults"></div>
+        </div>
+
+        <!-- Selected Patient -->
+        <div class="selected-patient" id="selectedPatient">
+            <div>
+                <div class="sp-name" id="spName"></div>
+                <div class="sp-meta" id="spMeta"></div>
+            </div>
+            <button class="sp-clear" onclick="clearPatientSelection()" title="เปลี่ยนผู้ป่วย">✕</button>
+        </div>
+
+        <!-- Medical Info (shown when patient selected) -->
+        <div class="form-card" id="medicalInfoCard" style="display:none;">
+            <div class="form-card-title"><span class="dot"></span>ข้อมูลทางการแพทย์</div>
+
+            <!-- โรคประจำตัว -->
+            <div class="field-group">
+                <label class="field-label">โรคประจำตัว</label>
+                <div class="med-tag-container" id="diseaseTags"></div>
+                <div class="mini-add-row">
+                    <select class="field-select" id="diseaseSelect" style="flex:1;">
+                        <option value="">-- เพิ่มโรค --</option>
+                        <option value="hypertension">ความดันโลหิตสูง</option>
+                        <option value="diabetes">เบาหวาน</option>
+                        <option value="dyslipidemia">ไขมันในเลือดสูง</option>
+                        <option value="heart">โรคหัวใจ</option>
+                        <option value="obesity">โรคอ้วน</option>
+                        <option value="pre_diabetes">เสี่ยงเบาหวาน</option>
+                        <option value="gout">เก๊าท์</option>
+                        <option value="asthma">หอบหืด</option>
+                        <option value="ckd">โรคไตเรื้อรัง</option>
+                        <option value="copd">ถุงลมโป่งพอง</option>
+                        <option value="stroke">หลอดเลือดสมอง</option>
+                        <option value="thyroid">ไทรอยด์</option>
+                        <option value="osteoarthritis">ข้อเสื่อม</option>
+                    </select>
+                    <button type="button" class="mini-add-btn" onclick="addDiseaseFromSelect()">+</button>
+                </div>
+                <div class="mini-add-row" style="margin-top:0.3rem;">
+                    <input type="text" class="field-input" id="customDiseaseInput" placeholder="โรคอื่นๆ..." style="flex:1;">
+                    <button type="button" class="mini-add-btn" onclick="addCustomDisease()">+</button>
+                </div>
+            </div>
+
+            <div class="field-divider"></div>
+
+            <!-- ประวัติแพ้ยา -->
+            <div class="field-group">
+                <label class="field-label">⚠️ ประวัติแพ้ยา</label>
+                <div id="allergyWarning" class="allergy-warning" style="display:none;"></div>
+                <div class="med-tag-container" id="fAllergyTags"></div>
+                <div class="mini-add-row">
+                    <input type="text" class="field-input" id="fAllergyInput" placeholder="ชื่อยาที่แพ้..." style="flex:1;">
+                    <button type="button" class="mini-add-btn" onclick="addAllergyTag()">+</button>
+                </div>
+            </div>
+
+            <div class="field-divider"></div>
+
+            <!-- ยาที่ใช้ประจำ -->
+            <div class="field-group">
+                <label class="field-label">💊 ยาที่ใช้ประจำ</label>
+                <div class="med-tag-container" id="fMedicationTags"></div>
+                <div class="mini-add-row">
+                    <input type="text" class="field-input" id="fMedicationInput" placeholder="ชื่อยา เช่น Metformin 500mg" style="flex:1;">
+                    <button type="button" class="mini-add-btn" onclick="addMedicationTag()">+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vital Signs -->
+        <div class="form-card">
+            <div class="form-card-title"><span class="dot"></span>สัญญาณชีพ / Vital Signs</div>
+
+            <!-- น้ำหนัก / ส่วนสูง / BMI -->
+            <div class="field-grid">
+                <div class="field-group">
+                    <label class="field-label">น้ำหนัก <span class="unit">(kg)</span></label>
+                    <input type="number" class="field-input" id="weight" placeholder="75.5" step="0.1" oninput="calcBMI()">
+                </div>
+                <div class="field-group">
+                    <label class="field-label">ส่วนสูง <span class="unit">(cm)</span></label>
+                    <input type="number" class="field-input" id="height" placeholder="170" oninput="calcBMI()">
+                </div>
+            </div>
+            <div id="bmiResult" class="bmi-display" style="display:none;"></div>
+
+            <div class="field-divider"></div>
+
+            <!-- รอบเอว -->
+            <div class="field-grid">
+                <div class="field-group">
+                    <label class="field-label">รอบเอว <span class="unit">(cm)</span></label>
+                    <input type="number" class="field-input" id="waistCircumference" placeholder="88" step="0.1">
+                </div>
+                <div class="field-group"></div>
+            </div>
+
+            <div class="field-divider"></div>
+
+            <!-- ความดัน -->
+            <div class="field-grid">
+                <div class="field-group">
+                    <label class="field-label">Systolic <span class="unit">(mmHg)</span></label>
+                    <input type="number" class="field-input" id="systolic" placeholder="120">
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Diastolic <span class="unit">(mmHg)</span></label>
+                    <input type="number" class="field-input" id="diastolic" placeholder="80">
+                </div>
+            </div>
+
+            <div class="field-divider"></div>
+
+            <!-- ชีพจร / อุณหภูมิ -->
+            <div class="field-grid">
+                <div class="field-group">
+                    <label class="field-label">ชีพจร <span class="unit">(bpm)</span></label>
+                    <input type="number" class="field-input" id="heartRate" placeholder="72">
+                </div>
+                <div class="field-group">
+                    <label class="field-label">อุณหภูมิ <span class="unit">(°C)</span></label>
+                    <input type="number" class="field-input" id="temperature" placeholder="36.5" step="0.1">
+                </div>
+            </div>
+
+            <div class="field-divider"></div>
+
+            <!-- SpO2 / อัตราหายใจ -->
+            <div class="field-grid">
+                <div class="field-group">
+                    <label class="field-label">SpO2 <span class="unit">(%)</span></label>
+                    <input type="number" class="field-input" id="oxygenLevel" placeholder="98" min="0" max="100">
+                </div>
+                <div class="field-group">
+                    <label class="field-label">อัตราหายใจ <span class="unit">(ครั้ง/นาที)</span></label>
+                    <input type="number" class="field-input" id="respiratoryRate" placeholder="18">
+                </div>
+            </div>
+
+            <div class="field-divider"></div>
+
+            <!-- น้ำตาล -->
+            <div class="field-grid">
+                <div class="field-group">
+                    <label class="field-label">น้ำตาลในเลือด <span class="unit">(mg/dL)</span></label>
+                    <input type="number" class="field-input" id="bloodSugar" placeholder="100">
+                </div>
+                <div class="field-group">
+                    <label class="field-label">ชนิดการเจาะ</label>
+                    <select class="field-select" id="bloodSugarType">
+                        <option value="">-- เลือก --</option>
+                        <option value="fasting">อดอาหาร (FBS)</option>
+                        <option value="postprandial">หลังอาหาร (PP)</option>
+                        <option value="random">สุ่ม (Random)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lab Results -->
+        <div class="form-card">
+            <div class="form-card-title"><span class="dot"></span>ผลตรวจเลือด / Lab Results</div>
+
+            <!-- HbA1c -->
+            <div class="field-grid">
+                <div class="field-group">
+                    <label class="field-label">HbA1c <span class="unit">(%)</span></label>
+                    <input type="number" class="field-input" id="hba1c" placeholder="7.0" step="0.1">
+                </div>
+                <div class="field-group"></div>
+            </div>
+
+            <div class="field-divider"></div>
+
+            <!-- Lipid Panel -->
+            <div class="field-grid">
+                <div class="field-group">
+                    <label class="field-label">Cholesterol <span class="unit">(mg/dL)</span></label>
+                    <input type="number" class="field-input" id="cholesterol" placeholder="200">
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Triglyceride <span class="unit">(mg/dL)</span></label>
+                    <input type="number" class="field-input" id="triglyceride" placeholder="150">
+                </div>
+            </div>
+            <div class="field-grid">
+                <div class="field-group">
+                    <label class="field-label">HDL <span class="unit">(mg/dL)</span></label>
+                    <input type="number" class="field-input" id="hdl" placeholder="50">
+                </div>
+                <div class="field-group">
+                    <label class="field-label">LDL <span class="unit">(mg/dL)</span></label>
+                    <input type="number" class="field-input" id="ldl" placeholder="130">
+                </div>
+            </div>
+
+            <div class="field-divider"></div>
+
+            <!-- Kidney -->
+            <div class="field-grid">
+                <div class="field-group">
+                    <label class="field-label">Creatinine <span class="unit">(mg/dL)</span></label>
+                    <input type="number" class="field-input" id="creatinine" placeholder="1.0" step="0.1">
+                </div>
+                <div class="field-group">
+                    <label class="field-label">eGFR <span class="unit">(mL/min)</span></label>
+                    <input type="number" class="field-input" id="egfr" placeholder="90">
+                </div>
+            </div>
+        </div>
+
+        <!-- Behavioral Health -->
+        <div class="form-card">
+            <div class="form-card-title"><span class="dot"></span>พฤติกรรมสุขภาพ / Lifestyle</div>
+            <div class="field-grid">
+                <div class="field-group">
+                    <label class="field-label">สูบบุหรี่</label>
+                    <select class="field-select" id="smokingStatus">
+                        <option value="">-- เลือก --</option>
+                        <option value="never">ไม่เคยสูบ</option>
+                        <option value="former">เคยสูบ (เลิกแล้ว)</option>
+                        <option value="current">สูบอยู่</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">ดื่มแอลกอฮอล์</label>
+                    <select class="field-select" id="alcoholUse">
+                        <option value="">-- เลือก --</option>
+                        <option value="never">ไม่ดื่ม</option>
+                        <option value="occasional">นานๆ ครั้ง</option>
+                        <option value="regular">ดื่มเป็นประจำ</option>
+                        <option value="heavy">ดื่มหนัก</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field-grid">
+                <div class="field-group">
+                    <label class="field-label">ออกกำลังกาย</label>
+                    <select class="field-select" id="exerciseLevel">
+                        <option value="">-- เลือก --</option>
+                        <option value="none">ไม่ออกกำลังกาย</option>
+                        <option value="light">เบาๆ (เดิน)</option>
+                        <option value="moderate">ปานกลาง</option>
+                        <option value="active">สม่ำเสมอ</option>
+                    </select>
+                </div>
+                <div class="field-group"></div>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-card">
+            <div class="form-card-title"><span class="dot"></span>หมายเหตุ</div>
+            <div class="field-group">
+                <textarea class="field-input" id="notes" placeholder="บันทึกอาการหรือข้อสังเกต..."></textarea>
+            </div>
+        </div>
+
+        <!-- Worker Only -->
+        <div class="worker-section" id="workerSection">
+            <div class="form-card">
+                <div class="form-card-title"><span class="dot"></span>ประเมินความเสี่ยง</div>
+                <div class="field-group">
+                    <label class="field-label">ระดับความเสี่ยง</label>
+                    <select class="field-select" id="riskLevel">
+                        <option value="">-- เลือก --</option>
+                        <option value="none">ไม่มีความเสี่ยง</option>
+                        <option value="low">ต่ำ</option>
+                        <option value="medium">ปานกลาง</option>
+                        <option value="high">สูง</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">เหตุผลการประเมิน</label>
+                    <textarea class="field-input" id="riskReason" placeholder="อธิบายเหตุผล..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Doctor Only -->
+        <div class="doctor-section" id="doctorSection">
+            <div class="form-card">
+                <div class="form-card-title"><span class="dot"></span>การวินิจฉัย / Diagnosis</div>
+                <div class="field-group">
+                    <label class="field-label">การวินิจฉัย</label>
+                    <textarea class="field-input" id="diagnosis" placeholder="ระบุการวินิจฉัย..."></textarea>
+                </div>
+            </div>
+            <div class="form-card">
+                <div class="form-card-title"><span class="dot"></span>แผนการรักษา / Treatment</div>
+                <div class="field-group">
+                    <label class="field-label">แผนการรักษา</label>
+                    <textarea class="field-input" id="treatmentPlan" placeholder="ระบุแผนการรักษา..."></textarea>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">สั่งยา</label>
+                    <textarea class="field-input" id="prescription" placeholder="ระบุยาที่สั่ง..."></textarea>
+                </div>
+            </div>
+            <div class="form-card">
+                <div class="form-card-title"><span class="dot"></span>สั่งติดตาม / Follow-up</div>
+                <div class="field-group">
+                    <label class="field-label">มอบหมายเจ้าหน้าที่ติดตาม</label>
+                    <textarea class="field-input" id="followUpOrder" placeholder="รายละเอียดการติดตาม..."></textarea>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">นัดติดตามวันที่</label>
+                    <input type="date" class="field-input" id="followUpDate">
+                </div>
+                <button class="order-btn" onclick="orderFollowUp()">สั่งติดตามผู้ป่วย</button>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-row">
+            <button class="clear-btn" onclick="clearForm()">ล้างข้อมูล</button>
+            <button class="save-btn" onclick="saveRecord()">บันทึกข้อมูล</button>
+        </div>
+
+        <div class="worker-section" id="workerReferSection">
+            <button class="refer-btn" onclick="referToDoctor()">ส่งปรึกษาแพทย์</button>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="modal-overlay">
+        <div class="modal-sheet">
+            <div class="modal-header">
+                <div class="modal-title">📋 ประวัติการตรวจ</div>
+                <button class="modal-close" onclick="closeHistoryModal()">✕</button>
+            </div>
+            <div id="historyPatientInfo" class="modal-patient-info"></div>
+            <div id="historyContent"><div class="hist-empty"><div class="hist-empty-text">กำลังโหลด...</div></div></div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav"></nav>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+    <script src="../js/mock-data.js"></script>
+    <script src="../js/mock-data-chat.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/chat.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/nav-helper.js"></script>
+    <script>
+        var selectedPatientId = null;
+        var selectedPatientObj = null;
+        var currentRole = '';
+
+        // Medical info state
+        var patientDiseases = [];
+        var patientAllergies = [];
+        var patientMedications = [];
+
+        var diseaseLabels = {
+            'hypertension': 'ความดันโลหิตสูง',
+            'diabetes': 'เบาหวาน',
+            'heart': 'โรคหัวใจ',
+            'obesity': 'โรคอ้วน',
+            'pre_diabetes': 'เสี่ยงเบาหวาน',
+            'dyslipidemia': 'ไขมันในเลือดสูง',
+            'gout': 'เก๊าท์',
+            'asthma': 'หอบหืด',
+            'ckd': 'โรคไตเรื้อรัง',
+            'copd': 'ถุงลมโป่งพอง',
+            'stroke': 'หลอดเลือดสมอง',
+            'thyroid': 'ไทรอยด์',
+            'osteoarthritis': 'ข้อเสื่อม'
+        };
+
+        function loadMedicalInfo(patient) {
+            patientDiseases = (patient.diseases || []).slice();
+            patientAllergies = (patient.allergies || []).slice();
+            patientMedications = (patient.currentMedications || []).slice();
+            renderDiseaseTags();
+            renderAllergyTagsField();
+            renderMedicationTagsField();
+            document.getElementById('medicalInfoCard').style.display = 'block';
+        }
+
+        function renderDiseaseTags() {
+            var c = document.getElementById('diseaseTags');
+            c.innerHTML = patientDiseases.map(function(d, i) {
+                var label = diseaseLabels[d] || d;
+                return '<span class="med-tag">' + label + ' <button type="button" class="rm" onclick="removeDisease(' + i + ')">✕</button></span>';
+            }).join('');
+        }
+        function renderAllergyTagsField() {
+            var c = document.getElementById('fAllergyTags');
+            c.innerHTML = patientAllergies.map(function(a, i) {
+                return '<span class="med-tag allergy">' + a + ' <button type="button" class="rm" onclick="removeAllergyTag(' + i + ')">✕</button></span>';
+            }).join('');
+            // Show warning if allergies exist
+            var warn = document.getElementById('allergyWarning');
+            if (patientAllergies.length > 0) {
+                warn.style.display = 'block';
+                warn.textContent = '⚠️ แพ้ยา: ' + patientAllergies.join(', ');
+            } else {
+                warn.style.display = 'none';
+            }
+        }
+        function renderMedicationTagsField() {
+            var c = document.getElementById('fMedicationTags');
+            c.innerHTML = patientMedications.map(function(m, i) {
+                return '<span class="med-tag med">' + m + ' <button type="button" class="rm" onclick="removeMedicationTag(' + i + ')">✕</button></span>';
+            }).join('');
+        }
+
+        function addDiseaseFromSelect() {
+            var sel = document.getElementById('diseaseSelect');
+            var val = sel.value;
+            if (!val || patientDiseases.indexOf(val) !== -1) return;
+            patientDiseases.push(val);
+            renderDiseaseTags();
+            sel.value = '';
+        }
+        function addCustomDisease() {
+            var input = document.getElementById('customDiseaseInput');
+            var val = input.value.trim();
+            if (!val || patientDiseases.indexOf(val) !== -1) return;
+            patientDiseases.push(val);
+            renderDiseaseTags();
+            input.value = '';
+        }
+        function removeDisease(i) {
+            patientDiseases.splice(i, 1);
+            renderDiseaseTags();
+        }
+
+        function addAllergyTag() {
+            var input = document.getElementById('fAllergyInput');
+            var val = input.value.trim();
+            if (!val || patientAllergies.indexOf(val) !== -1) return;
+            patientAllergies.push(val);
+            renderAllergyTagsField();
+            input.value = '';
+        }
+        function removeAllergyTag(i) {
+            patientAllergies.splice(i, 1);
+            renderAllergyTagsField();
+        }
+
+        function addMedicationTag() {
+            var input = document.getElementById('fMedicationInput');
+            var val = input.value.trim();
+            if (!val || patientMedications.indexOf(val) !== -1) return;
+            patientMedications.push(val);
+            renderMedicationTagsField();
+            input.value = '';
+        }
+        function removeMedicationTag(i) {
+            patientMedications.splice(i, 1);
+            renderMedicationTagsField();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initNavFeatures('field-app.html');
+            var user = JSON.parse(localStorage.getItem('healthdesk_user'));
+            if (user) {
+                currentRole = user.role;
+                document.getElementById('userRoleDisplay').textContent = user.roleLabel;
+                if (user.role === 'doctor') {
+                    document.getElementById('pageTitle').textContent = 'บันทึก & วินิจฉัย';
+                    document.querySelectorAll('.doctor-section').forEach(function(el) { el.style.display = 'block'; });
+                } else if (user.role === 'worker') {
+                    document.querySelectorAll('.worker-section').forEach(function(el) { el.style.display = 'block'; });
+                }
+            }
+            var params = new URLSearchParams(window.location.search);
+            var patientParam = params.get('patient');
+            if (patientParam) {
+                var patient = mockPatients.find(function(p) { return String(p.id) === String(patientParam); });
+                if (patient) selectPatient(patient);
+            }
+        });
+
+        function searchPatients() {
+            var search = document.getElementById('patientSearch').value.toLowerCase().trim();
+            var results = document.getElementById('searchResults');
+            if (search.length < 1) { results.innerHTML = ''; return; }
+            var found = mockPatients.filter(function(p) {
+                return p.firstName.toLowerCase().indexOf(search) !== -1 ||
+                    p.lastName.toLowerCase().indexOf(search) !== -1 ||
+                    p.hn.toLowerCase().indexOf(search) !== -1 ||
+                    (p.citizenId && p.citizenId.indexOf(search) !== -1);
+            }).slice(0, 5);
+            var html = '';
+            if (found.length > 0) {
+                for (var i = 0; i < found.length; i++) {
+                    var p = found[i];
+                    var diseaseTags = '';
+                    if (p.diseases && p.diseases.length > 0) {
+                        diseaseTags = ' | ' + p.diseases.map(function(d) { return diseaseLabels[d] || d; }).join(', ');
+                    }
+                    html += '<div class="search-result-item">' +
+                        '<div class="sr-info">' +
+                            '<div class="sr-name">' + p.firstName + ' ' + p.lastName + '</div>' +
+                            '<div class="sr-meta">HN: ' + p.hn + ' | อายุ ' + p.age + ' ปี' + diseaseTags + '</div>' +
+                        '</div>' +
+                        '<div class="sr-actions">' +
+                            '<button class="sr-btn sr-btn-history" onclick="viewHistory(\'' + p.id + '\')">ดูประวัติ</button>' +
+                            '<button class="sr-btn sr-btn-record" onclick="selectPatientById(\'' + p.id + '\')">เพิ่มข้อมูลตรวจ</button>' +
+                        '</div>' +
+                    '</div>';
+                }
+            } else {
+                html = '<div class="sr-not-found">' +
+                    '<div class="sr-not-found-text">ไม่พบ "' + document.getElementById('patientSearch').value + '" ในระบบ</div>' +
+                    '<button class="sr-btn-add" onclick="addNewPatient()">+ เพิ่มประชาชนใหม่</button>' +
+                '</div>';
+            }
+            results.innerHTML = html;
+        }
+
+        function viewHistory(patientId) {
+            var patient = mockPatients.find(function(p) { return String(p.id) === String(patientId); });
+            if (!patient) return;
+
+            // Show modal
+            document.getElementById('historyModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+
+            // Patient info header
+            var diseaseTags = '';
+            if (patient.diseases && patient.diseases.length > 0) {
+                diseaseTags = '<div class="hist-med-section">' +
+                    '<div class="hist-med-label">🩺 โรคประจำตัว</div>' +
+                    '<div class="hist-med-tags">' +
+                    patient.diseases.map(function(d) {
+                        return '<span class="hist-med-tag disease">' + (diseaseLabels[d] || d) + '</span>';
+                    }).join('') + '</div></div>';
+            }
+            var allergyTags = '';
+            if (patient.allergies && patient.allergies.length > 0) {
+                allergyTags = '<div class="hist-med-section">' +
+                    '<div class="hist-med-label">⚠️ แพ้ยา/อาหาร</div>' +
+                    '<div class="hist-med-tags">' +
+                    patient.allergies.map(function(a) {
+                        return '<span class="hist-med-tag allergy">' + a + '</span>';
+                    }).join('') + '</div></div>';
+            }
+            var medTags = '';
+            if (patient.currentMedications && patient.currentMedications.length > 0) {
+                medTags = '<div class="hist-med-section">' +
+                    '<div class="hist-med-label">💊 ยาที่ใช้ประจำ</div>' +
+                    '<div class="hist-med-tags">' +
+                    patient.currentMedications.map(function(m) {
+                        return '<span class="hist-med-tag medication">' + m + '</span>';
+                    }).join('') + '</div></div>';
+            }
+            document.getElementById('historyPatientInfo').innerHTML =
+                '<div class="modal-patient-name">' + patient.firstName + ' ' + patient.lastName + '</div>' +
+                '<div class="modal-patient-meta">HN: ' + patient.hn + ' | อายุ ' + patient.age + ' ปี</div>' +
+                diseaseTags + allergyTags + medTags;
+
+            // Load records
+            var contentEl = document.getElementById('historyContent');
+            contentEl.innerHTML = '<div class="hist-empty"><div class="hist-empty-text">กำลังโหลด...</div></div>';
+
+            // Try Firestore first
+            if (typeof FirebaseService !== 'undefined') {
+                FirebaseService.getHealthRecords(patientId, 10).then(function(records) {
+                    renderHistoryRecords(contentEl, records, patient);
+                }).catch(function() {
+                    renderHistoryRecords(contentEl, patient.healthRecords || [], patient);
+                });
+            } else {
+                renderHistoryRecords(contentEl, patient.healthRecords || [], patient);
+            }
+        }
+
+        // Staff name lookup
+        var staffNameMap = {
+            'staff-1': 'Admin User',
+            'staff-2': 'สมหญิง รักษา',
+            'staff-3': 'นพ.สมชาย พัฒนา'
+        };
+        function getStaffName(id) { return staffNameMap[id] || id; }
+
+        function renderHistoryRecords(container, records, patient) {
+            if (!records || records.length === 0) {
+                container.innerHTML = '<div class="hist-empty">' +
+                    '<div class="hist-empty-icon">📭</div>' +
+                    '<div class="hist-empty-text">ยังไม่มีประวัติการตรวจ</div></div>';
+                return;
+            }
+
+            var html = '';
+            for (var i = 0; i < records.length; i++) {
+                var r = records[i];
+                var dateStr = '--';
+                if (r.date) {
+                    var d = new Date(r.date);
+                    dateStr = d.toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
+                }
+
+                html += '<div class="hist-card">';
+                html += '<div class="hist-date">📅 ' + dateStr + '</div>';
+                html += '<div class="hist-body">';
+
+                // Vital signs
+                var vitals = [];
+                if (r.weight) vitals.push({ icon: '⚖️', label: 'น้ำหนัก', val: r.weight + ' kg' });
+                if (r.height) vitals.push({ icon: '📏', label: 'ส่วนสูง', val: r.height + ' cm' });
+                if (r.weight && r.height) {
+                    var bmi = (r.weight / ((r.height / 100) * (r.height / 100))).toFixed(1);
+                    var bmiCat = getBMICategory(parseFloat(bmi));
+                    vitals.push({ icon: '📊', label: 'BMI', val: bmi, status: { label: bmiCat.label, alert: bmiCat.category !== 'normal' } });
+                }
+                if (r.waistCircumference) vitals.push({ icon: '📐', label: 'รอบเอว', val: r.waistCircumference + ' cm' });
+                if (r.systolic && r.diastolic) {
+                    var bpCat = getBPCategory(r.systolic, r.diastolic);
+                    vitals.push({ icon: '💉', label: 'ความดัน', val: r.systolic + '/' + r.diastolic + ' mmHg', status: bpCat });
+                }
+                if (r.heartRate) vitals.push({ icon: '❤️', label: 'ชีพจร', val: r.heartRate + ' bpm' });
+                if (r.temperature) vitals.push({ icon: '🌡️', label: 'อุณหภูมิ', val: r.temperature + ' °C' });
+                if (r.oxygenLevel) {
+                    var spo2Cat = getSpO2Category(r.oxygenLevel);
+                    vitals.push({ icon: '🫁', label: 'SpO2', val: r.oxygenLevel + '%', status: spo2Cat });
+                }
+                if (r.respiratoryRate) vitals.push({ icon: '🌬️', label: 'อัตราหายใจ', val: r.respiratoryRate + ' ครั้ง/นาที' });
+                if (r.bloodSugar) {
+                    var sugarCat = getSugarCategory(r.bloodSugar);
+                    var sugarTypeLabel = '';
+                    if (r.bloodSugarType === 'fasting') sugarTypeLabel = ' (FBS)';
+                    else if (r.bloodSugarType === 'postprandial') sugarTypeLabel = ' (PP)';
+                    else if (r.bloodSugarType === 'random') sugarTypeLabel = ' (Random)';
+                    vitals.push({ icon: '🩸', label: 'น้ำตาล' + sugarTypeLabel, val: r.bloodSugar + ' mg/dL', status: sugarCat });
+                }
+
+                // Render vitals
+                for (var v = 0; v < vitals.length; v++) {
+                    var item = vitals[v];
+                    var badgeHtml = '';
+                    if (item.status) {
+                        var badgeCls = item.status.alert ? 'warn' : 'ok';
+                        var prefix = item.status.alert ? '⚠️ ' : '✓ ';
+                        badgeHtml = '<span class="hist-badge ' + badgeCls + '">' + prefix + item.status.label + '</span>';
+                    }
+                    html += '<div class="hist-row">' +
+                        '<span class="hist-icon">' + item.icon + '</span>' +
+                        '<span class="hist-label">' + item.label + '</span>' +
+                        '<span class="hist-value">' + item.val + badgeHtml + '</span></div>';
+                }
+
+                // Lab results
+                var labs = [];
+                if (r.hba1c) {
+                    var hba1cAlert = r.hba1c >= 7;
+                    labs.push({ icon: '🔬', label: 'HbA1c', val: r.hba1c + '%', status: { label: hba1cAlert ? 'สูง' : 'ปกติ', alert: hba1cAlert } });
+                }
+                if (r.cholesterol) {
+                    var cholAlert = r.cholesterol >= 200;
+                    labs.push({ icon: '🧪', label: 'Cholesterol', val: r.cholesterol + ' mg/dL', status: { label: cholAlert ? 'สูง' : 'ปกติ', alert: cholAlert } });
+                }
+                if (r.triglyceride) {
+                    var triAlert = r.triglyceride >= 150;
+                    labs.push({ icon: '🧪', label: 'Triglyceride', val: r.triglyceride + ' mg/dL', status: { label: triAlert ? 'สูง' : 'ปกติ', alert: triAlert } });
+                }
+                if (r.hdl) {
+                    var hdlAlert = r.hdl < 40;
+                    labs.push({ icon: '🧪', label: 'HDL', val: r.hdl + ' mg/dL', status: { label: hdlAlert ? 'ต่ำ' : 'ปกติ', alert: hdlAlert } });
+                }
+                if (r.ldl) {
+                    var ldlAlert = r.ldl >= 130;
+                    labs.push({ icon: '🧪', label: 'LDL', val: r.ldl + ' mg/dL', status: { label: ldlAlert ? 'สูง' : 'ปกติ', alert: ldlAlert } });
+                }
+                if (r.creatinine) {
+                    var crAlert = r.creatinine >= 1.3;
+                    labs.push({ icon: '🫘', label: 'Creatinine', val: r.creatinine + ' mg/dL', status: { label: crAlert ? 'สูง' : 'ปกติ', alert: crAlert } });
+                }
+                if (r.egfr) {
+                    var egfrAlert = r.egfr < 60;
+                    labs.push({ icon: '🫘', label: 'eGFR', val: r.egfr + ' mL/min', status: { label: egfrAlert ? 'ต่ำ' : 'ปกติ', alert: egfrAlert } });
+                }
+
+                if (labs.length > 0) {
+                    html += '<div style="border-top:1.5px solid #E5E7EB; margin-top:0.15rem;"></div>';
+                    html += '<div style="padding:0.25rem 0.85rem 0; font-size:0.72rem; color:#6B7280; font-weight:600; text-transform:uppercase; letter-spacing:0.3px;">ผลตรวจเลือด</div>';
+                    for (var l = 0; l < labs.length; l++) {
+                        var lab = labs[l];
+                        var lbHtml = '';
+                        if (lab.status) {
+                            lbHtml = '<span class="hist-badge ' + (lab.status.alert ? 'warn' : 'ok') + '">' +
+                                (lab.status.alert ? '⚠️ ' : '✓ ') + lab.status.label + '</span>';
+                        }
+                        html += '<div class="hist-row">' +
+                            '<span class="hist-icon">' + lab.icon + '</span>' +
+                            '<span class="hist-label">' + lab.label + '</span>' +
+                            '<span class="hist-value">' + lab.val + lbHtml + '</span></div>';
+                    }
+                }
+
+                // Behavioral health
+                var behaviors = [];
+                var smokingLabels = { never: 'ไม่เคยสูบ', former: 'เลิกแล้ว', current: 'สูบอยู่' };
+                var alcoholLabels = { never: 'ไม่ดื่ม', occasional: 'นานๆ ครั้ง', regular: 'ดื่มประจำ', heavy: 'ดื่มหนัก' };
+                var exerciseLabels = { none: 'ไม่ออก', light: 'เบาๆ', moderate: 'ปานกลาง', active: 'สม่ำเสมอ' };
+                if (r.smokingStatus) behaviors.push({ icon: '🚬', label: 'สูบบุหรี่', val: smokingLabels[r.smokingStatus] || r.smokingStatus, alert: r.smokingStatus === 'current' });
+                if (r.alcoholUse) behaviors.push({ icon: '🍺', label: 'แอลกอฮอล์', val: alcoholLabels[r.alcoholUse] || r.alcoholUse, alert: r.alcoholUse === 'heavy' || r.alcoholUse === 'regular' });
+                if (r.exerciseLevel) behaviors.push({ icon: '🏃', label: 'ออกกำลังกาย', val: exerciseLabels[r.exerciseLevel] || r.exerciseLevel, alert: r.exerciseLevel === 'none' });
+
+                if (behaviors.length > 0) {
+                    html += '<div style="border-top:1.5px solid #E5E7EB; margin-top:0.15rem;"></div>';
+                    html += '<div style="padding:0.25rem 0.85rem 0; font-size:0.72rem; color:#6B7280; font-weight:600; text-transform:uppercase; letter-spacing:0.3px;">พฤติกรรมสุขภาพ</div>';
+                    for (var b = 0; b < behaviors.length; b++) {
+                        var bh = behaviors[b];
+                        var bhBadge = '<span class="hist-badge ' + (bh.alert ? 'warn' : 'ok') + '">' +
+                            (bh.alert ? '⚠️ ' : '✓ ') + bh.val + '</span>';
+                        html += '<div class="hist-row">' +
+                            '<span class="hist-icon">' + bh.icon + '</span>' +
+                            '<span class="hist-label">' + bh.label + '</span>' +
+                            '<span class="hist-value">' + bhBadge + '</span></div>';
+                    }
+                }
+
+                html += '</div>'; // hist-body
+
+                // Notes & clinical info
+                if (r.notes) html += '<div class="hist-note info">💡 ' + r.notes + '</div>';
+                if (r.diagnosis) html += '<div class="hist-note diag">🩺 Dx: ' + r.diagnosis + '</div>';
+                if (r.treatmentPlan) html += '<div class="hist-note plan">📋 แผน: ' + r.treatmentPlan + '</div>';
+                if (r.prescription) html += '<div class="hist-note rx">💊 ' + r.prescription + '</div>';
+                if (r.riskLevel) {
+                    var riskLabels = { high: '🚨 ความเสี่ยงสูง', medium: '⚠️ เฝ้าระวัง', low: '✓ ความเสี่ยงต่ำ', none: '✓ ไม่มีความเสี่ยง' };
+                    html += '<div class="hist-note ' + (r.riskLevel === 'high' ? 'diag' : r.riskLevel === 'medium' ? 'plan' : 'rx') + '">' +
+                        (riskLabels[r.riskLevel] || r.riskLevel) + (r.riskReason ? ' — ' + r.riskReason : '') + '</div>';
+                }
+
+                if (r.recordedBy) html += '<div class="hist-recorder">👨‍⚕️ บันทึกโดย: ' + getStaffName(r.recordedBy) + '</div>';
+
+                html += '</div>'; // hist-card
+            }
+
+            container.innerHTML = html;
+        }
+
+        function closeHistoryModal() {
+            document.getElementById('historyModal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        function calcBMI() {
+            var w = parseFloat(document.getElementById('weight').value);
+            var h = parseFloat(document.getElementById('height').value);
+            var el = document.getElementById('bmiResult');
+            if (w > 0 && h > 0) {
+                var bmi = (w / ((h / 100) * (h / 100))).toFixed(1);
+                var cat = getBMICategory(parseFloat(bmi));
+                var isAlert = cat.category !== 'normal';
+                var colorCls = isAlert ? 'color:#92400E' : 'color:#065F46';
+                var bgCls = isAlert ? 'background:#FEF3C7' : 'background:#D1FAE5';
+                el.innerHTML = 'BMI: <span class="bmi-val">' + bmi + '</span> — ' +
+                    '<span style="' + bgCls + ';' + colorCls + ';padding:0.1rem 0.4rem;border-radius:4px;font-size:0.78rem;">' +
+                    (isAlert ? '⚠️ ' : '✓ ') + cat.label + '</span>';
+                el.style.display = 'block';
+            } else {
+                el.style.display = 'none';
+            }
+        }
+
+        function addNewPatient() {
+            window.location.href = 'patient-register.html?from=staff';
+        }
+
+        function selectPatientById(id) {
+            var patient = mockPatients.find(function(p) { return String(p.id) === String(id); });
+            if (patient) selectPatient(patient);
+        }
+
+        function selectPatient(patient) {
+            selectedPatientId = patient.id;
+            selectedPatientObj = patient;
+            document.getElementById('selectedPatient').classList.add('show');
+            document.getElementById('spName').textContent = patient.firstName + ' ' + patient.lastName;
+            var diseases = '';
+            if (patient.diseases && patient.diseases.length > 0) {
+                diseases = ' | ' + patient.diseases.map(function(d) { return diseaseLabels[d] || d; }).join(', ');
+            }
+            document.getElementById('spMeta').textContent = 'HN: ' + patient.hn + ' | อายุ ' + patient.age + ' ปี' + diseases;
+            document.getElementById('searchResults').innerHTML = '';
+            document.getElementById('patientSearch').value = '';
+            // Load medical info
+            loadMedicalInfo(patient);
+        }
+
+        function clearPatientSelection() {
+            selectedPatientId = null;
+            selectedPatientObj = null;
+            document.getElementById('selectedPatient').classList.remove('show');
+            document.getElementById('medicalInfoCard').style.display = 'none';
+            patientDiseases = [];
+            patientAllergies = [];
+            patientMedications = [];
+        }
+
+        function saveRecord() {
+            if (!selectedPatientId) { alert('กรุณาเลือกผู้ป่วยก่อน'); return; }
+            var name = document.getElementById('spName').textContent;
+            var weight = document.getElementById('weight').value;
+            var height = document.getElementById('height').value;
+            var waist = document.getElementById('waistCircumference').value;
+            var systolic = document.getElementById('systolic').value;
+            var diastolic = document.getElementById('diastolic').value;
+            var heartRate = document.getElementById('heartRate').value;
+            var temperature = document.getElementById('temperature').value;
+            var bloodSugar = document.getElementById('bloodSugar').value;
+            var bloodSugarType = document.getElementById('bloodSugarType').value;
+            var spo2 = document.getElementById('oxygenLevel').value;
+            var respRate = document.getElementById('respiratoryRate').value;
+            var hba1c = document.getElementById('hba1c').value;
+            var cholesterol = document.getElementById('cholesterol').value;
+            var triglyceride = document.getElementById('triglyceride').value;
+            var hdl = document.getElementById('hdl').value;
+            var ldl = document.getElementById('ldl').value;
+            var creatinine = document.getElementById('creatinine').value;
+            var egfr = document.getElementById('egfr').value;
+            var smokingStatus = document.getElementById('smokingStatus').value;
+            var alcoholUse = document.getElementById('alcoholUse').value;
+            var exerciseLevel = document.getElementById('exerciseLevel').value;
+            var notes = document.getElementById('notes').value;
+            var diag = currentRole === 'doctor' ? document.getElementById('diagnosis').value : '';
+            var treatmentPlan = currentRole === 'doctor' ? document.getElementById('treatmentPlan').value : '';
+            var prescription = currentRole === 'doctor' ? document.getElementById('prescription').value : '';
+            var risk = currentRole === 'worker' ? document.getElementById('riskLevel').value : '';
+            var riskReason = currentRole === 'worker' ? document.getElementById('riskReason').value : '';
+
+            // Build health record
+            var record = { date: new Date().toISOString().split('T')[0] };
+            var user = JSON.parse(localStorage.getItem('healthdesk_user'));
+            if (user) record.recordedBy = user.id;
+            if (weight) record.weight = parseFloat(weight);
+            if (height) record.height = parseFloat(height);
+            if (weight && height) record.bmi = parseFloat((parseFloat(weight) / ((parseFloat(height) / 100) * (parseFloat(height) / 100))).toFixed(1));
+            if (waist) record.waistCircumference = parseFloat(waist);
+            if (systolic) record.systolic = parseInt(systolic);
+            if (diastolic) record.diastolic = parseInt(diastolic);
+            if (heartRate) record.heartRate = parseInt(heartRate);
+            if (temperature) record.temperature = parseFloat(temperature);
+            if (bloodSugar) record.bloodSugar = parseInt(bloodSugar);
+            if (bloodSugarType) record.bloodSugarType = bloodSugarType;
+            if (spo2) record.oxygenLevel = parseInt(spo2);
+            if (respRate) record.respiratoryRate = parseInt(respRate);
+            if (hba1c) record.hba1c = parseFloat(hba1c);
+            if (cholesterol) record.cholesterol = parseInt(cholesterol);
+            if (triglyceride) record.triglyceride = parseInt(triglyceride);
+            if (hdl) record.hdl = parseInt(hdl);
+            if (ldl) record.ldl = parseInt(ldl);
+            if (creatinine) record.creatinine = parseFloat(creatinine);
+            if (egfr) record.egfr = parseInt(egfr);
+            if (smokingStatus) record.smokingStatus = smokingStatus;
+            if (alcoholUse) record.alcoholUse = alcoholUse;
+            if (exerciseLevel) record.exerciseLevel = exerciseLevel;
+            if (notes) record.notes = notes;
+            if (diag) record.diagnosis = diag;
+            if (treatmentPlan) record.treatmentPlan = treatmentPlan;
+            if (prescription) record.prescription = prescription;
+            if (risk) record.riskLevel = risk;
+            if (riskReason) record.riskReason = riskReason;
+
+            // Save to Firestore
+            if (typeof FirebaseService !== 'undefined') {
+                var saveBtn = document.querySelector('.save-btn');
+                saveBtn.disabled = true;
+                saveBtn.textContent = 'กำลังบันทึก...';
+
+                // 1. Save health record
+                var p1 = FirebaseService.addHealthRecord(selectedPatientId, record);
+
+                // 2. Update patient medical info (diseases/allergies/meds)
+                var p2 = FirebaseService.updatePatient(selectedPatientId, {
+                    diseases: patientDiseases,
+                    allergies: patientAllergies,
+                    currentMedications: patientMedications,
+                    riskLevel: risk || (selectedPatientObj && selectedPatientObj.riskLevel) || ''
+                });
+
+                Promise.all([p1, p2]).then(function() {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'บันทึกข้อมูล';
+
+                    var bmiText = '';
+                    if (weight && height) bmiText = '\nBMI: ' + record.bmi;
+                    var spo2Text = '';
+                    if (spo2) {
+                        var spo2Cat = getSpO2Category(parseInt(spo2));
+                        spo2Text = '\nSpO2: ' + spo2 + '% (' + spo2Cat.label + ')';
+                    }
+                    alert('บันทึกข้อมูลสำเร็จ\n\nผู้ป่วย: ' + name +
+                        (systolic ? '\nBP: ' + systolic + '/' + diastolic : '') +
+                        bmiText + spo2Text +
+                        (diag ? '\nDx: ' + diag : '') +
+                        (risk ? '\nRisk: ' + risk : '') +
+                        '\n\nข้อมูลถูกบันทึกลง Firestore เรียบร้อย');
+                }).catch(function(err) {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'บันทึกข้อมูล';
+                    alert('เกิดข้อผิดพลาด: ' + err.message);
+                });
+                return;
+            }
+
+            // Fallback alert
+            var bmiText2 = '';
+            if (weight && height) bmiText2 = '\nBMI: ' + record.bmi;
+            var spo2Text = '';
+            if (spo2) {
+                var spo2Cat = getSpO2Category(parseInt(spo2));
+                spo2Text = '\nSpO2: ' + spo2 + '% (' + spo2Cat.label + ')';
+            }
+            alert('บันทึกข้อมูลสำเร็จ\n\nผู้ป่วย: ' + name +
+                (systolic ? '\nBP: ' + systolic + '/' + diastolic : '') +
+                bmiText2 + spo2Text +
+                (diag ? '\nDx: ' + diag : '') +
+                (risk ? '\nRisk: ' + risk : ''));
+        }
+
+        function clearForm() {
+            document.querySelectorAll('.field-input, .field-select').forEach(function(el) { el.value = ''; });
+            document.getElementById('bmiResult').style.display = 'none';
+            clearPatientSelection();
+        }
+
+        function referToDoctor() {
+            if (!selectedPatientId) { alert('กรุณาเลือกผู้ป่วยก่อน'); return; }
+            var name = document.getElementById('spName').textContent;
+            var reason = document.getElementById('riskReason').value || 'ต้องการปรึกษาแพทย์';
+            var notifs = JSON.parse(localStorage.getItem('healthdesk_notifications') || '[]');
+            notifs.unshift({
+                id: 'notif-' + Date.now(), type: 'review', icon: '🏥',
+                title: 'ส่งปรึกษาแพทย์', message: name + ' - ' + reason,
+                time: new Date().toISOString(), read: false, forRoles: ['doctor']
+            });
+            localStorage.setItem('healthdesk_notifications', JSON.stringify(notifs));
+            var convId = createNewConversation('staff-3', 'staff');
+            sendMessage(convId, 'ส่งปรึกษาแพทย์: ' + name + '\nเหตุผล: ' + reason);
+            alert('ส่งปรึกษาแพทย์เรียบร้อย\n\nผู้ป่วย: ' + name);
+        }
+
+        function orderFollowUp() {
+            if (!selectedPatientId) { alert('กรุณาเลือกผู้ป่วยก่อน'); return; }
+            var name = document.getElementById('spName').textContent;
+            var order = document.getElementById('followUpOrder').value;
+            var date = document.getElementById('followUpDate').value;
+            if (!order) { alert('กรุณาระบุรายละเอียดการติดตาม'); return; }
+            var notifs = JSON.parse(localStorage.getItem('healthdesk_notifications') || '[]');
+            notifs.unshift({
+                id: 'notif-' + Date.now(), type: 'task', icon: '📋',
+                title: 'งานที่ได้รับมอบหมาย',
+                message: 'ติดตาม ' + name + ' - ' + order + (date ? ' (ภายใน ' + date + ')' : ''),
+                time: new Date().toISOString(), read: false, forRoles: ['worker']
+            });
+            localStorage.setItem('healthdesk_notifications', JSON.stringify(notifs));
+            var convId = createNewConversation('staff-2', 'staff');
+            sendMessage(convId, 'สั่งติดตามผู้ป่วย: ' + name + '\n' + order + (date ? '\nนัดวันที่: ' + date : ''));
+            alert('สั่งติดตามเรียบร้อย\n\nผู้ป่วย: ' + name);
+        }
+    </script>
+</body>
+</html>

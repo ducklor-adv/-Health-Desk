@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Development Report - Health Desk</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="dev-report-page">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" fill="#4F46E5"/>
+                    <path d="M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-2.76 0-5 2.24-5 5h2c0-1.66 1.34-3 3-3s3 1.34 3 3h2c0-2.76-2.24-5-5-5z" fill="white"/>
+                </svg>
+                <span class="brand-name">Health Desk</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">← กลับหน้าหลัก</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dev Report Header -->
+    <section class="dev-header printable">
+        <div class="container">
+            <div class="dev-header-content">
+                <span class="dev-badge">Development Report</span>
+                <h1 class="dev-title">Health Desk</h1>
+                <p class="dev-subtitle">ระบบติดตามและวิเคราะห์สุขภาพชุมชนอัจฉริยะ</p>
+                <div class="dev-meta">
+                    <span class="meta-item">📅 วันที่: 25 กุมภาพันธ์ 2567</span>
+                    <span class="meta-item">🏷️ เวอร์ชัน: 1.0.0</span>
+                    <span class="meta-item">👨‍💻 สถานะ: Planning & Design Phase</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Overview -->
+    <section class="dev-section printable">
+        <div class="container">
+            <h2 class="section-title">📋 ข้อมูลโครงการ (Project Information)</h2>
+
+            <div class="info-card">
+                <h3>🎯 วัตถุประสงค์โครงการ</h3>
+                <ul class="info-list">
+                    <li>พัฒนาระบบติดตามสุขภาพชุมชนแบบ Real-time สำหรับเจ้าหน้าที่สาธารณสุข</li>
+                    <li>สร้าง Mobile-Friendly Platform ที่ใช้งานได้ทั้งในสนามและสำนักงาน</li>
+                    <li>จัดเก็บและวิเคราะห์ดัชนีสุขภาพของประชาชนในชุมชนอย่างเป็นระบบ</li>
+                    <li>สร้างเครื่องมือ Analytics และ Reporting สำหรับการวางแผนสาธารณสุข</li>
+                    <li>พัฒนา API เพื่อเชื่อมต่อกับระบบของกระทรวงสาธารณสุข (Future Integration)</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>👥 กลุ่มผู้ใช้งาน (User Personas)</h3>
+                <div class="persona-grid">
+                    <div class="persona-card">
+                        <div class="persona-header">
+                            <span class="persona-icon">⚕️</span>
+                            <h4>เจ้าหน้าที่สาธารณสุข (Field Worker)</h4>
+                        </div>
+                        <div class="persona-details">
+                            <p><strong>บทบาท:</strong> บันทึกข้อมูลสุขภาพในพื้นที่</p>
+                            <p><strong>ความต้องการ:</strong></p>
+                            <ul>
+                                <li>บันทึกข้อมูลได้รวดเร็วผ่านมือถือ</li>
+                                <li>ใช้งานได้แม้สัญญาณไม่ดี (Offline Mode)</li>
+                                <li>ดูประวัติการตรวจย้อนหลัง</li>
+                                <li>รับการแจ้งเตือนผู้ป่วยที่ต้องติดตาม</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="persona-card">
+                        <div class="persona-header">
+                            <span class="persona-icon">👨‍💼</span>
+                            <h4>หมอ/หัวหน้างาน (Supervisor)</h4>
+                        </div>
+                        <div class="persona-details">
+                            <p><strong>บทบาท:</strong> วิเคราะห์และวางแผนสาธารณสุข</p>
+                            <p><strong>ความต้องการ:</strong></p>
+                            <ul>
+                                <li>Dashboard แสดงภาพรวมสุขภาพชุมชน</li>
+                                <li>รายงานและกราฟวิเคราะห์แนวโน้ม</li>
+                                <li>ระบุกลุ่มเสี่ยงและวางแผนการดูแล</li>
+                                <li>ส่งออกรายงานเพื่อส่งหน่วยงานต้นสังกัด</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="persona-card">
+                        <div class="persona-header">
+                            <span class="persona-icon">🏛️</span>
+                            <h4>ผู้บริหาร/นโยบาย (Admin)</h4>
+                        </div>
+                        <div class="persona-details">
+                            <p><strong>บทบาท:</strong> กำหนดนโยบายและติดตามผล</p>
+                            <p><strong>ความต้องการ:</strong></p>
+                            <ul>
+                                <li>ข้อมูล Aggregate ระดับเขต/จังหวัด</li>
+                                <li>เปรียบเทียบประสิทธิภาพระหว่างพื้นที่</li>
+                                <li>ติดตามการใช้งบประมาณ</li>
+                                <li>รายงานเพื่อนำเสนอต่อคณะกรรมการ</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Architecture -->
+    <section class="dev-section printable">
+        <div class="container">
+            <h2 class="section-title">🏗️ สถาปัตยกรรมระบบ (System Architecture)</h2>
+
+            <div class="architecture-diagram">
+                <div class="arch-layer">
+                    <h4 class="layer-title">Presentation Layer</h4>
+                    <div class="layer-boxes">
+                        <div class="arch-box">
+                            <span class="box-icon">📱</span>
+                            <span class="box-label">Mobile Web App</span>
+                            <span class="box-tech">Progressive Web App (PWA)</span>
+                        </div>
+                        <div class="arch-box">
+                            <span class="box-icon">💻</span>
+                            <span class="box-label">Admin Dashboard</span>
+                            <span class="box-tech">React / Vue.js</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="arch-arrow">↓</div>
+
+                <div class="arch-layer">
+                    <h4 class="layer-title">API Layer</h4>
+                    <div class="layer-boxes">
+                        <div class="arch-box">
+                            <span class="box-icon">🔌</span>
+                            <span class="box-label">RESTful API</span>
+                            <span class="box-tech">Node.js / Express</span>
+                        </div>
+                        <div class="arch-box">
+                            <span class="box-icon">🔐</span>
+                            <span class="box-label">Authentication</span>
+                            <span class="box-tech">JWT / OAuth 2.0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="arch-arrow">↓</div>
+
+                <div class="arch-layer">
+                    <h4 class="layer-title">Business Logic Layer</h4>
+                    <div class="layer-boxes">
+                        <div class="arch-box">
+                            <span class="box-icon">🧠</span>
+                            <span class="box-label">Analytics Engine</span>
+                            <span class="box-tech">Python / ML Models</span>
+                        </div>
+                        <div class="arch-box">
+                            <span class="box-icon">📊</span>
+                            <span class="box-label">Report Generator</span>
+                            <span class="box-tech">PDF / Excel Export</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="arch-arrow">↓</div>
+
+                <div class="arch-layer">
+                    <h4 class="layer-title">Data Layer</h4>
+                    <div class="layer-boxes">
+                        <div class="arch-box">
+                            <span class="box-icon">🗄️</span>
+                            <span class="box-label">Primary Database</span>
+                            <span class="box-tech">PostgreSQL</span>
+                        </div>
+                        <div class="arch-box">
+                            <span class="box-icon">⚡</span>
+                            <span class="box-label">Cache Layer</span>
+                            <span class="box-tech">Redis</span>
+                        </div>
+                        <div class="arch-box">
+                            <span class="box-icon">📦</span>
+                            <span class="box-label">File Storage</span>
+                            <span class="box-tech">S3 / Cloud Storage</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card mt-4">
+                <h3>🔗 Integration Points (จุดเชื่อมต่อระบบภายนอก)</h3>
+                <div class="integration-list">
+                    <div class="integration-item">
+                        <span class="integration-icon">🏥</span>
+                        <div class="integration-info">
+                            <h5>NHSO (สปสช.)</h5>
+                            <p>ดึงข้อมูลสิทธิ์การรักษาและประวัติการรับบริการ</p>
+                            <span class="tech-badge">HL7 FHIR API</span>
+                        </div>
+                    </div>
+                    <div class="integration-item">
+                        <span class="integration-icon">📈</span>
+                        <div class="integration-info">
+                            <h5>HDC (ศูนย์ข้อมูลสุขภาพ)</h5>
+                            <p>ส่งข้อมูลสุขภาพชุมชนเพื่อการรายงานและวิเคราะห์</p>
+                            <span class="tech-badge">REST API</span>
+                        </div>
+                    </div>
+                    <div class="integration-item">
+                        <span class="integration-icon">🔔</span>
+                        <div class="integration-info">
+                            <h5>Line Notify</h5>
+                            <p>ส่งการแจ้งเตือนไปยังเจ้าหน้าที่และผู้ป่วย</p>
+                            <span class="tech-badge">Line Messaging API</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features & Roadmap -->
+    <section class="dev-section printable">
+        <div class="container">
+            <h2 class="section-title">🚀 Features & Development Roadmap</h2>
+
+            <div class="roadmap-container">
+                <div class="roadmap-phase">
+                    <div class="phase-header phase-current">
+                        <h3>Phase 1: MVP (3 เดือน)</h3>
+                        <span class="phase-badge">Current Phase</span>
+                    </div>
+                    <div class="phase-content">
+                        <ul class="feature-checklist">
+                            <li class="feature-item">
+                                <input type="checkbox" checked disabled>
+                                <span>ระบบ Authentication & Authorization</span>
+                            </li>
+                            <li class="feature-item">
+                                <input type="checkbox" checked disabled>
+                                <span>หน้าบันทึกข้อมูลสุขภาพพื้นฐาน (BMI, BP, BG)</span>
+                            </li>
+                            <li class="feature-item">
+                                <input type="checkbox" disabled>
+                                <span>Dashboard แสดงภาพรวม (Admin & Field Worker)</span>
+                            </li>
+                            <li class="feature-item">
+                                <input type="checkbox" disabled>
+                                <span>ระบบค้นหาและดูประวัติผู้ป่วย</span>
+                            </li>
+                            <li class="feature-item">
+                                <input type="checkbox" disabled>
+                                <span>รายงานพื้นฐาน (Export PDF/Excel)</span>
+                            </li>
+                            <li class="feature-item">
+                                <input type="checkbox" disabled>
+                                <span>Mobile Responsive Design</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="roadmap-phase">
+                    <div class="phase-header">
+                        <h3>Phase 2: Advanced Features (3 เดือน)</h3>
+                    </div>
+                    <div class="phase-content">
+                        <ul class="feature-checklist">
+                            <li class="feature-item">
+                                <input type="checkbox" disabled>
+                                <span>Offline Mode สำหรับการทำงานในพื้นที่สัญญาณไม่ดี</span>
+                            </li>
+                            <li class="feature-item">
+                                <input type="checkbox" disabled>
+                                <span>ระบบแจ้งเตือนอัตโนมัติ (Line Notify)</span>
+                            </li>
+                            <li class="feature-item">
+                                <input type="checkbox" disabled>
+                                <span>Analytics Dashboard พร้อม Visualization</span>
+                            </li>
+                            <li class="feature-item">
+                                <input type="checkbox" disabled>
+                                <span>Risk Assessment & Alert System</span>
+                            </li>
+                            <li class="feature-item">
+                                <input type="checkbox" disabled>
+                                <span>การจัดการนัดหมายและติดตามผู้ป่วย</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="roadmap-phase">
+                    <div class="phase-header">
+                        <h3>Phase 3: AI & Integration (4 เดือน)</h3>
+                    </div>
+                    <div class="phase-content">
+                        <ul class="feature-checklist">
+                            <li class="feature-item">
+                                <input type="checkbox" disabled>
+                                <span>AI-Powered Health Risk Prediction</span>
+                            </li>
+                            <li class="feature-item">
+                                <input type="checkbox" disabled>
+                                <span>เชื่อมต่อ NHSO API (ดึงข้อมูลสิทธิ์)</span>
+                            </li>
+                            <li class="feature-item">
+                                <input type="checkbox" disabled>
+                                <span>เชื่อมต่อ HDC (ส่งข้อมูลสุขภาพชุมชน)</span>
+                            </li>
+                            <li class="feature-item">
+                                <input type="checkbox" disabled>
+                                <span>Advanced Analytics & Predictive Models</span>
+                            </li>
+                            <li class="feature-item">
+                                <input type="checkbox" disabled>
+                                <span>Mobile App (Native iOS/Android)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- UI Mockups -->
+    <section class="dev-section printable">
+        <div class="container">
+            <h2 class="section-title">🎨 UI/UX Design Mockups</h2>
+
+            <div class="mockup-showcase">
+                <!-- Mobile Field Worker View -->
+                <div class="mockup-card">
+                    <h3 class="mockup-title">📱 Field Worker Mobile App</h3>
+                    <div class="mockup-container">
+                        <div class="mobile-mockup">
+                            <div class="mobile-header">
+                                <div class="status-bar">
+                                    <span>9:41</span>
+                                    <span>📶 🔋</span>
+                                </div>
+                                <div class="app-header">
+                                    <span class="back-btn">←</span>
+                                    <span class="header-title">บันทึกข้อมูลสุขภาพ</span>
+                                    <span class="menu-btn">⋮</span>
+                                </div>
+                            </div>
+                            <div class="mobile-content">
+                                <div class="patient-info-bar">
+                                    <div class="patient-avatar">สม</div>
+                                    <div class="patient-details">
+                                        <div class="patient-name">นายสมชาย ใจดี</div>
+                                        <div class="patient-id">HN: 12345 | อายุ 45 ปี</div>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <div class="input-group">
+                                        <label>น้ำหนัก (kg)</label>
+                                        <input type="text" placeholder="75.5" value="75.5">
+                                    </div>
+                                    <div class="input-group">
+                                        <label>ส่วนสูง (cm)</label>
+                                        <input type="text" placeholder="170" value="170">
+                                    </div>
+                                    <div class="result-box bmi-normal">
+                                        <span>BMI: 26.1 (น้ำหนักเกิน)</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <div class="input-group">
+                                        <label>ความดันโลหิต (mmHg)</label>
+                                        <div class="bp-input">
+                                            <input type="text" placeholder="120" value="135">
+                                            <span>/</span>
+                                            <input type="text" placeholder="80" value="85">
+                                        </div>
+                                    </div>
+                                    <div class="alert-box alert-warning">
+                                        <span>⚠️ ความดันสูงกว่าปกติ</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <div class="input-group">
+                                        <label>ระดับน้ำตาล (mg/dL)</label>
+                                        <input type="text" placeholder="100" value="110">
+                                    </div>
+                                </div>
+
+                                <button class="btn-save">บันทึกข้อมูล</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mockup-notes">
+                        <p><strong>จุดเด่น:</strong> อินเตอร์เฟซใช้งานง่าย, ระบุความผิดปกติได้ทันที, กรอกข้อมูลได้รวดเร็ว</p>
+                    </div>
+                </div>
+
+                <!-- Dashboard View -->
+                <div class="mockup-card">
+                    <h3 class="mockup-title">💻 Admin Dashboard</h3>
+                    <div class="mockup-container">
+                        <div class="desktop-mockup">
+                            <div class="dashboard-header">
+                                <h2>Dashboard - ภาพรวมสุขภาพชุมชน</h2>
+                                <div class="header-actions">
+                                    <select class="date-selector">
+                                        <option>เดือนนี้</option>
+                                    </select>
+                                    <button class="btn-export">📊 Export</button>
+                                </div>
+                            </div>
+
+                            <div class="dashboard-stats">
+                                <div class="stat-card-dash">
+                                    <div class="stat-icon-dash">👥</div>
+                                    <div class="stat-info">
+                                        <div class="stat-label">ประชากรทั้งหมด</div>
+                                        <div class="stat-value">1,247</div>
+                                        <div class="stat-change positive">+12 คนใหม่</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card-dash">
+                                    <div class="stat-icon-dash">✅</div>
+                                    <div class="stat-info">
+                                        <div class="stat-label">ตรวจแล้วเดือนนี้</div>
+                                        <div class="stat-value">856</div>
+                                        <div class="stat-change">68.6%</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card-dash">
+                                    <div class="stat-icon-dash">⚠️</div>
+                                    <div class="stat-info">
+                                        <div class="stat-label">กลุ่มเสี่ยง</div>
+                                        <div class="stat-value">127</div>
+                                        <div class="stat-change negative">+8 คน</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card-dash">
+                                    <div class="stat-icon-dash">💊</div>
+                                    <div class="stat-info">
+                                        <div class="stat-label">ต้องติดตามใกล้</div>
+                                        <div class="stat-value">34</div>
+                                        <div class="stat-change">ภายใน 7 วัน</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dashboard-charts">
+                                <div class="chart-card">
+                                    <h4>📊 แนวโน้มดัชนีสุขภาพ</h4>
+                                    <div class="chart-placeholder">
+                                        <svg viewBox="0 0 300 150">
+                                            <polyline points="10,100 50,80 90,90 130,60 170,70 210,50 250,55 290,45"
+                                                fill="none" stroke="#4F46E5" stroke-width="3"/>
+                                            <polyline points="10,120 50,110 90,115 130,100 170,105 210,95 250,98 290,90"
+                                                fill="none" stroke="#10B981" stroke-width="3" stroke-dasharray="5,5"/>
+                                        </svg>
+                                    </div>
+                                    <div class="chart-legend">
+                                        <span><span class="legend-dot blue"></span> ความดันโลหิต</span>
+                                        <span><span class="legend-dot green"></span> น้ำตาลในเลือด</span>
+                                    </div>
+                                </div>
+
+                                <div class="chart-card">
+                                    <h4>🎯 สถิติ BMI</h4>
+                                    <div class="bmi-stats">
+                                        <div class="bmi-bar">
+                                            <div class="bar-label">ผอม</div>
+                                            <div class="bar-visual">
+                                                <div class="bar-fill underweight" style="width: 15%"></div>
+                                            </div>
+                                            <div class="bar-value">15%</div>
+                                        </div>
+                                        <div class="bmi-bar">
+                                            <div class="bar-label">ปกติ</div>
+                                            <div class="bar-visual">
+                                                <div class="bar-fill normal" style="width: 48%"></div>
+                                            </div>
+                                            <div class="bar-value">48%</div>
+                                        </div>
+                                        <div class="bmi-bar">
+                                            <div class="bar-label">เกิน</div>
+                                            <div class="bar-visual">
+                                                <div class="bar-fill overweight" style="width: 27%"></div>
+                                            </div>
+                                            <div class="bar-value">27%</div>
+                                        </div>
+                                        <div class="bmi-bar">
+                                            <div class="bar-label">อ้วน</div>
+                                            <div class="bar-visual">
+                                                <div class="bar-fill obese" style="width: 10%"></div>
+                                            </div>
+                                            <div class="bar-value">10%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dashboard-table">
+                                <h4>⚠️ ผู้ป่วยที่ต้องติดตามใกล้</h4>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>HN</th>
+                                            <th>ชื่อ-นามสกุล</th>
+                                            <th>อายุ</th>
+                                            <th>ปัญหาสุขภาพ</th>
+                                            <th>ความเร่งด่วน</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>10245</td>
+                                            <td>นางสาวมานี มีสุข</td>
+                                            <td>62</td>
+                                            <td>ความดันสูง, เบาหวาน</td>
+                                            <td><span class="priority-badge high">สูง</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>10567</td>
+                                            <td>นายประสิทธิ์ ดีงาม</td>
+                                            <td>55</td>
+                                            <td>BMI สูง, คอเลสเตอรอล</td>
+                                            <td><span class="priority-badge medium">ปานกลาง</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mockup-notes">
+                        <p><strong>จุดเด่น:</strong> ข้อมูล Real-time, Visualization ชัดเจน, ระบุกลุ่มเสี่ยงได้ทันที</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mock Data Section -->
+    <section class="dev-section printable">
+        <div class="container">
+            <h2 class="section-title">📊 Mock Data Examples</h2>
+
+            <div class="info-card">
+                <h3>👤 ตัวอย่างข้อมูลผู้ป่วย (Patient Record)</h3>
+                <pre class="code-block"><code>{
+  "patient_id": "HN12345",
+  "personal_info": {
+    "first_name": "สมชาย",
+    "last_name": "ใจดี",
+    "citizen_id": "1234567890123",
+    "date_of_birth": "1978-05-15",
+    "age": 45,
+    "gender": "male",
+    "phone": "081-234-5678",
+    "address": "123 หมู่ 5 ต.สุขสันต์ อ.เมือง จ.ชลบุรี 20000"
+  },
+  "health_records": [
+    {
+      "record_id": "REC20240225001",
+      "date": "2024-02-25",
+      "recorded_by": "พยาบาลสมหญิง รักษา",
+      "vital_signs": {
+        "weight": 75.5,
+        "height": 170,
+        "bmi": 26.1,
+        "blood_pressure": {
+          "systolic": 135,
+          "diastolic": 85
+        },
+        "blood_glucose": 110,
+        "heart_rate": 78,
+        "temperature": 36.8,
+        "oxygen_saturation": 98
+      },
+      "health_status": {
+        "bmi_status": "overweight",
+        "bp_status": "pre_hypertension",
+        "glucose_status": "normal",
+        "risk_level": "medium"
+      },
+      "notes": "ความดันเริ่มสูงกว่าปกติ แนะนำลดเกลือและออกกำลังกาย"
+    }
+  ],
+  "chronic_conditions": ["pre_diabetes", "hypertension"],
+  "medications": [
+    {
+      "name": "Metformin",
+      "dosage": "500mg",
+      "frequency": "วันละ 2 ครั้ง"
+    }
+  ],
+  "next_appointment": "2024-03-25",
+  "risk_alerts": [
+    {
+      "type": "blood_pressure",
+      "severity": "warning",
+      "message": "ความดันโลหิตสูงกว่าเกณฑ์ปกติ ควรติดตามใน 2 สัปดาห์"
+    }
+  ]
+}</code></pre>
+            </div>
+
+            <div class="info-card">
+                <h3>📈 ตัวอย่างข้อมูลรายงานชุมชน (Community Report)</h3>
+                <pre class="code-block"><code>{
+  "report_id": "RPT2024-02",
+  "period": "2024-02",
+  "community": {
+    "name": "ชุมชนบ้านสุขใจ",
+    "code": "CHM001",
+    "district": "เมืองชลบุรี",
+    "province": "ชลบุรี"
+  },
+  "summary": {
+    "total_population": 1247,
+    "screened_this_month": 856,
+    "screening_rate": 68.6,
+    "risk_group": {
+      "high_risk": 34,
+      "medium_risk": 93,
+      "low_risk": 729
+    }
+  },
+  "health_indicators": {
+    "bmi_distribution": {
+      "underweight": 187,
+      "normal": 598,
+      "overweight": 337,
+      "obese": 125
+    },
+    "hypertension": {
+      "total_cases": 156,
+      "controlled": 98,
+      "uncontrolled": 58
+    },
+    "diabetes": {
+      "total_cases": 89,
+      "controlled": 67,
+      "uncontrolled": 22
+    }
+  },
+  "trends": {
+    "hypertension_increase": "+5.2%",
+    "diabetes_increase": "+2.1%",
+    "obesity_increase": "+3.8%"
+  },
+  "recommendations": [
+    "เพิ่มกิจกรรมส่งเสริมการออกกำลังกายในชุมชน",
+    "จัดอบรมเรื่องการควบคุมอาหารสำหรับผู้ป่วยเบาหวาน",
+    "ติดตามผู้ป่วยความดันสูงที่ควบคุมไม่ได้อย่างใกล้ชิด"
+  ]
+}</code></pre>
+            </div>
+
+            <div class="info-card">
+                <h3>🔌 ตัวอย่าง API Endpoints</h3>
+                <div class="api-list">
+                    <div class="api-item">
+                        <span class="http-method post">POST</span>
+                        <code>/api/v1/patients/{patient_id}/health-records</code>
+                        <p>บันทึกข้อมูลสุขภาพของผู้ป่วย</p>
+                    </div>
+                    <div class="api-item">
+                        <span class="http-method get">GET</span>
+                        <code>/api/v1/patients/{patient_id}</code>
+                        <p>ดึงข้อมูลผู้ป่วยและประวัติการรักษา</p>
+                    </div>
+                    <div class="api-item">
+                        <span class="http-method get">GET</span>
+                        <code>/api/v1/dashboard/community/{community_id}</code>
+                        <p>ดึงข้อมูล Dashboard ของชุมชน</p>
+                    </div>
+                    <div class="api-item">
+                        <span class="http-method get">GET</span>
+                        <code>/api/v1/reports/monthly?community={id}&period={YYYY-MM}</code>
+                        <p>สร้างรายงานประจำเดือน</p>
+                    </div>
+                    <div class="api-item">
+                        <span class="http-method get">GET</span>
+                        <code>/api/v1/alerts/high-risk-patients</code>
+                        <p>ดึงรายชื่อผู้ป่วยกลุ่มเสี่ยงสูง</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Stack -->
+    <section class="dev-section printable">
+        <div class="container">
+            <h2 class="section-title">⚙️ Technical Stack</h2>
+
+            <div class="tech-stack-grid">
+                <div class="tech-category">
+                    <h3>Frontend</h3>
+                    <div class="tech-items">
+                        <span class="tech-badge">React 18</span>
+                        <span class="tech-badge">TypeScript</span>
+                        <span class="tech-badge">Tailwind CSS</span>
+                        <span class="tech-badge">Chart.js / D3.js</span>
+                        <span class="tech-badge">PWA (Workbox)</span>
+                        <span class="tech-badge">React Query</span>
+                    </div>
+                </div>
+
+                <div class="tech-category">
+                    <h3>Backend</h3>
+                    <div class="tech-items">
+                        <span class="tech-badge">Node.js</span>
+                        <span class="tech-badge">Express.js</span>
+                        <span class="tech-badge">PostgreSQL</span>
+                        <span class="tech-badge">Redis</span>
+                        <span class="tech-badge">JWT</span>
+                        <span class="tech-badge">Docker</span>
+                    </div>
+                </div>
+
+                <div class="tech-category">
+                    <h3>Analytics & ML</h3>
+                    <div class="tech-items">
+                        <span class="tech-badge">Python</span>
+                        <span class="tech-badge">Pandas</span>
+                        <span class="tech-badge">Scikit-learn</span>
+                        <span class="tech-badge">TensorFlow</span>
+                    </div>
+                </div>
+
+                <div class="tech-category">
+                    <h3>DevOps & Tools</h3>
+                    <div class="tech-items">
+                        <span class="tech-badge">Git</span>
+                        <span class="tech-badge">GitHub Actions</span>
+                        <span class="tech-badge">AWS / Google Cloud</span>
+                        <span class="tech-badge">Nginx</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="dev-section printable">
+        <div class="container">
+            <h2 class="section-title">📅 Project Timeline</h2>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker completed"></div>
+                    <div class="timeline-content">
+                        <h4>Week 1-2: Planning & Design</h4>
+                        <p>Requirements gathering, System design, UI/UX mockups</p>
+                        <span class="timeline-status">✅ Completed</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker active"></div>
+                    <div class="timeline-content">
+                        <h4>Week 3-6: Backend Development</h4>
+                        <p>Database schema, API development, Authentication system</p>
+                        <span class="timeline-status">🔄 In Progress</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <h4>Week 7-10: Frontend Development</h4>
+                        <p>UI components, Dashboard, Mobile views, Data visualization</p>
+                        <span class="timeline-status">⏳ Upcoming</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <h4>Week 11-12: Testing & Deployment</h4>
+                        <p>Unit testing, Integration testing, UAT, Production deployment</p>
+                        <span class="timeline-status">⏳ Upcoming</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Health Desk</h3>
+                    <p>Development Report v1.0.0</p>
+                </div>
+                <div class="footer-links">
+                    <a href="index.html">กลับหน้าหลัก</a>
+                    <a href="#" onclick="window.print()">🖨️ Print Report</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Health Desk Project. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Check if user is authenticated as Admin/Dev
+        (function() {
+            const adminDevSession = localStorage.getItem('healthdesk_admin_dev');
+
+            if (!adminDevSession) {
+                // Not authenticated, redirect to login
+                alert('⚠️ Access Restricted\n\nThis page requires Admin/Developer authentication.\nYou will be redirected to the login page.');
+                window.location.href = 'admin-dev-login.html';
+            } else {
+                try {
+                    const session = JSON.parse(adminDevSession);
+                    console.log('Admin/Dev access granted:', session.username);
+                } catch (e) {
+                    // Invalid session data
+                    localStorage.removeItem('healthdesk_admin_dev');
+                    window.location.href = 'admin-dev-login.html';
+                }
+            }
+        })();
+    </script>
+</body>
+</html>

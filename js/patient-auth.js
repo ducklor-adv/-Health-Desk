@@ -13,8 +13,8 @@ function checkPatientAuth() {
     var patient = localStorage.getItem('healthdesk_patient');
     if (!patient) {
         if (window.location.pathname.includes('patient-') &&
-            !window.location.pathname.includes('patient-login.html') &&
-            !window.location.pathname.includes('patient-register.html')) {
+            !window.location.pathname.includes('patient-login') &&
+            !window.location.pathname.includes('patient-register')) {
             window.location.href = 'patient-login.html';
         }
         return null;
@@ -115,8 +115,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var path = window.location.pathname;
     // Check auth on protected pages
     if (path.includes('patient-') &&
-        !path.includes('patient-login.html') &&
-        !path.includes('patient-register.html')) {
+        !path.includes('patient-login') &&
+        !path.includes('patient-register')) {
         var patient = checkPatientAuth();
         if (patient) {
             document.body.style.visibility = 'visible';

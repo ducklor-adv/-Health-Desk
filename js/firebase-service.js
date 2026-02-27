@@ -813,6 +813,147 @@ var FirebaseService = (function() {
     }
 
     // ============================================================
+    // SUPER ADMIN — Staff CRUD, Stats, Audit Log, Export
+    // ============================================================
+
+    function createStaff(data) {
+        data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+        data.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+        data.status = data.status || 'active';
+        if (data.docId) {
+            var docId = data.docId;
+            delete data.docId;
+            return db.collection('staff').doc(docId).set(data).then(function() {
+                return docId;
+            });
+        }
+        return db.collection('staff').add(data).then(function(docRef) {
+            return docRef.id;
+        });
+    }
+
+    function updateStaff(id, data) {
+        data.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+        return db.collection('staff').doc(id).update(data);
+    }
+
+    function deleteStaff(id) {
+        return db.collection('staff').doc(id).update({
+            status: 'inactive',
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    }
+
+    function getAllStaffIncludeInactive() {
+        return db.collection('staff').get().then(function(snapshot) {
+            var staff = [];
+            snapshot.forEach(function(doc) {
+                var data = doc.data();
+                data.id = doc.id;
+                staff.push(data);
+            });
+            return staff;
+        });
+    }
+
+    function getSystemStats() {
+        var stats = {};
+        return db.collection('patients').get().then(function(snap) {
+            stats.totalPatients = snap.size;
+            stats.activePatients = 0;
+            stats.riskHigh = 0;
+            stats.riskMedium = 0;
+            snap.forEach(function(doc) {
+                var d = doc.data();
+                if (d.status === 'active') stats.activePatients++;
+                if (d.riskLevel === 'high') stats.riskHigh++;
+                if (d.riskLevel === 'medium') stats.riskMedium++;
+            });
+            return db.collection('staff').get();
+        }).then(function(snap) {
+            stats.totalStaff = snap.size;
+            stats.activeStaff = 0;
+            snap.forEach(function(doc) {
+                if (doc.data().status === 'active') stats.activeStaff++;
+            });
+            return db.collection('appointments').get();
+        }).then(function(snap) {
+            stats.totalAppointments = snap.size;
+            stats.scheduledAppointments = 0;
+            snap.forEach(function(doc) {
+                if (doc.data().status === 'scheduled') stats.scheduledAppointments++;
+            });
+            return db.collection('conversations').get();
+        }).then(function(snap) {
+            stats.totalConversations = snap.size;
+            return db.collection('notifications').get();
+        }).then(function(snap) {
+            stats.totalNotifications = snap.size;
+            return stats;
+        });
+    }
+
+    function addAuditLog(entry) {
+        entry.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+        return db.collection('audit_log').add(entry).then(function(docRef) {
+            return docRef.id;
+        });
+    }
+
+    function getAuditLog(limit) {
+        limit = limit || 50;
+        return db.collection('audit_log')
+            .orderBy('timestamp', 'desc')
+            .limit(limit)
+            .get()
+            .then(function(snapshot) {
+                var logs = [];
+                snapshot.forEach(function(doc) {
+                    var data = doc.data();
+                    data.id = doc.id;
+                    if (data.timestamp && data.timestamp.toDate) {
+                        data.timestamp = data.timestamp.toDate().toISOString();
+                    }
+                    logs.push(data);
+                });
+                return logs;
+            });
+    }
+
+    function exportAllData() {
+        var result = { exportDate: new Date().toISOString(), system: 'Health Desk Community' };
+        return db.collection('patients').get().then(function(snap) {
+            result.patients = [];
+            snap.forEach(function(doc) {
+                var d = doc.data(); d.id = doc.id;
+                result.patients.push(d);
+            });
+            return db.collection('staff').get();
+        }).then(function(snap) {
+            result.staff = [];
+            snap.forEach(function(doc) {
+                var d = doc.data(); d.id = doc.id;
+                result.staff.push(d);
+            });
+            return db.collection('appointments').get();
+        }).then(function(snap) {
+            result.appointments = [];
+            snap.forEach(function(doc) {
+                var d = doc.data(); d.id = doc.id;
+                result.appointments.push(d);
+            });
+            return db.collection('notifications').get();
+        }).then(function(snap) {
+            result.notifications = [];
+            snap.forEach(function(doc) {
+                var d = doc.data(); d.id = doc.id;
+                result.notifications.push(d);
+            });
+            return result;
+        });
+    }
+
+    // ============================================================
     // PUBLIC API
     // ============================================================
 
@@ -868,6 +1009,16 @@ var FirebaseService = (function() {
         // Data Portability
         exportPatientData: exportPatientData,
         importPatientData: importPatientData,
+
+        // Super Admin
+        createStaff: createStaff,
+        updateStaff: updateStaff,
+        deleteStaff: deleteStaff,
+        getAllStaffIncludeInactive: getAllStaffIncludeInactive,
+        getSystemStats: getSystemStats,
+        addAuditLog: addAuditLog,
+        getAuditLog: getAuditLog,
+        exportAllData: exportAllData,
 
         // Utils
         isSeeded: isSeeded

@@ -28,6 +28,10 @@ service cloud.firestore {
       return isStaff() && getStaff().role == 'admin';
     }
 
+    function isSuperAdmin() {
+      return isStaff() && getStaff().role == 'superadmin';
+    }
+
     // === Patients ===
     match /patients/{patientId} {
       // Staff can read all patients, anonymous users can read their own
@@ -35,7 +39,7 @@ service cloud.firestore {
       // Only staff can create/update patients
       allow create: if isAuthenticated();
       allow update: if isAuthenticated();
-      allow delete: if isAdmin();
+      allow delete: if isAdmin() || isSuperAdmin();
 
       // Health Records (subcollection)
       match /healthRecords/{recordId} {
@@ -49,7 +53,7 @@ service cloud.firestore {
     // === Staff ===
     match /staff/{staffId} {
       allow read: if isAuthenticated();
-      allow write: if isAdmin();
+      allow write: if isAdmin() || isSuperAdmin();
     }
 
     // === Appointments ===
@@ -80,6 +84,12 @@ service cloud.firestore {
         allow create: if isAuthenticated();
         allow update: if isAuthenticated();
       }
+    }
+    // === Audit Log ===
+    match /audit_log/{logId} {
+      allow read: if isAdmin() || isSuperAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if false;
     }
   }
 }

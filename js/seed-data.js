@@ -48,6 +48,17 @@ var SeedData = (function() {
             licenseNo: 'ว.12345',
             healthCenter: 'ศูนย์สุขภาพชุมชนบ้านสุขใจ',
             status: 'active'
+        },
+        {
+            docId: 'staff-4',
+            name: 'Super Admin',
+            email: 'superadmin@health.go.th',
+            role: 'superadmin',
+            roleLabel: 'ผู้ดูแลระบบสูงสุด',
+            phone: '080-000-0000',
+            licenseNo: '',
+            healthCenter: 'ศูนย์สุขภาพชุมชนบ้านสุขใจ',
+            status: 'active'
         }
     ];
 

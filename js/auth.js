@@ -26,6 +26,13 @@ var mockUsers = {
         name: 'นพ.สมชาย พัฒนา',
         role: 'doctor',
         roleLabel: 'แพทย์'
+    },
+    'superadmin@health.go.th': {
+        password: 'superadmin123',
+        id: 'staff-4',
+        name: 'Super Admin',
+        role: 'superadmin',
+        roleLabel: 'ผู้ดูแลระบบสูงสุด'
     }
 };
 
@@ -33,7 +40,7 @@ var mockUsers = {
 function checkAuth() {
     var user = localStorage.getItem('healthdesk_user');
     if (!user) {
-        if (window.location.pathname.includes('/app/') && !window.location.pathname.includes('login.html')) {
+        if (window.location.pathname.includes('/app/') && !window.location.pathname.includes('login')) {
             window.location.replace('login.html');
         }
         return null;
@@ -60,7 +67,9 @@ if (document.getElementById('loginForm')) {
         if (typeof FirebaseService !== 'undefined') {
             FirebaseService.loginStaff(email, password)
                 .then(function(userData) {
-                    if (userData.role === 'worker') {
+                    if (userData.role === 'superadmin') {
+                        window.location.href = 'super-admin.html';
+                    } else if (userData.role === 'worker') {
                         window.location.href = 'field-app.html';
                     } else {
                         window.location.href = 'dashboard.html';
@@ -88,7 +97,9 @@ function _loginWithMock(email, password, submitBtn) {
             roleLabel: user.roleLabel
         }));
 
-        if (user.role === 'worker') {
+        if (user.role === 'superadmin') {
+            window.location.href = 'super-admin.html';
+        } else if (user.role === 'worker') {
             window.location.href = 'field-app.html';
         } else {
             window.location.href = 'dashboard.html';
@@ -130,7 +141,7 @@ function updateUserInfo() {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
-    if (window.location.pathname.includes('/app/') && !window.location.pathname.includes('login.html')) {
+    if (window.location.pathname.includes('/app/') && !window.location.pathname.includes('login')) {
         checkAuth();
         updateUserInfo();
     }

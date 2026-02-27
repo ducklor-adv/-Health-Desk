@@ -154,8 +154,10 @@ function renderNotificationPanel() {
 
         var html = '<div style="padding: 1rem 1.25rem; border-bottom: 2px solid #E5E7EB; display: flex; justify-content: space-between; align-items: center;">' +
             '<strong style="font-size: 1.25rem;">🔔 การแจ้งเตือน</strong>' +
+            '<div style="display:flex; gap:0.75rem; align-items:center;">' +
             '<button onclick="markAllNotificationsRead(); renderNotificationPanel();" style="background: none; border: none; color: #4F46E5; font-weight: 700; cursor: pointer; font-family: Prompt, sans-serif; font-size: 0.9rem;">อ่านทั้งหมด</button>' +
-            '</div>';
+            '<button onclick="toggleNotifications();" style="background: #F3F4F6; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>' +
+            '</div></div>';
 
         for (var i = 0; i < notifications.length; i++) {
             var n = notifications[i];

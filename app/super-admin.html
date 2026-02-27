@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Super Admin - Health Desk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Prompt', sans-serif; background: #F3F4F6; min-height: 100vh; padding-bottom: 75px; }
+
+        /* Header */
+        .top { background: linear-gradient(135deg, #7C3AED, #4F46E5); padding: 0.75rem 1rem; color: white; }
+        .top-row { display: flex; justify-content: space-between; align-items: center; }
+        .title { font-size: 1.1rem; font-weight: 700; }
+        .top-actions { display: flex; align-items: center; gap: 0.5rem; }
+        .top-actions button { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; padding: 0.3rem; }
+        .role-badge { font-size: 0.7rem; background: rgba(255,255,255,0.2); padding: 0.15rem 0.5rem; border-radius: 20px; margin-top: 0.2rem; display: inline-block; }
+        .current-date { font-size: 0.72rem; opacity: 0.85; margin-top: 0.15rem; }
+
+        /* Content */
+        .box { padding: 0.75rem; }
+
+        /* Tab Navigation */
+        .tab-nav { display: flex; background: white; border-radius: 10px; border: 1px solid #E5E7EB; margin-bottom: 0.75rem; overflow-x: auto; }
+        .tab-btn { flex: 1; padding: 0.6rem 0.3rem; border: none; background: transparent; font-family: 'Prompt', sans-serif; font-size: 0.75rem; font-weight: 600; color: #6B7280; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.2s; }
+        .tab-btn.active { color: #4F46E5; border-bottom-color: #4F46E5; background: #EEF2FF; }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Section Title */
+        .section-title { font-size: 0.85rem; font-weight: 700; color: #111827; margin-bottom: 0.5rem; }
+
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-bottom: 0.75rem; }
+        .stat-card { background: white; border-radius: 10px; padding: 0.75rem; border: 1px solid #E5E7EB; }
+        .stat-icon { font-size: 1.2rem; }
+        .stat-label { font-size: 0.72rem; color: #6B7280; margin-top: 0.1rem; }
+        .stat-value { font-size: 1.4rem; font-weight: 700; color: #111827; }
+
+        /* Summary Card */
+        .summary-card { background: white; padding: 0.75rem; border-radius: 10px; border: 1px solid #E5E7EB; }
+
+        /* Staff Cards */
+        .staff-card { background: white; border-radius: 10px; padding: 0.75rem; border: 1px solid #E5E7EB; margin-bottom: 0.5rem; }
+        .staff-header { display: flex; align-items: center; gap: 0.6rem; }
+        .staff-avatar { width: 40px; height: 40px; border-radius: 50%; background: #4F46E5; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; flex-shrink: 0; }
+        .staff-info { flex: 1; min-width: 0; }
+        .staff-name { font-size: 0.85rem; font-weight: 600; color: #111827; }
+        .staff-meta { font-size: 0.72rem; color: #6B7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .staff-status { font-size: 0.68rem; padding: 0.1rem 0.4rem; border-radius: 10px; font-weight: 600; }
+        .status-active { background: #D1FAE5; color: #065F46; }
+        .status-inactive { background: #FEE2E2; color: #991B1B; }
+        .staff-actions { display: flex; gap: 0.4rem; margin-top: 0.5rem; flex-wrap: wrap; }
+        .staff-actions button { font-family: 'Prompt', sans-serif; font-size: 0.72rem; padding: 0.3rem 0.6rem; border-radius: 6px; border: 1px solid #E5E7EB; background: #F9FAFB; cursor: pointer; font-weight: 500; }
+        .staff-actions button:hover { background: #E5E7EB; }
+
+        /* Buttons */
+        .btn-add { display: block; width: 100%; padding: 0.6rem; border: 2px dashed #D1D5DB; background: white; border-radius: 10px; font-family: 'Prompt', sans-serif; font-size: 0.82rem; font-weight: 600; color: #4F46E5; cursor: pointer; margin-bottom: 0.75rem; }
+        .btn-add:hover { background: #EEF2FF; border-color: #4F46E5; }
+
+        .btn-primary { background: #4F46E5; color: white; border: none; padding: 0.6rem 1rem; border-radius: 8px; font-family: 'Prompt', sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+        .btn-primary:hover { background: #4338CA; }
+        .btn-danger { background: #EF4444; color: white; border: none; padding: 0.6rem 1rem; border-radius: 8px; font-family: 'Prompt', sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; margin-left: 0.5rem; }
+        .btn-danger:hover { background: #DC2626; }
+        .btn-success { background: #10B981; color: white; border: none; padding: 0.6rem 1rem; border-radius: 8px; font-family: 'Prompt', sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+        .btn-success:hover { background: #059669; }
+        .btn-refresh { background: white; border: 1px solid #E5E7EB; padding: 0.4rem 0.8rem; border-radius: 6px; font-family: 'Prompt', sans-serif; font-size: 0.78rem; cursor: pointer; margin-bottom: 0.5rem; }
+
+        /* Action Card */
+        .action-card { background: white; padding: 0.75rem; border-radius: 10px; border: 1px solid #E5E7EB; margin-bottom: 0.5rem; }
+        .action-card p { font-size: 0.78rem; color: #6B7280; margin-bottom: 0.5rem; }
+
+        /* Data Log */
+        .data-log { background: #1F2937; color: #10B981; padding: 0.75rem; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.75rem; max-height: 200px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; }
+
+        /* Audit Log */
+        .audit-item { background: white; border-radius: 8px; padding: 0.6rem 0.75rem; border: 1px solid #E5E7EB; margin-bottom: 0.4rem; }
+        .audit-header { display: flex; align-items: center; gap: 0.4rem; }
+        .audit-icon { font-size: 1rem; }
+        .audit-action { font-size: 0.8rem; font-weight: 500; color: #111827; }
+        .audit-meta { font-size: 0.7rem; color: #9CA3AF; margin-top: 0.15rem; }
+
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 3000; align-items: flex-start; justify-content: center; padding-top: 8vh; }
+        .modal-overlay.show { display: flex; }
+        .modal-content { background: white; border-radius: 16px; padding: 1.25rem; width: 92%; max-width: 450px; max-height: 82vh; overflow-y: auto; }
+        .modal-content h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; color: #111827; }
+        .form-group { margin-bottom: 0.6rem; }
+        .form-group label { display: block; font-size: 0.78rem; font-weight: 600; color: #374151; margin-bottom: 0.2rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.5rem 0.6rem; border: 1px solid #D1D5DB; border-radius: 8px; font-family: 'Prompt', sans-serif; font-size: 0.82rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: #4F46E5; box-shadow: 0 0 0 2px rgba(79,70,229,0.15); }
+        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.75rem; }
+        .modal-actions button { padding: 0.6rem; border-radius: 8px; font-family: 'Prompt', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+        .btn-cancel { background: #F3F4F6; color: #374151; border: 1px solid #D1D5DB; }
+        .btn-save { background: #4F46E5; color: white; border: none; }
+
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #E5E7EB; display: grid; grid-template-columns: repeat(3, 1fr); z-index: 1000; }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; padding: 0.5rem 0; text-decoration: none; color: #6B7280; font-size: 0.7rem; gap: 0.15rem; }
+        .nav-btn.on { color: #4F46E5; font-weight: 600; }
+        .nav-icon { font-size: 1.2rem; }
+        .nav-text { font-size: 0.68rem; }
+
+        /* Empty state */
+        .empty-state { text-align: center; color: #9CA3AF; padding: 2rem; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="top">
+        <div class="top-row">
+            <div>
+                <div class="title">🛡️ Super Admin</div>
+                <div class="role-badge" id="userRoleDisplay">-</div>
+                <div class="current-date" id="currentDate"></div>
+            </div>
+            <div class="top-actions">
+                <button onclick="toggleNotifications()" style="position:relative;">
+                    🔔<span id="notifBadge" style="display:none; position:absolute; top:-2px; right:-4px; background:#EF4444; color:white; font-size:0.6rem; font-weight:700; min-width:14px; height:14px; border-radius:7px; display:flex; align-items:center; justify-content:center; padding:0 2px;"></span>
+                </button>
+                <button onclick="logout()">🚪</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div id="notifPanel" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:white; z-index:2000; overflow-y:auto;"></div>
+
+    <!-- Main Content -->
+    <div class="box">
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="overview" onclick="switchTab('overview')">📊 ภาพรวม</button>
+            <button class="tab-btn" data-tab="staff" onclick="switchTab('staff')">👨‍⚕️ เจ้าหน้าที่</button>
+            <button class="tab-btn" data-tab="data" onclick="switchTab('data')">💾 ข้อมูล</button>
+            <button class="tab-btn" data-tab="audit" onclick="switchTab('audit')">📜 Log</button>
+        </div>
+
+        <!-- Tab 1: Overview -->
+        <div class="tab-panel active" id="panel-overview">
+            <div class="section-title">📊 สถิติระบบ</div>
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="statPatients">-</div><div class="stat-label">ผู้ป่วยทั้งหมด</div></div>
+                <div class="stat-card"><div class="stat-icon">👨‍⚕️</div><div class="stat-value" id="statStaff">-</div><div class="stat-label">เจ้าหน้าที่</div></div>
+                <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-value" id="statAppointments">-</div><div class="stat-label">นัดหมาย</div></div>
+                <div class="stat-card"><div class="stat-icon">🚨</div><div class="stat-value" id="statRiskHigh">-</div><div class="stat-label">ผู้ป่วยเสี่ยงสูง</div></div>
+                <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-value" id="statRiskMedium">-</div><div class="stat-label">เฝ้าระวัง</div></div>
+                <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-value" id="statConversations">-</div><div class="stat-label">สนทนา</div></div>
+            </div>
+            <div class="summary-card">
+                <div class="section-title">📈 สรุปภาพรวม</div>
+                <div id="summaryContent" style="font-size:0.8rem; color:#374151;">กำลังโหลด...</div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Staff Management -->
+        <div class="tab-panel" id="panel-staff">
+            <div class="section-title">👨‍⚕️ จัดการเจ้าหน้าที่</div>
+            <button class="btn-add" onclick="openAddStaffModal()">+ เพิ่มเจ้าหน้าที่ใหม่</button>
+            <div id="staffList"><div class="empty-state">กำลังโหลด...</div></div>
+        </div>
+
+        <!-- Tab 3: Data Management -->
+        <div class="tab-panel" id="panel-data">
+            <div class="section-title">📋 สรุปข้อมูลผู้ป่วย</div>
+            <div class="action-card" id="dataSummary">
+                <p>กำลังโหลดข้อมูล...</p>
+            </div>
+
+            <div class="section-title" style="margin-top:0.75rem;">🌱 จัดการข้อมูลระบบ</div>
+            <div class="action-card">
+                <p>นำเข้าข้อมูลตัวอย่าง (50 ผู้ป่วย + เจ้าหน้าที่ + แชท + แจ้งเตือน)</p>
+                <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                    <button class="btn-primary" onclick="doSeedData()">🌱 Seed ข้อมูลตัวอย่าง</button>
+                    <button class="btn-danger" onclick="doClearData()">🗑️ ล้างข้อมูลทั้งหมด</button>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top:0.75rem;">💾 สำรอง / นำเข้าข้อมูล</div>
+            <div class="action-card">
+                <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.5rem;">
+                    <button class="btn-success" onclick="exportData()">📥 Export ทั้งหมด (JSON)</button>
+                </div>
+                <div>
+                    <label style="font-size:0.78rem; font-weight:600; color:#374151;">📤 Import ข้อมูล:</label>
+                    <input type="file" id="importFile" accept=".json" onchange="importData(this)" style="font-size:0.78rem; margin-top:0.3rem;">
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top:0.75rem;">📝 Console Log</div>
+            <div class="data-log" id="dataLog">Ready.</div>
+        </div>
+
+        <!-- Tab 4: Audit Log -->
+        <div class="tab-panel" id="panel-audit">
+            <div class="section-title">📜 บันทึกกิจกรรมระบบ</div>
+            <button class="btn-refresh" onclick="loadAuditLog()">🔄 รีเฟรช</button>
+            <div id="auditLogList"><div class="empty-state">กำลังโหลด...</div></div>
+        </div>
+    </div>
+
+    <!-- Staff Modal -->
+    <div class="modal-overlay" id="staffModal">
+        <div class="modal-content">
+            <h3 id="staffModalTitle">เพิ่มเจ้าหน้าที่</h3>
+            <input type="hidden" id="staffEditId">
+            <div class="form-group">
+                <label>ชื่อ-นามสกุล *</label>
+                <input type="text" id="staffName" placeholder="ชื่อ นามสกุล">
+            </div>
+            <div class="form-group">
+                <label>อีเมล *</label>
+                <input type="email" id="staffEmail" placeholder="user@health.go.th">
+            </div>
+            <div class="form-group">
+                <label>เบอร์โทร</label>
+                <input type="tel" id="staffPhone" placeholder="0XX-XXX-XXXX">
+            </div>
+            <div class="form-group">
+                <label>บทบาท</label>
+                <select id="staffRole">
+                    <option value="worker">เจ้าหน้าที่สาธารณสุข</option>
+                    <option value="doctor">แพทย์</option>
+                    <option value="admin">ผู้ดูแลระบบ</option>
+                    <option value="superadmin">ผู้ดูแลระบบสูงสุด</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>เลขใบประกอบวิชาชีพ (ถ้ามี)</label>
+                <input type="text" id="staffLicenseNo" placeholder="ว.XXXXX">
+            </div>
+            <div class="form-group">
+                <label>ศูนย์สุขภาพ</label>
+                <input type="text" id="staffHealthCenter" value="ศูนย์สุขภาพชุมชนบ้านสุขใจ">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeStaffModal()">ยกเลิก</button>
+                <button class="btn-save" onclick="saveStaff()">บันทึก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav"></nav>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+    <script src="../js/seed-data.js"></script>
+    <script src="../js/mock-data.js"></script>
+    <script src="../js/mock-data-chat.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/chat.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/nav-helper.js"></script>
+
+    <script>
+        // ===== Global State =====
+        var allStaffData = [];
+        var roleLabels = {
+            worker: 'เจ้าหน้าที่สาธารณสุข',
+            doctor: 'แพทย์',
+            admin: 'ผู้ดูแลระบบ',
+            superadmin: 'ผู้ดูแลระบบสูงสุด'
+        };
+
+        // ===== Tab Navigation =====
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(function(btn) {
+                btn.classList.toggle('active', btn.dataset.tab === tabId);
+            });
+            document.querySelectorAll('.tab-panel').forEach(function(panel) {
+                panel.classList.toggle('active', panel.id === 'panel-' + tabId);
+            });
+        }
+
+        // ===== Tab 1: Overview Stats =====
+        function loadOverviewStats() {
+            if (typeof FirebaseService !== 'undefined' && FirebaseService.getSystemStats) {
+                FirebaseService.getSystemStats().then(function(stats) {
+                    renderStats(stats);
+                }).catch(function() {
+                    renderStatsFallback();
+                });
+            } else {
+                renderStatsFallback();
+            }
+        }
+
+        function renderStatsFallback() {
+            var patients = typeof mockPatients !== 'undefined' ? mockPatients : [];
+            var appointments = typeof mockAppointments !== 'undefined' ? mockAppointments : [];
+            renderStats({
+                totalPatients: patients.length,
+                activeStaff: Object.keys(mockUsers).length,
+                scheduledAppointments: appointments.filter(function(a) { return a.status === 'scheduled'; }).length,
+                riskHigh: patients.filter(function(p) { return p.riskLevel === 'high'; }).length,
+                riskMedium: patients.filter(function(p) { return p.riskLevel === 'medium'; }).length,
+                totalConversations: 0
+            });
+        }
+
+        function renderStats(stats) {
+            document.getElementById('statPatients').textContent = stats.totalPatients || 0;
+            document.getElementById('statStaff').textContent = stats.activeStaff || 0;
+            document.getElementById('statAppointments').textContent = stats.scheduledAppointments || stats.totalAppointments || 0;
+            document.getElementById('statRiskHigh').textContent = stats.riskHigh || 0;
+            document.getElementById('statRiskMedium').textContent = stats.riskMedium || 0;
+            document.getElementById('statConversations').textContent = stats.totalConversations || 0;
+
+            document.getElementById('summaryContent').textContent =
+                'ระบบมีผู้ป่วย ' + (stats.totalPatients || 0) + ' ราย ' +
+                '(เสี่ยงสูง ' + (stats.riskHigh || 0) + ' ราย, เฝ้าระวัง ' + (stats.riskMedium || 0) + ' ราย) ' +
+                'เจ้าหน้าที่ ' + (stats.activeStaff || 0) + ' คน ' +
+                'นัดหมาย ' + (stats.scheduledAppointments || stats.totalAppointments || 0) + ' รายการ';
+        }
+
+        // ===== Tab 2: Staff Management =====
+        function loadStaff() {
+            if (typeof FirebaseService !== 'undefined' && FirebaseService.getAllStaffIncludeInactive) {
+                FirebaseService.getAllStaffIncludeInactive().then(function(staff) {
+                    allStaffData = staff;
+                    renderStaffList(staff);
+                }).catch(function() {
+                    loadStaffFallback();
+                });
+            } else {
+                loadStaffFallback();
+            }
+        }
+
+        function loadStaffFallback() {
+            allStaffData = Object.keys(mockUsers).map(function(email) {
+                var u = mockUsers[email];
+                return { id: u.id, name: u.name, email: email, role: u.role, roleLabel: u.roleLabel, status: 'active', phone: '' };
+            });
+            renderStaffList(allStaffData);
+        }
+
+        function renderStaffList(staffList) {
+            if (!staffList.length) {
+                document.getElementById('staffList').innerHTML = '<div class="empty-state">ไม่พบข้อมูลเจ้าหน้าที่</div>';
+                return;
+            }
+            var html = '';
+            staffList.forEach(function(s) {
+                var statusClass = s.status === 'active' ? 'status-active' : 'status-inactive';
+                var statusText = s.status === 'active' ? 'ใช้งาน' : 'ปิดใช้งาน';
+                var toggleText = s.status === 'active' ? '⏸️ ปิด' : '▶️ เปิด';
+                var initial = s.name ? s.name.substring(0, 2) : '??';
+                var roleName = roleLabels[s.role] || s.role;
+
+                html += '<div class="staff-card">' +
+                    '<div class="staff-header">' +
+                    '<div class="staff-avatar">' + initial + '</div>' +
+                    '<div class="staff-info">' +
+                    '<div class="staff-name">' + s.name + '</div>' +
+                    '<div class="staff-meta">' + (s.email || '') + ' | ' + roleName + '</div>' +
+                    '<span class="staff-status ' + statusClass + '">' + statusText + '</span>' +
+                    '</div></div>' +
+                    '<div class="staff-actions">' +
+                    '<button onclick="editStaff(\'' + s.id + '\')">✏️ แก้ไข</button>' +
+                    '<button onclick="toggleStaffStatus(\'' + s.id + '\', \'' + s.status + '\')">' + toggleText + '</button>' +
+                    '<button onclick="confirmDeleteStaff(\'' + s.id + '\', \'' + s.name + '\')">🗑️ ลบ</button>' +
+                    '</div></div>';
+            });
+            document.getElementById('staffList').innerHTML = html;
+        }
+
+        function openAddStaffModal() {
+            document.getElementById('staffModalTitle').textContent = '➕ เพิ่มเจ้าหน้าที่ใหม่';
+            document.getElementById('staffEditId').value = '';
+            document.getElementById('staffName').value = '';
+            document.getElementById('staffEmail').value = '';
+            document.getElementById('staffPhone').value = '';
+            document.getElementById('staffRole').value = 'worker';
+            document.getElementById('staffLicenseNo').value = '';
+            document.getElementById('staffHealthCenter').value = 'ศูนย์สุขภาพชุมชนบ้านสุขใจ';
+            document.getElementById('staffModal').classList.add('show');
+        }
+
+        function editStaff(staffId) {
+            var staff = allStaffData.find(function(s) { return s.id === staffId; });
+            if (!staff) return;
+            document.getElementById('staffModalTitle').textContent = '✏️ แก้ไขเจ้าหน้าที่';
+            document.getElementById('staffEditId').value = staffId;
+            document.getElementById('staffName').value = staff.name || '';
+            document.getElementById('staffEmail').value = staff.email || '';
+            document.getElementById('staffPhone').value = staff.phone || '';
+            document.getElementById('staffRole').value = staff.role || 'worker';
+            document.getElementById('staffLicenseNo').value = staff.licenseNo || '';
+            document.getElementById('staffHealthCenter').value = staff.healthCenter || '';
+            document.getElementById('staffModal').classList.add('show');
+        }
+
+        function closeStaffModal() {
+            document.getElementById('staffModal').classList.remove('show');
+        }
+
+        function saveStaff() {
+            var editId = document.getElementById('staffEditId').value;
+            var name = document.getElementById('staffName').value.trim();
+            var email = document.getElementById('staffEmail').value.trim();
+            var phone = document.getElementById('staffPhone').value.trim();
+            var role = document.getElementById('staffRole').value;
+            var licenseNo = document.getElementById('staffLicenseNo').value.trim();
+            var healthCenter = document.getElementById('staffHealthCenter').value.trim();
+
+            if (!name || !email) {
+                alert('กรุณากรอกชื่อและอีเมล');
+                return;
+            }
+
+            var data = {
+                name: name,
+                email: email,
+                phone: phone,
+                role: role,
+                roleLabel: roleLabels[role] || role,
+                licenseNo: licenseNo,
+                healthCenter: healthCenter
+            };
+
+            var user = JSON.parse(localStorage.getItem('healthdesk_user'));
+
+            if (typeof FirebaseService !== 'undefined') {
+                if (editId) {
+                    FirebaseService.updateStaff(editId, data).then(function() {
+                        if (FirebaseService.addAuditLog) {
+                            FirebaseService.addAuditLog({
+                                action: 'update_staff',
+                                targetId: editId,
+                                targetName: name,
+                                performedBy: user ? user.name : 'unknown',
+                                details: 'แก้ไขข้อมูลเจ้าหน้าที่ ' + name
+                            });
+                        }
+                        alert('แก้ไขข้อมูลเรียบร้อย');
+                        closeStaffModal();
+                        loadStaff();
+                    }).catch(function(err) {
+                        alert('เกิดข้อผิดพลาด: ' + err.message);
+                    });
+                } else {
+                    data.status = 'active';
+                    FirebaseService.createStaff(data).then(function(newId) {
+                        if (FirebaseService.addAuditLog) {
+                            FirebaseService.addAuditLog({
+                                action: 'create_staff',
+                                targetId: newId,
+                                targetName: name,
+                                performedBy: user ? user.name : 'unknown',
+                                details: 'เพิ่มเจ้าหน้าที่ใหม่ ' + name + ' (' + (roleLabels[role] || role) + ')'
+                            });
+                        }
+                        alert('เพิ่มเจ้าหน้าที่เรียบร้อย');
+                        closeStaffModal();
+                        loadStaff();
+                    }).catch(function(err) {
+                        alert('เกิดข้อผิดพลาด: ' + err.message);
+                    });
+                }
+            } else {
+                alert('Firebase ไม่พร้อมใช้งาน ไม่สามารถบันทึกได้');
+            }
+        }
+
+        function toggleStaffStatus(staffId, currentStatus) {
+            var newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+            var actionText = newStatus === 'active' ? 'เปิดใช้งาน' : 'ปิดใช้งาน';
+            if (!confirm('ต้องการ' + actionText + 'เจ้าหน้าที่นี้?')) return;
+
+            if (typeof FirebaseService !== 'undefined') {
+                FirebaseService.updateStaff(staffId, { status: newStatus }).then(function() {
+                    var user = JSON.parse(localStorage.getItem('healthdesk_user'));
+                    if (FirebaseService.addAuditLog) {
+                        FirebaseService.addAuditLog({
+                            action: 'toggle_staff_status',
+                            targetId: staffId,
+                            performedBy: user ? user.name : 'unknown',
+                            details: actionText + 'เจ้าหน้าที่ ID: ' + staffId
+                        });
+                    }
+                    loadStaff();
+                });
+            }
+        }
+
+        function confirmDeleteStaff(staffId, staffName) {
+            if (!confirm('ต้องการลบเจ้าหน้าที่ "' + staffName + '" หรือไม่?\n(ข้อมูลจะถูกเปลี่ยนเป็นสถานะปิดใช้งาน)')) return;
+
+            if (typeof FirebaseService !== 'undefined') {
+                FirebaseService.deleteStaff(staffId).then(function() {
+                    var user = JSON.parse(localStorage.getItem('healthdesk_user'));
+                    if (FirebaseService.addAuditLog) {
+                        FirebaseService.addAuditLog({
+                            action: 'delete_staff',
+                            targetId: staffId,
+                            targetName: staffName,
+                            performedBy: user ? user.name : 'unknown',
+                            details: 'ลบ (ปิดใช้งาน) เจ้าหน้าที่ ' + staffName
+                        });
+                    }
+                    alert('ลบเจ้าหน้าที่เรียบร้อย');
+                    loadStaff();
+                });
+            }
+        }
+
+        // ===== Tab 3: Data Management =====
+        function loadDataSummary() {
+            if (typeof FirebaseService !== 'undefined' && FirebaseService.getSystemStats) {
+                FirebaseService.getSystemStats().then(function(stats) {
+                    document.getElementById('dataSummary').innerHTML =
+                        '<p style="font-size:0.82rem; color:#111827; font-weight:600;">📊 ข้อมูลในระบบ</p>' +
+                        '<p>ผู้ป่วย: <strong>' + stats.totalPatients + '</strong> ราย | ' +
+                        'เจ้าหน้าที่: <strong>' + stats.totalStaff + '</strong> คน | ' +
+                        'นัดหมาย: <strong>' + stats.totalAppointments + '</strong> รายการ | ' +
+                        'แจ้งเตือน: <strong>' + stats.totalNotifications + '</strong> รายการ</p>';
+                }).catch(function() {
+                    document.getElementById('dataSummary').innerHTML = '<p>ไม่สามารถโหลดข้อมูลได้</p>';
+                });
+            } else {
+                var patients = typeof mockPatients !== 'undefined' ? mockPatients : [];
+                document.getElementById('dataSummary').innerHTML =
+                    '<p style="font-size:0.82rem; color:#111827; font-weight:600;">📊 ข้อมูลในระบบ (Fallback Mode)</p>' +
+                    '<p>ผู้ป่วย: <strong>' + patients.length + '</strong> ราย (mock data)</p>';
+            }
+        }
+
+        function doSeedData() {
+            if (!confirm('นำเข้าข้อมูลตัวอย่าง? ข้อมูลเดิมจะถูกเขียนทับ')) return;
+            dataLog('Starting seed...');
+
+            if (typeof SeedData !== 'undefined' && SeedData.seedAll) {
+                SeedData.seedAll().then(function() {
+                    dataLog('Seed complete!');
+                    var user = JSON.parse(localStorage.getItem('healthdesk_user'));
+                    if (typeof FirebaseService !== 'undefined' && FirebaseService.addAuditLog) {
+                        FirebaseService.addAuditLog({
+                            action: 'seed_data',
+                            performedBy: user ? user.name : 'unknown',
+                            details: 'Seed ข้อมูลตัวอย่างเข้าระบบ'
+                        });
+                    }
+                    loadOverviewStats();
+                    loadDataSummary();
+                    alert('นำเข้าข้อมูลตัวอย่างเรียบร้อย!');
+                }).catch(function(e) {
+                    dataLog('Seed failed: ' + e.message);
+                    alert('เกิดข้อผิดพลาด: ' + e.message);
+                });
+            } else {
+                dataLog('SeedData module not loaded');
+                alert('SeedData module ไม่พร้อมใช้งาน');
+            }
+        }
+
+        function doClearData() {
+            if (!confirm('ลบข้อมูลทั้งหมดใน Firestore?\nการกระทำนี้ไม่สามารถยกเลิกได้!')) return;
+            if (!confirm('ยืนยันอีกครั้ง: ลบข้อมูลทั้งหมด?')) return;
+
+            dataLog('Clearing all data...');
+            if (typeof SeedData !== 'undefined' && SeedData.clearAll) {
+                SeedData.clearAll().then(function() {
+                    dataLog('All data cleared.');
+                    var user = JSON.parse(localStorage.getItem('healthdesk_user'));
+                    if (typeof FirebaseService !== 'undefined' && FirebaseService.addAuditLog) {
+                        FirebaseService.addAuditLog({
+                            action: 'clear_all_data',
+                            performedBy: user ? user.name : 'unknown',
+                            details: 'ล้างข้อมูลทั้งหมดในระบบ'
+                        });
+                    }
+                    loadOverviewStats();
+                    loadDataSummary();
+                    alert('ล้างข้อมูลเรียบร้อย');
+                }).catch(function(e) {
+                    dataLog('Clear failed: ' + e.message);
+                });
+            } else {
+                dataLog('SeedData module not loaded');
+            }
+        }
+
+        function exportData() {
+            dataLog('Exporting...');
+            if (typeof FirebaseService !== 'undefined' && FirebaseService.exportAllData) {
+                FirebaseService.exportAllData().then(function(data) {
+                    var json = JSON.stringify(data, null, 2);
+                    var blob = new Blob([json], { type: 'application/json' });
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'healthdesk-backup-' + new Date().toISOString().split('T')[0] + '.json';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    dataLog('Export complete: ' + (data.patients ? data.patients.length : 0) + ' patients, ' + (data.staff ? data.staff.length : 0) + ' staff');
+
+                    var user = JSON.parse(localStorage.getItem('healthdesk_user'));
+                    FirebaseService.addAuditLog({
+                        action: 'export_data',
+                        performedBy: user ? user.name : 'unknown',
+                        details: 'Export ข้อมูลทั้งหมด (' + (data.patients ? data.patients.length : 0) + ' patients)'
+                    });
+                }).catch(function(err) {
+                    dataLog('Export failed: ' + err.message);
+                });
+            } else {
+                // Fallback: export mock data
+                var patients = typeof mockPatients !== 'undefined' ? mockPatients : [];
+                var data = { patients: patients, exportDate: new Date().toISOString(), system: 'Health Desk (fallback)' };
+                var json = JSON.stringify(data, null, 2);
+                var blob = new Blob([json], { type: 'application/json' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'healthdesk-backup-' + new Date().toISOString().split('T')[0] + '.json';
+                a.click();
+                URL.revokeObjectURL(url);
+                dataLog('Export complete (fallback mode): ' + patients.length + ' patients');
+            }
+        }
+
+        function importData(input) {
+            if (!input.files || !input.files[0]) return;
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    var data = JSON.parse(e.target.result);
+                    var pCount = data.patients ? data.patients.length : 0;
+                    var sCount = data.staff ? data.staff.length : 0;
+                    dataLog('File loaded: ' + pCount + ' patients, ' + sCount + ' staff');
+                    alert('ไฟล์โหลดสำเร็จ\nพบ ' + pCount + ' ผู้ป่วย, ' + sCount + ' เจ้าหน้าที่\n(ฟีเจอร์ import อัตโนมัติกำลังพัฒนา)');
+                } catch (err) {
+                    dataLog('Invalid JSON: ' + err.message);
+                    alert('ไฟล์ไม่ถูกต้อง');
+                }
+            };
+            reader.readAsText(input.files[0]);
+        }
+
+        function dataLog(msg) {
+            var el = document.getElementById('dataLog');
+            el.textContent += '\n' + new Date().toLocaleTimeString('th-TH') + ' ' + msg;
+            el.scrollTop = el.scrollHeight;
+        }
+
+        // ===== Tab 4: Audit Log =====
+        function loadAuditLog() {
+            if (typeof FirebaseService !== 'undefined' && FirebaseService.getAuditLog) {
+                FirebaseService.getAuditLog(50).then(function(logs) {
+                    renderAuditLog(logs);
+                }).catch(function() {
+                    document.getElementById('auditLogList').innerHTML = '<div class="empty-state">ไม่สามารถโหลดข้อมูลได้</div>';
+                });
+            } else {
+                document.getElementById('auditLogList').innerHTML = '<div class="empty-state">Firebase ไม่พร้อมใช้งาน</div>';
+            }
+        }
+
+        function renderAuditLog(logs) {
+            if (!logs.length) {
+                document.getElementById('auditLogList').innerHTML = '<div class="empty-state">ยังไม่มีบันทึกกิจกรรม</div>';
+                return;
+            }
+
+            var actionIcons = {
+                create_staff: '➕', update_staff: '✏️', delete_staff: '🗑️',
+                toggle_staff_status: '🔄', seed_data: '🌱', clear_all_data: '⚠️',
+                export_data: '📥', login: '🔑'
+            };
+
+            var html = '';
+            logs.forEach(function(log) {
+                var icon = actionIcons[log.action] || '📝';
+                var time = log.timestamp ? new Date(log.timestamp).toLocaleString('th-TH') : '-';
+                html += '<div class="audit-item">' +
+                    '<div class="audit-header">' +
+                    '<span class="audit-icon">' + icon + '</span>' +
+                    '<span class="audit-action">' + (log.details || log.action) + '</span>' +
+                    '</div>' +
+                    '<div class="audit-meta">โดย: ' + (log.performedBy || '-') + ' | ' + time + '</div>' +
+                    '</div>';
+            });
+            document.getElementById('auditLogList').innerHTML = html;
+        }
+
+        // ===== Initialization =====
+        document.addEventListener('DOMContentLoaded', function() {
+            var user = JSON.parse(localStorage.getItem('healthdesk_user'));
+
+            // Auth guard: only superadmin can access
+            if (!user || user.role !== 'superadmin') {
+                alert('คุณไม่มีสิทธิ์เข้าถึงหน้านี้');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Display user info
+            document.getElementById('userRoleDisplay').textContent = user.name + ' (' + user.roleLabel + ')';
+
+            var dateEl = document.getElementById('currentDate');
+            if (dateEl) {
+                dateEl.textContent = new Date().toLocaleDateString('th-TH', {
+                    year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+                });
+            }
+
+            // Init nav
+            initNavFeatures('super-admin.html');
+
+            // Load all data
+            loadOverviewStats();
+            loadStaff();
+            loadDataSummary();
+            loadAuditLog();
+        });
+    </script>
+</body>
+</html>

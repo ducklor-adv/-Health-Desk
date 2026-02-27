@@ -19,6 +19,12 @@ function renderBottomNav(activePage) {
             { page: 'patients.html', icon: '👥', label: 'ผู้ป่วย' },
             { page: 'chat.html', icon: '💬', label: 'แชท', hasBadge: true }
         ];
+    } else if (role === 'superadmin') {
+        navItems = [
+            { page: 'super-admin.html', icon: '🛡️', label: 'จัดการ' },
+            { page: 'dashboard.html', icon: '📊', label: 'Dashboard' },
+            { page: 'patients.html', icon: '👥', label: 'ผู้ป่วย' }
+        ];
     } else {
         navItems = [
             { page: 'dashboard.html', icon: '📊', label: 'Dashboard' },

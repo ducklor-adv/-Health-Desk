@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages & Firebase
 
 on:
   push:
@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  deploy-github-pages:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -28,3 +28,15 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  deploy-firebase:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Firebase Hosting & Firestore Rules
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          channelId: live
+          projectId: health-desk-community

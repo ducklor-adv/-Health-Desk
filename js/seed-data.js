@@ -626,6 +626,36 @@ var SeedData = (function() {
     }
 
     // ============================================================
+    // APPOINTMENTS DATA — พร้อม เวลา + สถานที่
+    // ============================================================
+    var appointmentData = [
+        // ── มานี มีสุข (patient-1 / HN10245) ──
+        { docId: 'appt-1', patientId: 'patient-1', patientHN: 'HN10245', patientName: 'นางมานี มีสุข', date: '2024-03-05', time: '09:00', endTime: '10:00', doctorId: 'staff-3', doctorName: 'นพ.สมชาย พัฒนา', location: 'ศูนย์สุขภาพชุมชนบ้านสุขใจ', reason: 'ตรวจติดตามความดัน+เบาหวาน', status: 'scheduled', notes: 'งดอาหาร 8 ชม. ก่อนเจาะเลือด' },
+        { docId: 'appt-2', patientId: 'patient-1', patientHN: 'HN10245', patientName: 'นางมานี มีสุข', date: '2024-02-20', time: '10:00', endTime: '10:30', doctorId: 'staff-2', doctorName: 'สมหญิง รักษา', location: 'รพ.สต.บ้านใหม่', reason: 'ตรวจสุขภาพประจำปี', status: 'completed', notes: '' },
+        { docId: 'appt-3', patientId: 'patient-1', patientHN: 'HN10245', patientName: 'นางมานี มีสุข', date: '2024-01-15', time: '14:00', endTime: '14:30', doctorId: 'staff-3', doctorName: 'นพ.สมชาย พัฒนา', location: 'ศูนย์สุขภาพชุมชนบ้านสุขใจ', reason: 'ตรวจติดตามความดัน', status: 'completed', notes: '' },
+        { docId: 'appt-4', patientId: 'patient-1', patientHN: 'HN10245', patientName: 'นางมานี มีสุข', date: '2024-01-05', time: '08:30', endTime: '09:00', doctorId: '', doctorName: 'ห้องแลป', location: 'โรงพยาบาลชุมชนแม่เหียะ', reason: 'ตรวจเลือด', status: 'cancelled', notes: 'ผู้ป่วยไม่สะดวก' },
+
+        // ── ประสิทธิ์ ดีงาม (patient-2 / HN10567) ──
+        { docId: 'appt-5', patientId: 'patient-2', patientHN: 'HN10567', patientName: 'นายประสิทธิ์ ดีงาม', date: '2024-03-22', time: '10:30', endTime: '11:00', doctorId: 'staff-3', doctorName: 'นพ.สมชาย พัฒนา', location: 'ศูนย์สุขภาพชุมชนบ้านสุขใจ', reason: 'ตรวจติดตามน้ำหนัก+ไขมัน', status: 'scheduled', notes: 'งดอาหาร 12 ชม.' },
+        { docId: 'appt-6', patientId: 'patient-2', patientHN: 'HN10567', patientName: 'นายประสิทธิ์ ดีงาม', date: '2024-02-22', time: '09:30', endTime: '10:00', doctorId: 'staff-2', doctorName: 'สมหญิง รักษา', location: 'รพ.สต.บ้านใหม่', reason: 'ตรวจสุขภาพประจำปี', status: 'completed', notes: '' },
+
+        // ── สมชาย ใจดี (patient-3 / HN12345) ──
+        { docId: 'appt-7', patientId: 'patient-3', patientHN: 'HN12345', patientName: 'นายสมชาย ใจดี', date: '2024-03-25', time: '09:00', endTime: '09:30', doctorId: 'staff-3', doctorName: 'นพ.สมชาย พัฒนา', location: 'ศูนย์สุขภาพชุมชนบ้านสุขใจ', reason: 'ตรวจติดตามน้ำตาล', status: 'scheduled', notes: 'งดอาหาร 8 ชม. ก่อนเจาะเลือด' },
+        { docId: 'appt-8', patientId: 'patient-3', patientHN: 'HN12345', patientName: 'นายสมชาย ใจดี', date: '2024-02-25', time: '13:30', endTime: '14:00', doctorId: 'staff-2', doctorName: 'สมหญิง รักษา', location: 'รพ.สต.บ้านใหม่', reason: 'ตรวจสุขภาพประจำปี', status: 'completed', notes: '' },
+        { docId: 'appt-9', patientId: 'patient-3', patientHN: 'HN12345', patientName: 'นายสมชาย ใจดี', date: '2024-01-20', time: '10:00', endTime: '10:30', doctorId: 'staff-3', doctorName: 'นพ.สมชาย พัฒนา', location: 'คลินิกหมอครอบครัวท่าศาลา', reason: 'ตรวจ FBS+HbA1c', status: 'completed', notes: '' },
+
+        // ── สมหญิง รักษา (patient-4 / HN10892) ──
+        { docId: 'appt-10', patientId: 'patient-4', patientHN: 'HN10892', patientName: 'นางสาวสมหญิง รักษา', date: '2024-06-23', time: '09:00', endTime: '09:30', doctorId: 'staff-2', doctorName: 'สมหญิง รักษา', location: 'รพ.สต.บ้านใหม่', reason: 'ตรวจสุขภาพประจำปี', status: 'scheduled', notes: '' },
+        { docId: 'appt-11', patientId: 'patient-4', patientHN: 'HN10892', patientName: 'นางสาวสมหญิง รักษา', date: '2024-02-23', time: '10:00', endTime: '10:30', doctorId: 'staff-2', doctorName: 'สมหญิง รักษา', location: 'รพ.สต.บ้านใหม่', reason: 'ตรวจสุขภาพทั่วไป', status: 'completed', notes: '' },
+
+        // ── วิชัย สุขใจ (patient-5 / HN11234) ──
+        { docId: 'appt-12', patientId: 'patient-5', patientHN: 'HN11234', patientName: 'นายวิชัย สุขใจ', date: '2024-03-01', time: '09:00', endTime: '10:00', doctorId: 'staff-3', doctorName: 'นพ.สมชาย พัฒนา', location: 'ศูนย์สุขภาพชุมชนบ้านสุขใจ', reason: 'ตรวจติดตามหัวใจ+ไต', status: 'scheduled', notes: 'นำยาที่กินมาด้วย' },
+        { docId: 'appt-13', patientId: 'patient-5', patientHN: 'HN11234', patientName: 'นายวิชัย สุขใจ', date: '2024-02-18', time: '10:00', endTime: '10:30', doctorId: 'staff-2', doctorName: 'สมหญิง รักษา', location: 'บ้านผู้ป่วย (เยี่ยมบ้าน)', reason: 'เยี่ยมบ้านวัดความดัน', status: 'completed', notes: '' },
+        { docId: 'appt-14', patientId: 'patient-5', patientHN: 'HN11234', patientName: 'นายวิชัย สุขใจ', date: '2024-02-01', time: '08:30', endTime: '09:00', doctorId: '', doctorName: 'ห้องแลป', location: 'โรงพยาบาลชุมชนแม่เหียะ', reason: 'ตรวจเลือด Cr+eGFR', status: 'completed', notes: '' },
+        { docId: 'appt-15', patientId: 'patient-5', patientHN: 'HN11234', patientName: 'นายวิชัย สุขใจ', date: '2024-01-10', time: '14:00', endTime: '15:00', doctorId: 'staff-3', doctorName: 'นพ.สมชาย พัฒนา', location: 'ศูนย์สุขภาพชุมชนบ้านสุขใจ', reason: 'ตรวจ Echo หัวใจ', status: 'completed', notes: '' }
+    ];
+
+    // ============================================================
     // CONVERSATIONS DATA
     // ============================================================
     var conversationData = [
@@ -784,6 +814,20 @@ var SeedData = (function() {
         });
     }
 
+    function seedAppointments() {
+        var batch = db.batch();
+        appointmentData.forEach(function(appt) {
+            var docId = appt.docId;
+            delete appt.docId;
+            appt.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+            appt.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+            batch.set(db.collection('appointments').doc(docId), appt);
+        });
+        return batch.commit().then(function() {
+            console.log('Seeded ' + appointmentData.length + ' appointments');
+        });
+    }
+
     function seedConversations() {
         var promises = [];
 
@@ -834,6 +878,7 @@ var SeedData = (function() {
         console.log('Starting seed...');
         return seedStaff()
             .then(function() { return seedPatients(); })
+            .then(function() { return seedAppointments(); })
             .then(function() { return seedConversations(); })
             .then(function() { return seedNotifications(); })
             .then(function() {
@@ -869,6 +914,7 @@ var SeedData = (function() {
         seedAll: seedAll,
         seedStaff: seedStaff,
         seedPatients: seedPatients,
+        seedAppointments: seedAppointments,
         seedConversations: seedConversations,
         seedNotifications: seedNotifications,
         clearAll: clearAll

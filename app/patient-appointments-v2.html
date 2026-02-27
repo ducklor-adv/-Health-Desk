@@ -247,81 +247,29 @@
 
     <div class="box">
         <!-- นัดหมายครั้งถัดไป -->
-        <div class="big-next">
+        <div class="big-next" id="bigNext" style="display:none;">
             <div class="next-label">📅 นัดหมายครั้งถัดไป</div>
-            <div class="next-date">25 มีนาคม 2567</div>
-
-            <div class="next-info">
-                ⏰ เวลา 09:00 - 10:00 น.
-            </div>
-
-            <div class="next-info">
-                👨‍⚕️ นพ.สมชาย ใจดี
-            </div>
-
-            <div class="next-info">
-                🏥 ศูนย์สุขภาพชุมชนบ้านสุขใจ
-            </div>
-
-            <div class="next-info">
-                📝 ตรวจสุขภาพประจำเดือน
-            </div>
-
-            <div class="countdown">
-                ⏳ อีก 28 วัน
-            </div>
-
+            <div class="next-date" id="nextDate">--</div>
+            <div class="next-info" id="nextTime">⏰ เวลา --:-- น.</div>
+            <div class="next-info" id="nextDoctor">👨‍⚕️ ---</div>
+            <div class="next-info" id="nextLocation">🏥 ---</div>
+            <div class="next-info" id="nextReason">📝 ---</div>
+            <div class="next-info" id="nextNotes" style="display:none; background:rgba(255,255,255,0.35); font-size:1.1rem;">💡 ---</div>
+            <div class="countdown" id="nextCountdown">⏳ ---</div>
             <div class="action-btns">
-                <button class="action-btn" onclick="alert('📍 เปิดแผนที่...')">
-                    📍 ดูแผนที่
-                </button>
-                <button class="action-btn" onclick="alert('📅 เพิ่มในปฏิทิน...')">
-                    📅 บันทึก
-                </button>
+                <button class="action-btn" onclick="alert('📍 เปิดแผนที่...')">📍 ดูแผนที่</button>
+                <button class="action-btn" onclick="alert('📅 เพิ่มในปฏิทิน...')">📅 บันทึก</button>
             </div>
+        </div>
+
+        <div id="noAppt" style="display:none; background:#F3F4F6; border-radius:16px; padding:2rem; text-align:center; margin-bottom:2rem;">
+            <div style="font-size:3rem; margin-bottom:0.5rem;">📅</div>
+            <div style="font-size:1.25rem; font-weight:700; color:#6B7280;">ไม่มีนัดหมายที่กำลังจะมาถึง</div>
         </div>
 
         <!-- ประวัติ -->
         <div class="section-title">ประวัติการนัดหมาย</div>
-
-        <div class="appt-card">
-            <div class="appt-date-box">
-                <div class="date-day">20</div>
-                <div class="date-month">ก.พ.</div>
-            </div>
-            <div class="appt-info">
-                <div class="appt-title">ตรวจสุขภาพประจำปี</div>
-                <div class="appt-meta">⏰ 10:00 น.</div>
-                <div class="appt-meta">👨‍⚕️ พยาบาลสมหญิง</div>
-                <div class="status-done">✓ ตรวจเสร็จแล้ว</div>
-            </div>
-        </div>
-
-        <div class="appt-card">
-            <div class="appt-date-box">
-                <div class="date-day">15</div>
-                <div class="date-month">ม.ค.</div>
-            </div>
-            <div class="appt-info">
-                <div class="appt-title">ตรวจติดตามความดัน</div>
-                <div class="appt-meta">⏰ 14:00 น.</div>
-                <div class="appt-meta">👨‍⚕️ นพ.วิชัย พัฒนา</div>
-                <div class="status-done">✓ ตรวจเสร็จแล้ว</div>
-            </div>
-        </div>
-
-        <div class="appt-card">
-            <div class="appt-date-box cancelled-box">
-                <div class="date-day">05</div>
-                <div class="date-month">ม.ค.</div>
-            </div>
-            <div class="appt-info">
-                <div class="appt-title">ตรวจเลือด</div>
-                <div class="appt-meta">⏰ 08:30 น.</div>
-                <div class="appt-meta">👨‍⚕️ แลป</div>
-                <div class="status-cancel">✗ ยกเลิก</div>
-            </div>
-        </div>
+        <div id="apptHistory"></div>
     </div>
 
     <nav class="bottom-nav">
@@ -354,19 +302,77 @@
     <script src="../js/patient-auth.js"></script>
     <script src="../js/notifications.js"></script>
     <script>
+        var thaiMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+
         document.addEventListener('DOMContentLoaded', function() {
             var patient = JSON.parse(localStorage.getItem('healthdesk_patient') || 'null');
-            if (patient && patient.nextAppointment) {
-                var d = new Date(patient.nextAppointment);
-                document.querySelector('.next-date').textContent = d.toLocaleDateString('th-TH', {
-                    day: 'numeric', month: 'long', year: 'numeric'
-                });
+            if (!patient) { document.body.style.visibility = 'visible'; return; }
+
+            // ── ดึง appointments จาก mockAppointments ──
+            var allAppts = (typeof getAppointmentsByHN === 'function') ? getAppointmentsByHN(patient.hn) : [];
+            var nextAppt = (typeof getNextAppointment === 'function') ? getNextAppointment(patient.hn) : null;
+
+            // ── แสดงนัดถัดไป ──
+            if (nextAppt) {
+                var d = new Date(nextAppt.date);
+                document.getElementById('nextDate').textContent = d.toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
+                document.getElementById('nextTime').textContent = '⏰ เวลา ' + nextAppt.time + (nextAppt.endTime ? ' - ' + nextAppt.endTime : '') + ' น.';
+                document.getElementById('nextDoctor').textContent = '👨‍⚕️ ' + nextAppt.doctorName;
+                document.getElementById('nextLocation').textContent = '🏥 ' + nextAppt.location;
+                document.getElementById('nextReason').textContent = '📝 ' + nextAppt.reason;
+
+                if (nextAppt.notes) {
+                    document.getElementById('nextNotes').textContent = '💡 ' + nextAppt.notes;
+                    document.getElementById('nextNotes').style.display = '';
+                }
+
                 var today = new Date();
                 var daysLeft = Math.ceil((d - today) / (1000*60*60*24));
-                document.querySelector('.countdown').textContent = (daysLeft > 0 ? '⏳ อีก ' + daysLeft + ' วัน' : '⏳ วันนี้!');
+                if (daysLeft > 0) {
+                    document.getElementById('nextCountdown').textContent = '⏳ อีก ' + daysLeft + ' วัน';
+                } else {
+                    document.getElementById('nextCountdown').textContent = '⏳ เวลา ' + nextAppt.time + ' น. วันนี้';
+                }
+
+                document.getElementById('bigNext').style.display = '';
+            } else {
+                document.getElementById('noAppt').style.display = '';
             }
 
-            // Check reschedule notifications
+            // ── แสดงประวัตินัดหมาย (ไม่รวม scheduled ที่ยังไม่ถึง) ──
+            var pastAppts = allAppts.filter(function(a) {
+                return a.status === 'completed' || a.status === 'cancelled';
+            });
+
+            var historyHTML = '';
+            pastAppts.forEach(function(appt) {
+                var dd = new Date(appt.date);
+                var day = dd.getDate();
+                var month = thaiMonths[dd.getMonth()];
+                var isCancelled = appt.status === 'cancelled';
+                var statusHTML = isCancelled
+                    ? '<div class="status-cancel">✗ ยกเลิก</div>'
+                    : '<div class="status-done">✓ ตรวจเสร็จแล้ว</div>';
+
+                historyHTML +=
+                    '<div class="appt-card">' +
+                        '<div class="appt-date-box' + (isCancelled ? ' cancelled-box' : '') + '">' +
+                            '<div class="date-day">' + ('0' + day).slice(-2) + '</div>' +
+                            '<div class="date-month">' + month + '</div>' +
+                        '</div>' +
+                        '<div class="appt-info">' +
+                            '<div class="appt-title">' + appt.reason + '</div>' +
+                            '<div class="appt-meta">⏰ เวลา ' + appt.time + ' น.</div>' +
+                            '<div class="appt-meta">👨‍⚕️ ' + appt.doctorName + '</div>' +
+                            '<div class="appt-meta">🏥 ' + appt.location + '</div>' +
+                            statusHTML +
+                        '</div>' +
+                    '</div>';
+            });
+
+            document.getElementById('apptHistory').innerHTML = historyHTML || '<div style="text-align:center; color:#9CA3AF; padding:2rem; font-size:1.125rem;">ยังไม่มีประวัตินัดหมาย</div>';
+
+            // ── Reschedule notification banner ──
             if (typeof initNotifications === 'function') initNotifications();
             var notifs = typeof getNotifications === 'function' ? getNotifications() : [];
             var reschedNotifs = notifs.filter(function(n) { return n.type === 'reschedule' && !n.read; });
@@ -378,9 +384,10 @@
                     '<div style="color:#78350F; font-size:1.125rem;">' + latest.message + '</div>' +
                     '<button onclick="this.parentElement.remove(); markNotificationRead(\'' + latest.id + '\');" style="margin-top:0.75rem; background:#F59E0B; color:white; border:none; padding:0.75rem 1.25rem; border-radius:12px; font-weight:700; cursor:pointer; font-family:Prompt,sans-serif; font-size:1.125rem;">รับทราบ</button>';
                 var box = document.querySelector('.box');
-                var bigNext = document.querySelector('.big-next');
-                box.insertBefore(banner, bigNext);
+                box.insertBefore(banner, box.firstChild);
             }
+
+            document.body.style.visibility = 'visible';
         });
     </script>
 </body>

@@ -17,6 +17,63 @@ var mockActivities = [
 ];
 
 // ============================================================
+// Mock Appointments — พร้อม เวลา + สถานที่
+// ============================================================
+var mockAppointments = [
+    // ── ผู้ป่วยที่ 1: มานี มีสุข (HN10245) ──
+    { id: 'appt-1', patientId: 'patient-1', patientHN: 'HN10245', date: '2024-03-05', time: '09:00', endTime: '10:00', doctorName: 'นพ.สมชาย พัฒนา', location: 'ศูนย์สุขภาพชุมชนบ้านสุขใจ', reason: 'ตรวจติดตามความดัน+เบาหวาน', status: 'scheduled', notes: 'งดอาหาร 8 ชม. ก่อนเจาะเลือด' },
+    { id: 'appt-2', patientId: 'patient-1', patientHN: 'HN10245', date: '2024-02-20', time: '10:00', endTime: '10:30', doctorName: 'สมหญิง รักษา', location: 'รพ.สต.บ้านใหม่', reason: 'ตรวจสุขภาพประจำปี', status: 'completed', notes: '' },
+    { id: 'appt-3', patientId: 'patient-1', patientHN: 'HN10245', date: '2024-01-15', time: '14:00', endTime: '14:30', doctorName: 'นพ.สมชาย พัฒนา', location: 'ศูนย์สุขภาพชุมชนบ้านสุขใจ', reason: 'ตรวจติดตามความดัน', status: 'completed', notes: '' },
+    { id: 'appt-4', patientId: 'patient-1', patientHN: 'HN10245', date: '2024-01-05', time: '08:30', endTime: '09:00', doctorName: 'ห้องแลป', location: 'โรงพยาบาลชุมชนแม่เหียะ', reason: 'ตรวจเลือด', status: 'cancelled', notes: 'ผู้ป่วยไม่สะดวก' },
+
+    // ── ผู้ป่วยที่ 2: ประสิทธิ์ ดีงาม (HN10567) ──
+    { id: 'appt-5', patientId: 'patient-2', patientHN: 'HN10567', date: '2024-03-22', time: '10:30', endTime: '11:00', doctorName: 'นพ.สมชาย พัฒนา', location: 'ศูนย์สุขภาพชุมชนบ้านสุขใจ', reason: 'ตรวจติดตามน้ำหนัก+ไขมัน', status: 'scheduled', notes: 'งดอาหาร 12 ชม.' },
+    { id: 'appt-6', patientId: 'patient-2', patientHN: 'HN10567', date: '2024-02-22', time: '09:30', endTime: '10:00', doctorName: 'สมหญิง รักษา', location: 'รพ.สต.บ้านใหม่', reason: 'ตรวจสุขภาพประจำปี', status: 'completed', notes: '' },
+
+    // ── ผู้ป่วยที่ 3: สมชาย ใจดี (HN12345) ──
+    { id: 'appt-7', patientId: 'patient-3', patientHN: 'HN12345', date: '2024-03-25', time: '09:00', endTime: '09:30', doctorName: 'นพ.สมชาย พัฒนา', location: 'ศูนย์สุขภาพชุมชนบ้านสุขใจ', reason: 'ตรวจติดตามน้ำตาล', status: 'scheduled', notes: 'งดอาหาร 8 ชม. ก่อนเจาะเลือด' },
+    { id: 'appt-8', patientId: 'patient-3', patientHN: 'HN12345', date: '2024-02-25', time: '13:30', endTime: '14:00', doctorName: 'สมหญิง รักษา', location: 'รพ.สต.บ้านใหม่', reason: 'ตรวจสุขภาพประจำปี', status: 'completed', notes: '' },
+    { id: 'appt-9', patientId: 'patient-3', patientHN: 'HN12345', date: '2024-01-20', time: '10:00', endTime: '10:30', doctorName: 'นพ.สมชาย พัฒนา', location: 'คลินิกหมอครอบครัวท่าศาลา', reason: 'ตรวจ FBS+HbA1c', status: 'completed', notes: '' },
+
+    // ── ผู้ป่วยที่ 4: สมหญิง รักษา (HN10892) ──
+    { id: 'appt-10', patientId: 'patient-4', patientHN: 'HN10892', date: '2024-06-23', time: '09:00', endTime: '09:30', doctorName: 'สมหญิง รักษา', location: 'รพ.สต.บ้านใหม่', reason: 'ตรวจสุขภาพประจำปี', status: 'scheduled', notes: '' },
+    { id: 'appt-11', patientId: 'patient-4', patientHN: 'HN10892', date: '2024-02-23', time: '10:00', endTime: '10:30', doctorName: 'สมหญิง รักษา', location: 'รพ.สต.บ้านใหม่', reason: 'ตรวจสุขภาพทั่วไป', status: 'completed', notes: '' },
+
+    // ── ผู้ป่วยที่ 5: วิชัย สุขใจ (HN11234) ──
+    { id: 'appt-12', patientId: 'patient-5', patientHN: 'HN11234', date: '2024-03-01', time: '09:00', endTime: '10:00', doctorName: 'นพ.สมชาย พัฒนา', location: 'ศูนย์สุขภาพชุมชนบ้านสุขใจ', reason: 'ตรวจติดตามหัวใจ+ไต', status: 'scheduled', notes: 'นำยาที่กินมาด้วย' },
+    { id: 'appt-13', patientId: 'patient-5', patientHN: 'HN11234', date: '2024-02-18', time: '10:00', endTime: '10:30', doctorName: 'สมหญิง รักษา', location: 'บ้านผู้ป่วย (เยี่ยมบ้าน)', reason: 'เยี่ยมบ้านวัดความดัน', status: 'completed', notes: '' },
+    { id: 'appt-14', patientId: 'patient-5', patientHN: 'HN11234', date: '2024-02-01', time: '08:30', endTime: '09:00', doctorName: 'ห้องแลป', location: 'โรงพยาบาลชุมชนแม่เหียะ', reason: 'ตรวจเลือด Cr+eGFR', status: 'completed', notes: '' },
+    { id: 'appt-15', patientId: 'patient-5', patientHN: 'HN11234', date: '2024-01-10', time: '14:00', endTime: '15:00', doctorName: 'นพ.สมชาย พัฒนา', location: 'ศูนย์สุขภาพชุมชนบ้านสุขใจ', reason: 'ตรวจ Echo หัวใจ', status: 'completed', notes: '' }
+];
+
+/**
+ * ดึงนัดหมายของผู้ป่วยตาม HN
+ * @param {string} hn - HN ของผู้ป่วย
+ * @returns {Array} appointments sorted by date desc
+ */
+function getAppointmentsByHN(hn) {
+    return mockAppointments
+        .filter(function(a) { return a.patientHN === hn; })
+        .sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
+}
+
+/**
+ * ดึงนัดหมายครั้งถัดไป (scheduled) ของผู้ป่วย
+ * @param {string} hn
+ * @returns {Object|null}
+ */
+function getNextAppointment(hn) {
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    var upcoming = mockAppointments
+        .filter(function(a) {
+            return a.patientHN === hn && a.status === 'scheduled' && new Date(a.date) >= today;
+        })
+        .sort(function(a, b) { return new Date(a.date) - new Date(b.date); });
+    return upcoming.length > 0 ? upcoming[0] : null;
+}
+
+// ============================================================
 // Disease & Risk Labels
 // ============================================================
 var diseaseLabels = {

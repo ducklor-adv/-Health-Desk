@@ -302,8 +302,8 @@
         <div class="big-appt">
             <div class="big-appt-label">📅 นัดครั้งถัดไป</div>
             <div class="big-appt-date">25 มีนาคม 2567</div>
-            <div class="big-appt-time">⏰ 09:00 น.</div>
-            <div class="big-appt-time">🏥 ศูนย์สุขภาพ</div>
+            <div class="big-appt-time" id="apptTime">⏰ เวลา --:-- น.</div>
+            <div class="big-appt-time" id="apptLocation">🏥 ---</div>
         </div>
 
         <!-- ผลตรวจ -->
@@ -473,13 +473,24 @@
                         }
                     }
 
-                    // Appointment
-                    if (patient.nextAppointment) {
-                        var d = new Date(patient.nextAppointment);
+                    // Appointment — ดึงจาก mockAppointments
+                    var nextAppt = (typeof getNextAppointment === 'function') ? getNextAppointment(patient.hn) : null;
+                    if (nextAppt) {
+                        var d = new Date(nextAppt.date);
                         document.querySelector('.big-appt-date').textContent = d.toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
                         var today = new Date();
                         var daysLeft = Math.ceil((d - today) / (1000*60*60*24));
-                        document.querySelector('.big-appt-time').textContent = (daysLeft > 0 ? '⏰ อีก ' + daysLeft + ' วัน' : '⏰ วันนี้!');
+                        var countdownEl = document.querySelector('.big-appt-time');
+                        if (daysLeft > 0) {
+                            countdownEl.textContent = '⏰ อีก ' + daysLeft + ' วัน';
+                        } else {
+                            countdownEl.textContent = '⏰ เวลา ' + nextAppt.time + ' น.';
+                        }
+                        document.getElementById('apptTime').textContent = '⏰ เวลา ' + nextAppt.time + (nextAppt.endTime ? ' - ' + nextAppt.endTime : '') + ' น.';
+                        document.getElementById('apptLocation').textContent = '🏥 ' + nextAppt.location;
+                    } else if (patient.nextAppointment) {
+                        var d = new Date(patient.nextAppointment);
+                        document.querySelector('.big-appt-date').textContent = d.toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
                     }
                 }
 
